@@ -1,0 +1,44 @@
+{
+  "at": "2026-11-15T19:41:54.207190+00:00",
+  "decision": "cancel proposed config redesign and remove config tab per user condition",
+  "userCondition": "如果存在兼容性问题，或者其他问题，就取消实现。并移除这个tab页",
+  "scope": "new isolated offline daemon; no comparison writes",
+  "image": "twui-lab/transmission:3.00",
+  "container": "twui-config-8f890720-7070-46a4-a4a2-89d32e0175ef",
+  "seedIdleLimitBefore": 17,
+  "requestPatch": {
+    "downloadLimit": 0,
+    "uploadLimit": 0,
+    "peer-limit": 0,
+    "seedIdleLimit": 0,
+    "seedRatioLimit": 0
+  },
+  "torrentSetReturned": "success",
+  "readback": {
+    "bandwidthPriority": -1,
+    "downloadLimit": 0,
+    "downloadLimited": false,
+    "hashString": "167db680c5f5617c99bd5c86e854efb13536cf21",
+    "honorsSessionLimits": true,
+    "id": 1,
+    "peer-limit": 0,
+    "percentDone": 1,
+    "seedIdleLimit": 17,
+    "seedIdleMode": 0,
+    "seedRatioLimit": 0,
+    "seedRatioMode": 2,
+    "status": 0,
+    "uploadLimit": 0,
+    "uploadLimited": false
+  },
+  "observation": "Zero idle limit did not replace the previously stored 17 despite RPC acceptance",
+  "limitations": [
+    "Does not prove all task settings are unsupported or all four versions incompatible",
+    "4.0.0/4.0.6/4.1.4 candidate config writer validation was not continued",
+    "Seeding behavior phases were not reached after assertion failure"
+  ],
+  "candidatePublished": false,
+  "comparisonDaemonWrites": [],
+  "comparisonContainerActions": [],
+  "disposableContainerCleanup": "finally terminated daemon; docker --rm and scoped cleanup"
+}

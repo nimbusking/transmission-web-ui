@@ -44,7 +44,7 @@ test('directory match survives dialog closure, keeps partial decisions and verif
   });
   await page.goto('/?lang=en');
   await page.getByRole('checkbox', { name: 'Select current page', exact: true }).check();
-  await page.getByRole('button', { name: 'More ▾', exact: true }).click();
+  await page.locator('[data-torrent-id="1"]').click({ button: 'right' });
   await page.locator('.n-dropdown-menu').getByText('Find existing data', { exact: true }).click();
   await page
     .getByPlaceholder('Candidate directories, one per line')

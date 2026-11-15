@@ -51,16 +51,23 @@ for (const port of [19091, 19092, 19093, 19095])
     await expect(page.locator('.connection')).toContainText('Connected');
     const name = `twui-browser-${port}-${randomUUID()}`,
       data = fixture(name);
-    await page.getByRole('button', { name: '＋ Add transfer', exact: true }).click();
+    await page
+      .locator('.toolbar')
+      .getByRole('button', { name: 'Add transfer', exact: true })
+      .click();
     await page.locator('input[type=file]').setInputFiles({
       name: `${name}.torrent`,
       mimeType: 'application/x-bittorrent',
       buffer: Buffer.from(data.metainfo, 'base64'),
     });
-    await page.getByRole('button', { name: 'Add transfer', exact: true }).click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Add transfer', exact: true })
+      .click();
     const row = page.locator('[data-torrent-id]').filter({ hasText: name });
     await expect(row).toBeVisible();
     await row.click();
+    await row.getByRole('checkbox').check();
     await expect(page.locator('.detail-header')).toContainText(name);
     await page.getByRole('button', { name: 'Remove', exact: true }).first().click();
     await page.getByRole('button', { name: 'Confirm', exact: true }).click();

@@ -1,0 +1,113 @@
+[
+  {
+    "project": "chromium",
+    "events": [
+      {
+        "card": false,
+        "leave": false,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "none",
+        "maskScope": true
+      },
+      {
+        "card": true,
+        "leave": false,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "maskScope": false
+      },
+      {
+        "card": false,
+        "leave": true,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "none",
+        "maskScope": true
+      },
+      {
+        "card": true,
+        "leave": true,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "none",
+        "maskScope": false
+      }
+    ]
+  },
+  {
+    "project": "firefox",
+    "events": [
+      {
+        "card": false,
+        "leave": false,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "none",
+        "maskScope": true
+      },
+      {
+        "card": true,
+        "leave": false,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "maskScope": false
+      },
+      {
+        "card": false,
+        "leave": true,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "none",
+        "maskScope": true
+      },
+      {
+        "card": true,
+        "leave": true,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "none",
+        "maskScope": false
+      }
+    ]
+  },
+  {
+    "project": "webkit",
+    "events": [
+      {
+        "card": false,
+        "leave": false,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "none",
+        "maskScope": true
+      },
+      {
+        "card": true,
+        "leave": false,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "maskScope": false
+      },
+      {
+        "card": false,
+        "leave": true,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "none",
+        "maskScope": true
+      },
+      {
+        "card": true,
+        "leave": true,
+        "property": "opacity",
+        "duration": "0.12s",
+        "transform": "none",
+        "maskScope": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "at": "2026-11-15T18:55:41.526715+00:00",
+  "url": "http://localhost:19081/transmission/web/?lang=zh-CN#/",
+  "browser": "IAB",
+  "screenshot": "artifacts/statusbar-live.png",
+  "rect": {
+    "x": 0,
+    "y": 688,
+    "width": 1280,
+    "height": 32
+  },
+  "items": [
+    "下载速度: 0 B/s",
+    "上传速度: 0 B/s",
+    "可用空间: 904.0 GiB",
+    "已连接",
+    "Transmission 4.1.4 (a6d907d9ea)",
+    "RPC 19",
+    "Transmission Web UI 2.0.0"
+  ],
+  "spaceTitle": "默认下载目录：/data",
+  "header": "Transmission WEB UI / 布局 / 主题",
+  "appearanceUnchanged": "modern/workbench/system (effective dark)",
+  "writes": [],
+  "realRpcEvidence": "statusbar-live-rpc.json"
+}

@@ -7,7 +7,10 @@ export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: false,
   workers: 3,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  reporter: [
+    ['list'],
+    ['html', { open: 'never', outputFolder: process.env.TWUI_REPORT_DIR || 'playwright-report' }],
+  ],
   use: { baseURL: `http://127.0.0.1:${port}`, trace: 'retain-on-failure' },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },

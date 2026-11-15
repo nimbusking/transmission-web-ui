@@ -1,0 +1,80 @@
+{
+  "at": "2026-11-15T16:41:58.938509+00:00",
+  "sha256": "7d0534121747fa5c45ad22ec4ea5d980a443bbad817bac53afba12118980f8c5",
+  "previousSnapshotSha256": "e5463628778ba8a47c5f931382a3873392cd3403ebd818c2d4ef64df2a49ef22",
+  "archiveFilesVerified": 45,
+  "webFilesVerified": 36,
+  "snapshotUpdated": true,
+  "backupCreated": false,
+  "authorization": "本次工具栏连续验收，沿用用户回归后直接更新19081、无需额外备份授权",
+  "taskCount": 7,
+  "tasksUnchanged": true,
+  "taskStates": [
+    {
+      "name": "对照-F-零字节文件",
+      "status": 0,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-H-大分块预览",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-A-完整文件22",
+      "status": 6,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-D-多文件与中文",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-E-目录匹配",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-B-等待下载",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-C-部分数据",
+      "status": 0,
+      "percentDone": 0.5
+    }
+  ],
+  "browserTests": {
+    "passed": 63,
+    "report": ".lab/bulk-refresh-final-report",
+    "realDaemonExcluded": true
+  },
+  "unitTestsPassed": 70,
+  "fullStressRerun": false,
+  "rollback": {
+    "existingSnapshot": ".lab/comparison/backups/before-table-progress-20261115",
+    "sha256": "566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417",
+    "limitation": "Existing older snapshot; predates rectangular progress bar"
+  },
+  "browserLiveVerified": true,
+  "comparisonContainerActions": [],
+  "comparisonDaemonWrites": [],
+  "browserScreenshot": "artifacts/bulk-refresh-live.jpg",
+  "globalConfirmationScreenshot": "artifacts/bulk-confirmation-live.jpg",
+  "browserUiEvidence": "artifacts/bulk-refresh-live.json",
+  "browserLiveAction": "No checkboxes selected: More displayed only three entries; disabled automatic refresh locked interval and +/-; opened Pause all confirmation for seven tasks and cancelled; restored original refresh preference and five-second interval. No start/stop/set request sent by live UI.",
+  "automaticRefreshAudit": {
+    "timerUnitCases": 4,
+    "realTimeBrowserRequestCounting": true,
+    "offStopsPeriodicReads": true,
+    "manualRefreshStillWorks": true,
+    "offDisablesInputAndSteppers": true,
+    "visibilityOffGuard": true,
+    "disposeStopsRescheduling": true,
+    "backgroundCadenceMs": 30000
+  },
+  "userAcceptance": "pending",
+  "intermediateBrowserBatch": ".lab/bulk-refresh: 60 pass/3 fail because test assumed menuitem ARIA that Naive UI does not supply; corrected to actual disabled item and non-action click checks; final 63 pass on frozen build."
+}

@@ -36,7 +36,7 @@ test('legacy migration preserves old keys, backs up raw input and survives UI re
   await page.locator('.n-tabs-tab').getByText('Local data', { exact: true }).click();
   await page.getByRole('button', { name: 'Review legacy migration', exact: true }).click();
   await page.getByRole('button', { name: 'Import local data', exact: true }).click();
-  await expect(page.locator('.sidebar')).toContainText('Keep local label');
+
   await page.getByRole('button', { name: 'Import backups', exact: true }).click();
   const downloadEvent = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export backup', exact: true }).click();
@@ -47,6 +47,10 @@ test('legacy migration preserves old keys, backs up raw input and survives UI re
   await page.locator('.n-tabs-tab').getByText('Appearance', { exact: true }).click();
   await page.getByRole('button', { name: 'Reset display preferences', exact: true }).click();
   await page.reload();
+  await expect(
+    page.getByRole('button', { name: 'Expand/collapse Local labels', exact: true }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Expand/collapse Local labels', exact: true }).click();
   await expect(page.locator('.sidebar')).toContainText('Keep local label');
   expect(await page.evaluate(() => localStorage.getItem('transmission-web-control'))).toBe(
     '{malformed-user-json',

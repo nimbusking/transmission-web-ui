@@ -45,6 +45,7 @@
     "format:check": "prettier --check src tests scripts/*.mjs *.{ts,js,json}"
   },
   "dependencies": {
+    "@lucide/vue": "^1.73.0",
     "idb": "^8.0.0",
     "naive-ui": "^2.45.3",
     "pinia": "^3.0.0",

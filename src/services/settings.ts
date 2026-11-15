@@ -1,6 +1,13 @@
 import { openDB, type IDBPDatabase } from 'idb';
 import { z } from 'zod';
-import { defaultSettings, DEFAULT_COLUMNS, uniqueId } from '../domain/torrents';
+import { LAYOUT_THEME_IDS } from '../domain/themes';
+import { VISUAL_THEME_IDS } from '../domain/visual-themes';
+import {
+  defaultSettings,
+  DEFAULT_COLUMNS,
+  PREVIOUS_DEFAULT_COLUMNS,
+  uniqueId,
+} from '../domain/torrents';
 import type {
   Settings,
   MigrationReport,
@@ -15,12 +22,18 @@ const columnSchema = z.object({
   visible: z.boolean(),
 });
 const uiSchema = z.object({
+  columnPresetVersion: z.number().int().optional(),
+  columnsBackup: z.array(columnSchema).optional(),
+  navigationExpanded: z.record(z.string(), z.boolean()).optional(),
   locale: z.string(),
   theme: z.enum(['light', 'dark', 'system']),
+  layoutTheme: z.enum(LAYOUT_THEME_IDS).catch('workbench'),
+  visualTheme: z.enum(VISUAL_THEME_IDS).catch('modern'),
   refreshIntervalMs: z.number().min(2000).max(300000),
   autoRefresh: z.boolean(),
   pagination: z.boolean(),
   pageSize: z.number().int().min(10).max(5000),
+  filePageSize: z.number().int().min(10).max(5000).catch(200),
   sidebarWidth: z.number().min(160).max(400),
   detailHeight: z.number().min(160).max(900),
   forceDesktop: z.boolean(),
@@ -69,6 +82,23 @@ export function migrateSettings(raw: any, current: Settings = defaultSettings())
     for (const [hash, ids] of Object.entries(settings.torrentLabels)) {
       if (ids.some((id) => !labelIds.has(id))) warnings.push(`Unresolved labels: ${hash}`);
       settings.torrentLabels[hash] = ids.filter((id) => labelIds.has(id));
+    }
+    if (!settings.ui.columnPresetVersion) {
+      const columns = settings.ui.columns;
+      const previous = PREVIOUS_DEFAULT_COLUMNS;
+      if (
+        columns.length === previous.length &&
+        columns.every(
+          (c, i) =>
+            c.key === previous[i].key &&
+            c.width === previous[i].width &&
+            c.visible === previous[i].visible,
+        )
+      ) {
+        settings.ui.columnsBackup = clone(columns);
+        settings.ui.columns = clone(DEFAULT_COLUMNS);
+      }
+      settings.ui.columnPresetVersion = 1;
     }
     const known = new Set(DEFAULT_COLUMNS.map((x) => x.key));
     settings.ui.columns = settings.ui.columns.filter(
@@ -231,8 +261,32 @@ export class SettingsRepository {
     return this.load();
   }
   async load(): Promise<Settings> {
-    const value = this.db ? await this.db.get('data', `${this.instanceKey}:settings`) : this.memory;
-    return value ? migrateSettings(value).settings : clone(this.defaults);
+    if (!this.db) {
+      this.memory = migrateSettings(this.memory).settings;
+      return clone(this.memory);
+    }
+    const tx = this.db.transaction('data', 'readwrite');
+    const value = await tx.store.get(`${this.instanceKey}:settings`);
+    const next = value ? migrateSettings(value).settings : clone(this.defaults);
+    if (value && JSON.stringify(value) !== JSON.stringify(next))
+      await tx.store.put(clone(next), `${this.instanceKey}:settings`);
+    await tx.done;
+    return next;
+  }
+  columnPreset(restore = false) {
+    return this.update((current) => {
+      if (restore) {
+        if (current.ui.columnsBackup) {
+          current.ui.columns = clone(current.ui.columnsBackup);
+          delete current.ui.columnsBackup;
+        }
+      } else {
+        current.ui.columnsBackup = clone(current.ui.columns);
+        current.ui.columns = clone(DEFAULT_COLUMNS);
+      }
+      current.ui.columnPresetVersion = 1;
+      return current;
+    });
   }
   async update(mutator: (settings: Settings) => Settings): Promise<Settings> {
     let next: Settings;
@@ -252,7 +306,23 @@ export class SettingsRepository {
     return next;
   }
   updateUi(patch: Partial<UiSettings>) {
-    return this.update((current) => ({ ...current, ui: { ...current.ui, ...clone(patch) } }));
+    return this.update((current) => ({
+      ...current,
+      ui: {
+        ...current.ui,
+        ...clone(patch),
+        ...(patch.navigationExpanded
+          ? {
+              navigationExpanded: Object.fromEntries(
+                Object.entries({
+                  ...current.ui.navigationExpanded,
+                  ...patch.navigationExpanded,
+                }).slice(-5000),
+              ),
+            }
+          : {}),
+      },
+    }));
   }
   async import(report: MigrationReport): Promise<Settings> {
     const at = Date.now(),

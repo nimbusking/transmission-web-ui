@@ -1,0 +1,1280 @@
+[
+  {
+    "project": "chromium",
+    "styles": [
+      {
+        "name": "Modern",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "6px",
+            "background": "rgb(17, 124, 110)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "6px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(244, 246, 248)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(237, 241, 244)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#117c6e"
+        },
+        "portal": {
+          "radius": "6px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 6px 24px 0px",
+          "scope": "n-modal-container skin-modern-light"
+        },
+        "menu": {
+          "radius": "6px",
+          "text": "rgb(38, 53, 64)"
+        }
+      },
+      {
+        "name": "Metro",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "0px",
+            "background": "rgb(183, 47, 67)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "0px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "0px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(243, 239, 242)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(245, 232, 235)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#b72f43"
+        },
+        "portal": {
+          "radius": "0px",
+          "shadow": "none",
+          "scope": "n-modal-container skin-metro-light"
+        },
+        "menu": {
+          "radius": "0px",
+          "text": "rgb(52, 42, 45)"
+        }
+      },
+      {
+        "name": "Material",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "18px",
+            "background": "rgb(77, 90, 199)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "10px",
+            "background": "rgb(238, 240, 250)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(241, 228, 234)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(238, 240, 250)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#4d5ac7"
+        },
+        "portal": {
+          "radius": "10px",
+          "shadow": "rgba(0, 0, 0, 0.14) 0px 12px 36px 0px, rgba(0, 0, 0, 0.08) 0px 2px 8px 0px",
+          "scope": "n-modal-container skin-material-light"
+        },
+        "menu": {
+          "radius": "10px",
+          "text": "rgb(41, 47, 72)"
+        }
+      },
+      {
+        "name": "Cupertino",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "8px",
+            "background": "rgb(0, 104, 192)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "8px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(236, 239, 248)",
+            "image": "linear-gradient(rgb(246, 247, 249), rgb(233, 237, 243))",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(240, 241, 244)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#0068c0"
+        },
+        "portal": {
+          "radius": "8px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 10px 30px 0px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px",
+          "scope": "n-modal-container skin-cupertino-light"
+        },
+        "menu": {
+          "radius": "8px",
+          "text": "rgb(35, 39, 48)"
+        }
+      }
+    ]
+  },
+  {
+    "project": "chromium",
+    "styles": [
+      {
+        "name": "Modern",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "6px",
+            "background": "rgb(72, 214, 189)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "6px",
+            "background": "rgb(27, 32, 39)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(37, 45, 54)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(37, 45, 54)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#48d6bd"
+        },
+        "portal": {
+          "radius": "6px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 6px 24px 0px",
+          "scope": "n-modal-container skin-modern-dark"
+        },
+        "menu": {
+          "radius": "6px",
+          "text": "rgb(220, 228, 234)"
+        }
+      },
+      {
+        "name": "Metro",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "0px",
+            "background": "rgb(241, 139, 152)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "0px",
+            "background": "rgb(38, 31, 36)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(45, 44, 53)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(56, 43, 51)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#f18b98"
+        },
+        "portal": {
+          "radius": "0px",
+          "shadow": "none",
+          "scope": "n-modal-container skin-metro-dark"
+        },
+        "menu": {
+          "radius": "0px",
+          "text": "rgb(244, 230, 235)"
+        }
+      },
+      {
+        "name": "Material",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "18px",
+            "background": "rgb(173, 181, 255)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "10px",
+            "background": "rgb(46, 51, 74)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(59, 46, 60)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(46, 51, 74)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#adb5ff"
+        },
+        "portal": {
+          "radius": "10px",
+          "shadow": "rgba(0, 0, 0, 0.14) 0px 12px 36px 0px, rgba(0, 0, 0, 0.08) 0px 2px 8px 0px",
+          "scope": "n-modal-container skin-material-dark"
+        },
+        "menu": {
+          "radius": "10px",
+          "text": "rgb(229, 232, 246)"
+        }
+      },
+      {
+        "name": "Cupertino",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "8px",
+            "background": "rgb(120, 183, 255)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "8px",
+            "background": "rgb(36, 39, 45)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(50, 55, 75)",
+            "image": "linear-gradient(rgb(45, 48, 56), rgb(53, 58, 68))",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(49, 53, 62)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#78b7ff"
+        },
+        "portal": {
+          "radius": "8px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 10px 30px 0px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px",
+          "scope": "n-modal-container skin-cupertino-dark"
+        },
+        "menu": {
+          "radius": "8px",
+          "text": "rgb(236, 238, 245)"
+        }
+      }
+    ]
+  },
+  {
+    "project": "firefox",
+    "styles": [
+      {
+        "name": "Modern",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "6px",
+            "background": "rgb(17, 124, 110)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "6px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(244, 246, 248)",
+            "image": "none",
+            "height": 39.399993896484375
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(237, 241, 244)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#117c6e"
+        },
+        "portal": {
+          "radius": "6px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 6px 24px 0px",
+          "scope": "n-modal-container skin-modern-light"
+        },
+        "menu": {
+          "radius": "6px",
+          "text": "rgb(38, 53, 64)"
+        }
+      },
+      {
+        "name": "Metro",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "0px",
+            "background": "rgb(183, 47, 67)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "0px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "0px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(242, 226, 229)",
+            "image": "none",
+            "height": 39.399993896484375
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(245, 232, 235)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#b72f43"
+        },
+        "portal": {
+          "radius": "0px",
+          "shadow": "none",
+          "scope": "n-modal-container skin-metro-light"
+        },
+        "menu": {
+          "radius": "0px",
+          "text": "rgb(52, 42, 45)"
+        }
+      },
+      {
+        "name": "Material",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "18px",
+            "background": "rgb(77, 90, 199)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "10px",
+            "background": "rgb(238, 240, 250)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(239, 236, 245)",
+            "image": "none",
+            "height": 39.399993896484375
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(238, 240, 250)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#4d5ac7"
+        },
+        "portal": {
+          "radius": "10px",
+          "shadow": "rgba(0, 0, 0, 0.14) 0px 12px 36px 0px, rgba(0, 0, 0, 0.08) 0px 2px 8px 0px",
+          "scope": "n-modal-container skin-material-light"
+        },
+        "menu": {
+          "radius": "10px",
+          "text": "rgb(41, 47, 72)"
+        }
+      },
+      {
+        "name": "Cupertino",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "8px",
+            "background": "rgb(0, 104, 192)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "8px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(234, 237, 244)",
+            "image": "linear-gradient(rgb(246, 247, 249), rgb(233, 237, 243))",
+            "height": 39.399993896484375
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(240, 241, 244)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#0068c0"
+        },
+        "portal": {
+          "radius": "8px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 10px 30px 0px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px",
+          "scope": "n-modal-container skin-cupertino-light"
+        },
+        "menu": {
+          "radius": "8px",
+          "text": "rgb(35, 39, 48)"
+        }
+      }
+    ]
+  },
+  {
+    "project": "firefox",
+    "styles": [
+      {
+        "name": "Modern",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "6px",
+            "background": "rgb(72, 214, 189)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "6px",
+            "background": "rgb(27, 32, 39)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(37, 45, 54)",
+            "image": "none",
+            "height": 39.399993896484375
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(37, 45, 54)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#48d6bd"
+        },
+        "portal": {
+          "radius": "6px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 6px 24px 0px",
+          "scope": "n-modal-container skin-modern-dark"
+        },
+        "menu": {
+          "radius": "6px",
+          "text": "rgb(220, 228, 234)"
+        }
+      },
+      {
+        "name": "Metro",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "0px",
+            "background": "rgb(241, 139, 152)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "0px",
+            "background": "rgb(38, 31, 36)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(62, 43, 52)",
+            "image": "none",
+            "height": 39.399993896484375
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(56, 43, 51)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#f18b98"
+        },
+        "portal": {
+          "radius": "0px",
+          "shadow": "none",
+          "scope": "n-modal-container skin-metro-dark"
+        },
+        "menu": {
+          "radius": "0px",
+          "text": "rgb(244, 230, 235)"
+        }
+      },
+      {
+        "name": "Material",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "18px",
+            "background": "rgb(173, 181, 255)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "10px",
+            "background": "rgb(46, 51, 74)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(51, 52, 74)",
+            "image": "none",
+            "height": 39.399993896484375
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(46, 51, 74)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#adb5ff"
+        },
+        "portal": {
+          "radius": "10px",
+          "shadow": "rgba(0, 0, 0, 0.14) 0px 12px 36px 0px, rgba(0, 0, 0, 0.08) 0px 2px 8px 0px",
+          "scope": "n-modal-container skin-material-dark"
+        },
+        "menu": {
+          "radius": "10px",
+          "text": "rgb(229, 232, 246)"
+        }
+      },
+      {
+        "name": "Cupertino",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "8px",
+            "background": "rgb(120, 183, 255)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "8px",
+            "background": "rgb(36, 39, 45)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(53, 58, 69)",
+            "image": "linear-gradient(rgb(45, 48, 56), rgb(53, 58, 68))",
+            "height": 39.399993896484375
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(49, 53, 62)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#78b7ff"
+        },
+        "portal": {
+          "radius": "8px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 10px 30px 0px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px",
+          "scope": "n-modal-container skin-cupertino-dark"
+        },
+        "menu": {
+          "radius": "8px",
+          "text": "rgb(236, 238, 245)"
+        }
+      }
+    ]
+  },
+  {
+    "project": "webkit",
+    "styles": [
+      {
+        "name": "Modern",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "6px",
+            "background": "rgb(17, 124, 110)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "6px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(244, 246, 248)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(237, 241, 244)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#117c6e"
+        },
+        "portal": {
+          "radius": "6px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 6px 24px 0px",
+          "scope": "n-modal-container skin-modern-light"
+        },
+        "menu": {
+          "radius": "6px",
+          "text": "rgb(38, 53, 64)"
+        }
+      },
+      {
+        "name": "Metro",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "0px",
+            "background": "rgb(183, 47, 67)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "0px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "0px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(244, 244, 246)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(245, 232, 235)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#b72f43"
+        },
+        "portal": {
+          "radius": "0px",
+          "shadow": "none",
+          "scope": "n-modal-container skin-metro-light"
+        },
+        "menu": {
+          "radius": "0px",
+          "text": "rgb(52, 42, 45)"
+        }
+      },
+      {
+        "name": "Material",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "18px",
+            "background": "rgb(77, 90, 199)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "10px",
+            "background": "rgb(238, 240, 250)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(240, 233, 240)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(238, 240, 250)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#4d5ac7"
+        },
+        "portal": {
+          "radius": "10px",
+          "shadow": "rgba(0, 0, 0, 0.14) 0px 12px 36px 0px, rgba(0, 0, 0, 0.08) 0px 2px 8px 0px",
+          "scope": "n-modal-container skin-material-light"
+        },
+        "menu": {
+          "radius": "10px",
+          "text": "rgb(41, 47, 72)"
+        }
+      },
+      {
+        "name": "Cupertino",
+        "mode": "light",
+        "styles": {
+          "button": {
+            "radius": "8px",
+            "background": "rgb(0, 104, 192)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "8px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgb(255, 255, 255)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(234, 237, 244)",
+            "image": "linear-gradient(rgb(246, 247, 249), rgb(233, 237, 243))",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(240, 241, 244)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#0068c0"
+        },
+        "portal": {
+          "radius": "8px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 10px 30px 0px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px",
+          "scope": "n-modal-container skin-cupertino-light"
+        },
+        "menu": {
+          "radius": "8px",
+          "text": "rgb(35, 39, 48)"
+        }
+      }
+    ]
+  },
+  {
+    "project": "webkit",
+    "styles": [
+      {
+        "name": "Modern",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "6px",
+            "background": "rgb(72, 214, 189)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "6px",
+            "background": "rgb(27, 32, 39)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(37, 45, 54)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(37, 45, 54)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#48d6bd"
+        },
+        "portal": {
+          "radius": "6px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 6px 24px 0px",
+          "scope": "n-modal-container skin-modern-dark"
+        },
+        "menu": {
+          "radius": "6px",
+          "text": "rgb(220, 228, 234)"
+        }
+      },
+      {
+        "name": "Metro",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "0px",
+            "background": "rgb(241, 139, 152)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "0px",
+            "background": "rgb(38, 31, 36)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(63, 43, 52)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(56, 43, 51)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#f18b98"
+        },
+        "portal": {
+          "radius": "0px",
+          "shadow": "none",
+          "scope": "n-modal-container skin-metro-dark"
+        },
+        "menu": {
+          "radius": "0px",
+          "text": "rgb(244, 230, 235)"
+        }
+      },
+      {
+        "name": "Material",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "18px",
+            "background": "rgb(173, 181, 255)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "10px",
+            "background": "rgb(46, 51, 74)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(62, 44, 55)",
+            "image": "none",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(46, 51, 74)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#adb5ff"
+        },
+        "portal": {
+          "radius": "10px",
+          "shadow": "rgba(0, 0, 0, 0.14) 0px 12px 36px 0px, rgba(0, 0, 0, 0.08) 0px 2px 8px 0px",
+          "scope": "n-modal-container skin-material-dark"
+        },
+        "menu": {
+          "radius": "10px",
+          "text": "rgb(229, 232, 246)"
+        }
+      },
+      {
+        "name": "Cupertino",
+        "mode": "dark",
+        "styles": {
+          "button": {
+            "radius": "8px",
+            "background": "rgb(120, 183, 255)",
+            "image": "none",
+            "height": 28
+          },
+          "input": {
+            "radius": "8px",
+            "background": "rgb(36, 39, 45)",
+            "image": "none",
+            "height": 34
+          },
+          "checkbox": {
+            "radius": "3px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 16
+          },
+          "table": {
+            "radius": "0px",
+            "background": "rgb(49, 54, 77)",
+            "image": "linear-gradient(rgb(45, 48, 56), rgb(53, 58, 68))",
+            "height": 39.390625
+          },
+          "progress": {
+            "radius": "0px",
+            "background": "rgb(49, 53, 62)",
+            "image": "none",
+            "height": 20
+          },
+          "row": {
+            "radius": "0px",
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "height": 35
+          },
+          "accent": "#78b7ff"
+        },
+        "portal": {
+          "radius": "8px",
+          "shadow": "rgba(0, 0, 0, 0.125) 0px 10px 30px 0px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px",
+          "scope": "n-modal-container skin-cupertino-dark"
+        },
+        "menu": {
+          "radius": "8px",
+          "text": "rgb(236, 238, 245)"
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,1088 @@
+[
+  {
+    "project": "chromium",
+    "layouts": [
+      {
+        "id": "workbench",
+        "mode": "light",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 114,
+          "width": 290,
+          "height": 786,
+          "top": 114,
+          "right": 290,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 290,
+          "y": 114,
+          "width": 1150,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 290
+        }
+      },
+      {
+        "id": "console",
+        "mode": "light",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 52,
+          "top": 0,
+          "right": 1440,
+          "bottom": 52,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 52,
+          "width": 1440,
+          "height": 42,
+          "top": 52,
+          "right": 1440,
+          "bottom": 94,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 94,
+          "width": 220,
+          "height": 806,
+          "top": 94,
+          "right": 220,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 220,
+          "y": 94,
+          "width": 1220,
+          "height": 806,
+          "top": 94,
+          "right": 1440,
+          "bottom": 900,
+          "left": 220
+        }
+      },
+      {
+        "id": "studio",
+        "mode": "light",
+        "header": {
+          "x": 276,
+          "y": 12,
+          "width": 1148,
+          "height": 54,
+          "top": 12,
+          "right": 1424,
+          "bottom": 66,
+          "left": 276
+        },
+        "toolbar": {
+          "x": 276,
+          "y": 66,
+          "width": 1148,
+          "height": 48,
+          "top": 66,
+          "right": 1424,
+          "bottom": 114,
+          "left": 276
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 260,
+          "height": 900,
+          "top": 0,
+          "right": 260,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 276,
+          "y": 114,
+          "width": 1148,
+          "height": 770,
+          "top": 114,
+          "right": 1424,
+          "bottom": 884,
+          "left": 276
+        }
+      },
+      {
+        "id": "focus",
+        "mode": "light",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "main": {
+          "x": 56,
+          "y": 114,
+          "width": 1384,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 56
+        }
+      }
+    ]
+  },
+  {
+    "project": "chromium",
+    "layouts": [
+      {
+        "id": "workbench",
+        "mode": "dark",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 114,
+          "width": 290,
+          "height": 786,
+          "top": 114,
+          "right": 290,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 290,
+          "y": 114,
+          "width": 1150,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 290
+        }
+      },
+      {
+        "id": "console",
+        "mode": "dark",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 52,
+          "top": 0,
+          "right": 1440,
+          "bottom": 52,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 52,
+          "width": 1440,
+          "height": 42,
+          "top": 52,
+          "right": 1440,
+          "bottom": 94,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 94,
+          "width": 220,
+          "height": 806,
+          "top": 94,
+          "right": 220,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 220,
+          "y": 94,
+          "width": 1220,
+          "height": 806,
+          "top": 94,
+          "right": 1440,
+          "bottom": 900,
+          "left": 220
+        }
+      },
+      {
+        "id": "studio",
+        "mode": "dark",
+        "header": {
+          "x": 276,
+          "y": 12,
+          "width": 1148,
+          "height": 54,
+          "top": 12,
+          "right": 1424,
+          "bottom": 66,
+          "left": 276
+        },
+        "toolbar": {
+          "x": 276,
+          "y": 66,
+          "width": 1148,
+          "height": 48,
+          "top": 66,
+          "right": 1424,
+          "bottom": 114,
+          "left": 276
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 260,
+          "height": 900,
+          "top": 0,
+          "right": 260,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 276,
+          "y": 114,
+          "width": 1148,
+          "height": 770,
+          "top": 114,
+          "right": 1424,
+          "bottom": 884,
+          "left": 276
+        }
+      },
+      {
+        "id": "focus",
+        "mode": "dark",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "main": {
+          "x": 56,
+          "y": 114,
+          "width": 1384,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 56
+        }
+      }
+    ]
+  },
+  {
+    "project": "firefox",
+    "layouts": [
+      {
+        "id": "workbench",
+        "mode": "light",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 114,
+          "width": 290,
+          "height": 786,
+          "top": 114,
+          "right": 290,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 290,
+          "y": 114,
+          "width": 1150,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 290
+        }
+      },
+      {
+        "id": "console",
+        "mode": "light",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 52,
+          "top": 0,
+          "right": 1440,
+          "bottom": 52,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 52,
+          "width": 1440,
+          "height": 42,
+          "top": 52,
+          "right": 1440,
+          "bottom": 94,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 94,
+          "width": 220,
+          "height": 806,
+          "top": 94,
+          "right": 220,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 220,
+          "y": 94,
+          "width": 1220,
+          "height": 806,
+          "top": 94,
+          "right": 1440,
+          "bottom": 900,
+          "left": 220
+        }
+      },
+      {
+        "id": "studio",
+        "mode": "light",
+        "header": {
+          "x": 276,
+          "y": 12,
+          "width": 1148,
+          "height": 54,
+          "top": 12,
+          "right": 1424,
+          "bottom": 66,
+          "left": 276
+        },
+        "toolbar": {
+          "x": 276,
+          "y": 66,
+          "width": 1148,
+          "height": 48,
+          "top": 66,
+          "right": 1424,
+          "bottom": 114,
+          "left": 276
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 260,
+          "height": 900,
+          "top": 0,
+          "right": 260,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 276,
+          "y": 114,
+          "width": 1148,
+          "height": 770,
+          "top": 114,
+          "right": 1424,
+          "bottom": 884,
+          "left": 276
+        }
+      },
+      {
+        "id": "focus",
+        "mode": "light",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "main": {
+          "x": 56,
+          "y": 114,
+          "width": 1384,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 56
+        }
+      }
+    ]
+  },
+  {
+    "project": "firefox",
+    "layouts": [
+      {
+        "id": "workbench",
+        "mode": "dark",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 114,
+          "width": 290,
+          "height": 786,
+          "top": 114,
+          "right": 290,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 290,
+          "y": 114,
+          "width": 1150,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 290
+        }
+      },
+      {
+        "id": "console",
+        "mode": "dark",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 52,
+          "top": 0,
+          "right": 1440,
+          "bottom": 52,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 52,
+          "width": 1440,
+          "height": 42,
+          "top": 52,
+          "right": 1440,
+          "bottom": 94,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 94,
+          "width": 220,
+          "height": 806,
+          "top": 94,
+          "right": 220,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 220,
+          "y": 94,
+          "width": 1220,
+          "height": 806,
+          "top": 94,
+          "right": 1440,
+          "bottom": 900,
+          "left": 220
+        }
+      },
+      {
+        "id": "studio",
+        "mode": "dark",
+        "header": {
+          "x": 276,
+          "y": 12,
+          "width": 1148,
+          "height": 54,
+          "top": 12,
+          "right": 1424,
+          "bottom": 66,
+          "left": 276
+        },
+        "toolbar": {
+          "x": 276,
+          "y": 66,
+          "width": 1148,
+          "height": 48,
+          "top": 66,
+          "right": 1424,
+          "bottom": 114,
+          "left": 276
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 260,
+          "height": 900,
+          "top": 0,
+          "right": 260,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 276,
+          "y": 114,
+          "width": 1148,
+          "height": 770,
+          "top": 114,
+          "right": 1424,
+          "bottom": 884,
+          "left": 276
+        }
+      },
+      {
+        "id": "focus",
+        "mode": "dark",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "main": {
+          "x": 56,
+          "y": 114,
+          "width": 1384,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 56
+        }
+      }
+    ]
+  },
+  {
+    "project": "webkit",
+    "layouts": [
+      {
+        "id": "workbench",
+        "mode": "light",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 114,
+          "width": 290,
+          "height": 786,
+          "top": 114,
+          "right": 290,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 290,
+          "y": 114,
+          "width": 1150,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 290
+        }
+      },
+      {
+        "id": "console",
+        "mode": "light",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 52,
+          "top": 0,
+          "right": 1440,
+          "bottom": 52,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 52,
+          "width": 1440,
+          "height": 42,
+          "top": 52,
+          "right": 1440,
+          "bottom": 94,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 94,
+          "width": 220,
+          "height": 806,
+          "top": 94,
+          "right": 220,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 220,
+          "y": 94,
+          "width": 1220,
+          "height": 806,
+          "top": 94,
+          "right": 1440,
+          "bottom": 900,
+          "left": 220
+        }
+      },
+      {
+        "id": "studio",
+        "mode": "light",
+        "header": {
+          "x": 276,
+          "y": 12,
+          "width": 1148,
+          "height": 54,
+          "top": 12,
+          "right": 1424,
+          "bottom": 66,
+          "left": 276
+        },
+        "toolbar": {
+          "x": 276,
+          "y": 66,
+          "width": 1148,
+          "height": 48,
+          "top": 66,
+          "right": 1424,
+          "bottom": 114,
+          "left": 276
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 260,
+          "height": 900,
+          "top": 0,
+          "right": 260,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 276,
+          "y": 114,
+          "width": 1148,
+          "height": 770,
+          "top": 114,
+          "right": 1424,
+          "bottom": 884,
+          "left": 276
+        }
+      },
+      {
+        "id": "focus",
+        "mode": "light",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "main": {
+          "x": 56,
+          "y": 114,
+          "width": 1384,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 56
+        }
+      }
+    ]
+  },
+  {
+    "project": "webkit",
+    "layouts": [
+      {
+        "id": "workbench",
+        "mode": "dark",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 114,
+          "width": 290,
+          "height": 786,
+          "top": 114,
+          "right": 290,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 290,
+          "y": 114,
+          "width": 1150,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 290
+        }
+      },
+      {
+        "id": "console",
+        "mode": "dark",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 52,
+          "top": 0,
+          "right": 1440,
+          "bottom": 52,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 52,
+          "width": 1440,
+          "height": 42,
+          "top": 52,
+          "right": 1440,
+          "bottom": 94,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 94,
+          "width": 220,
+          "height": 806,
+          "top": 94,
+          "right": 220,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 220,
+          "y": 94,
+          "width": 1220,
+          "height": 806,
+          "top": 94,
+          "right": 1440,
+          "bottom": 900,
+          "left": 220
+        }
+      },
+      {
+        "id": "studio",
+        "mode": "dark",
+        "header": {
+          "x": 276,
+          "y": 12,
+          "width": 1148,
+          "height": 54,
+          "top": 12,
+          "right": 1424,
+          "bottom": 66,
+          "left": 276
+        },
+        "toolbar": {
+          "x": 276,
+          "y": 66,
+          "width": 1148,
+          "height": 48,
+          "top": 66,
+          "right": 1424,
+          "bottom": 114,
+          "left": 276
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 260,
+          "height": 900,
+          "top": 0,
+          "right": 260,
+          "bottom": 900,
+          "left": 0
+        },
+        "main": {
+          "x": 276,
+          "y": 114,
+          "width": 1148,
+          "height": 770,
+          "top": 114,
+          "right": 1424,
+          "bottom": 884,
+          "left": 276
+        }
+      },
+      {
+        "id": "focus",
+        "mode": "dark",
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 66,
+          "top": 0,
+          "right": 1440,
+          "bottom": 66,
+          "left": 0
+        },
+        "toolbar": {
+          "x": 0,
+          "y": 66,
+          "width": 1440,
+          "height": 48,
+          "top": 66,
+          "right": 1440,
+          "bottom": 114,
+          "left": 0
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "main": {
+          "x": 56,
+          "y": 114,
+          "width": 1384,
+          "height": 786,
+          "top": 114,
+          "right": 1440,
+          "bottom": 900,
+          "left": 56
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "archiveSha256": "566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417",
+  "verifiedArchiveFiles": 46,
+  "verifiedWebFiles": 37,
+  "finalBuildMatched": true,
+  "snapshotUpdated": true,
+  "runningSnapshotSha256": "566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417",
+  "unitTestsPassed": 66,
+  "browserTestsPassed": 24,
+  "browserEvidence": {
+    "detailsAndDismiss": "15 cases passed in responsive-pieces-final; same final build",
+    "pieceMap": "9 cases passed in responsive-pieces-settled, deviceScaleFactor=2"
+  },
+  "longStressRerun": false,
+  "containerActions": [],
+  "daemonWrites": [],
+  "previousSnapshotSha256": "dec52d80bd9bc3516833ef857bfe68875cd0a640fecc947f499086379f3c1430",
+  "backup": ".lab/comparison/backups/before-responsive-pieces-20261115",
+  "verifiedBackupFiles": 103
+}

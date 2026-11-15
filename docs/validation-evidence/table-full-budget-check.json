@@ -1,0 +1,36 @@
+{
+  "report": "table-soak-1800.json",
+  "checks": {
+    "initialMs": {
+      "value": 243.79999999981374,
+      "limit": 1000,
+      "pass": true
+    },
+    "incrementalP95Ms": {
+      "value": 77.5,
+      "limit": 150,
+      "pass": true
+    },
+    "sortP95Ms": {
+      "value": 258.20000000018626,
+      "limit": 200,
+      "pass": false
+    },
+    "filterP95ExcludingConfiguredDebounceMs": {
+      "value": 225.3999999994412,
+      "limit": 200,
+      "pass": false
+    },
+    "heapMaxBytes": {
+      "value": 53296352,
+      "limit": 209715200,
+      "pass": true
+    },
+    "heapGrowthBytes": {
+      "value": -1462424,
+      "limit": 20971520,
+      "pass": true
+    }
+  },
+  "interference": "Full-run preparation overlapped table-header regression; possible contention, not proven causal."
+}

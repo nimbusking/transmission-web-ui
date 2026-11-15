@@ -1,0 +1,69 @@
+{
+  "at": "2026-11-15T18:28:51.992185+00:00",
+  "sha256": "b97891f1375714b311609756b69e82ab5f6847e5d0ade6d3230f1c61405bf6bd",
+  "previousSnapshotSha256": "e18b0f6381ad1cd506164466359671c12b2a5195725fcf2f554a2df994adf8d6",
+  "archiveFilesVerified": 45,
+  "webFilesVerified": 36,
+  "snapshotUpdated": true,
+  "backupCreated": false,
+  "authorization": "本次连续验收，沿用用户回归后直接更新19081、无需额外备份授权",
+  "containerActions": [],
+  "daemonWrites": [],
+  "taskCount": 7,
+  "tasksUnchanged": true,
+  "taskStates": [
+    {
+      "name": "对照-F-零字节文件",
+      "status": 0,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-H-大分块预览",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-A-完整文件22",
+      "status": 6,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-D-多文件与中文",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-E-目录匹配",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-B-等待下载",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-C-部分数据",
+      "status": 0,
+      "percentDone": 0.5
+    }
+  ],
+  "browserTests": {
+    "passed": 6,
+    "report": ".lab/search-contrast-final-report",
+    "realDaemonExcluded": true
+  },
+  "unitTestsRerun": false,
+  "fullStressRerun": false,
+  "rollback": {
+    "existingSnapshot": ".lab/comparison/backups/before-table-progress-20261115",
+    "sha256": "566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417",
+    "limitation": "Existing older snapshot; predates rectangular progress, unified toolbar and subsequent interactions; not the exact previous version"
+  },
+  "browserLiveVerified": true,
+  "screenshot": "artifacts/search-contrast-live.jpg",
+  "detailScreenshot": "artifacts/search-contrast-detail.jpg",
+  "liveEvidence": "search-contrast-live.json",
+  "styleMetrics": "search-contrast-metrics.json",
+  "preferencesRestored": true
+}

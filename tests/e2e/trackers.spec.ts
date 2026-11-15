@@ -30,7 +30,7 @@ test('bulk Tracker preview is read-only; conflicts settle per task without overw
   await page.goto('/?lang=en');
   await page.getByRole('checkbox', { name: 'Select current page', exact: true }).check();
   async function preview() {
-    await page.getByRole('button', { name: 'More ▾', exact: true }).click();
+    await page.getByRole('button', { name: 'More', exact: true }).click();
     await page
       .locator('.n-dropdown-menu')
       .getByText('Replace trackers in bulk', { exact: true })

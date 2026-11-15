@@ -1,0 +1,32 @@
+{
+  "url": "http://localhost:19081/transmission/web/?lang=zh-CN",
+  "original": {
+    "layout": "workbench",
+    "mode": "切换到浅色模式",
+    "skin": "modern"
+  },
+  "search": {
+    "background": "#31353e",
+    "border": "1px solid #b0b8c7",
+    "dark": true,
+    "radius": "8px",
+    "rect": {
+      "bottom": 172,
+      "height": 34,
+      "left": 944,
+      "right": 1254,
+      "top": 138,
+      "width": 310,
+      "x": 944,
+      "y": 138
+    },
+    "skin": "cupertino"
+  },
+  "preferencesRestored": {
+    "skin": "modern",
+    "layout": "workbench",
+    "mode": "system"
+  },
+  "searchEdited": false,
+  "taskActions": []
+}

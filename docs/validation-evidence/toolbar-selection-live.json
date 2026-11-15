@@ -1,0 +1,203 @@
+[
+  {
+    "buttons": [
+      {
+        "disabled": false,
+        "label": "刷新"
+      },
+      {
+        "disabled": false,
+        "label": "设置"
+      },
+      {
+        "disabled": true,
+        "label": "开始"
+      },
+      {
+        "disabled": true,
+        "label": "暂停"
+      },
+      {
+        "disabled": true,
+        "label": "重命名"
+      },
+      {
+        "disabled": true,
+        "label": "移除"
+      },
+      {
+        "disabled": true,
+        "label": "校验数据"
+      },
+      {
+        "disabled": true,
+        "label": "请求更多 Peer"
+      },
+      {
+        "disabled": true,
+        "label": "更改目录"
+      },
+      {
+        "disabled": true,
+        "label": "传输限制"
+      },
+      {
+        "disabled": true,
+        "label": "队列"
+      },
+      {
+        "disabled": true,
+        "label": "更多"
+      },
+      {
+        "disabled": false,
+        "label": "列设置"
+      }
+    ],
+    "checked": [
+      "false",
+      "false",
+      "false",
+      "false",
+      "false",
+      "false",
+      "false"
+    ],
+    "detail": "对照-A-完整文件收起详情",
+    "stage": "detail-only"
+  },
+  {
+    "buttons": [
+      {
+        "disabled": false,
+        "label": "刷新"
+      },
+      {
+        "disabled": false,
+        "label": "设置"
+      },
+      {
+        "disabled": false,
+        "label": "开始"
+      },
+      {
+        "disabled": false,
+        "label": "暂停"
+      },
+      {
+        "disabled": false,
+        "label": "重命名"
+      },
+      {
+        "disabled": false,
+        "label": "移除"
+      },
+      {
+        "disabled": false,
+        "label": "校验数据"
+      },
+      {
+        "disabled": false,
+        "label": "请求更多 Peer"
+      },
+      {
+        "disabled": false,
+        "label": "更改目录"
+      },
+      {
+        "disabled": false,
+        "label": "传输限制"
+      },
+      {
+        "disabled": false,
+        "label": "队列"
+      },
+      {
+        "disabled": false,
+        "label": "更多"
+      },
+      {
+        "disabled": false,
+        "label": "列设置"
+      }
+    ],
+    "checked": [
+      "true",
+      "false",
+      "false",
+      "false",
+      "false",
+      "false",
+      "false"
+    ],
+    "detail": "对照-A-完整文件收起详情",
+    "stage": "checked"
+  },
+  {
+    "buttons": [
+      {
+        "disabled": false,
+        "label": "刷新"
+      },
+      {
+        "disabled": false,
+        "label": "设置"
+      },
+      {
+        "disabled": true,
+        "label": "开始"
+      },
+      {
+        "disabled": true,
+        "label": "暂停"
+      },
+      {
+        "disabled": true,
+        "label": "重命名"
+      },
+      {
+        "disabled": true,
+        "label": "移除"
+      },
+      {
+        "disabled": true,
+        "label": "校验数据"
+      },
+      {
+        "disabled": true,
+        "label": "请求更多 Peer"
+      },
+      {
+        "disabled": true,
+        "label": "更改目录"
+      },
+      {
+        "disabled": true,
+        "label": "传输限制"
+      },
+      {
+        "disabled": true,
+        "label": "队列"
+      },
+      {
+        "disabled": true,
+        "label": "更多"
+      },
+      {
+        "disabled": false,
+        "label": "列设置"
+      }
+    ],
+    "checked": [
+      "false",
+      "false",
+      "false",
+      "false",
+      "false",
+      "false",
+      "false"
+    ],
+    "detail": "对照-A-完整文件收起详情",
+    "stage": "unchecked-with-detail"
+  }
+]

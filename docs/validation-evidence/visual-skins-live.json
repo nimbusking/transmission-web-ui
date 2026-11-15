@@ -1,0 +1,85 @@
+{
+  "url": "http://localhost:19081/transmission/web/?lang=zh-CN",
+  "original": {
+    "layout": "workbench",
+    "modeAction": "切换到浅色模式",
+    "skin": "modern",
+    "system": "true"
+  },
+  "styles": [
+    {
+      "layout": "workbench",
+      "main": {
+        "bottom": 720,
+        "height": 606,
+        "left": 290,
+        "right": 1280,
+        "top": 114,
+        "width": 990,
+        "x": 290,
+        "y": 114
+      },
+      "skin": "modern",
+      "buttonRadius": "6px"
+    },
+    {
+      "buttonRadius": "0px",
+      "layout": "workbench",
+      "main": {
+        "bottom": 720,
+        "height": 606,
+        "left": 290,
+        "right": 1280,
+        "top": 114,
+        "width": 990,
+        "x": 290,
+        "y": 114
+      },
+      "skin": "metro"
+    },
+    {
+      "buttonRadius": "18px",
+      "layout": "workbench",
+      "main": {
+        "bottom": 720,
+        "height": 606,
+        "left": 290,
+        "right": 1280,
+        "top": 114,
+        "width": 990,
+        "x": 290,
+        "y": 114
+      },
+      "skin": "material"
+    },
+    {
+      "buttonRadius": "8px",
+      "layout": "workbench",
+      "main": {
+        "bottom": 720,
+        "height": 606,
+        "left": 290,
+        "right": 1280,
+        "top": 114,
+        "width": 990,
+        "x": 290,
+        "y": 114
+      },
+      "skin": "cupertino"
+    }
+  ],
+  "materialPopup": {
+    "radius": "10px",
+    "skinScope": "n-modal-container skin-material-light"
+  },
+  "layoutEntrypointVerified": true,
+  "visualEntrypointVerified": true,
+  "cupertinoLightSurvivedReload": true,
+  "restored": {
+    "skin": "modern",
+    "layout": "workbench",
+    "mode": "system"
+  },
+  "taskActions": [],
+  "screenshot": "artifacts/visual-skins-picker-live.jpg"
+}

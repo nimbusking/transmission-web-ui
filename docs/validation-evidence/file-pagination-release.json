@@ -1,0 +1,69 @@
+{
+  "at": "2026-11-15T19:19:31.327208+00:00",
+  "sha256": "9536af5807bc2cff21de97f52e7654a0bb18e2bae1a70b248b60d2e9dfaa2d5b",
+  "previousSnapshotSha256": "015f946831e3bd15b215cebaabf325ed7bf93018d8d4cfbee131ffb077757184",
+  "archiveFilesVerified": 45,
+  "webFilesVerified": 36,
+  "snapshotUpdated": true,
+  "backupCreated": false,
+  "authorization": "本次连续验收，沿用用户回归后直接更新19081、无需额外备份授权",
+  "containerActions": [],
+  "daemonWrites": [],
+  "taskCount": 7,
+  "tasksUnchanged": true,
+  "taskStates": [
+    {
+      "name": "对照-F-零字节文件",
+      "status": 0,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-H-大分块预览",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-A-完整文件22",
+      "status": 6,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-D-多文件与中文",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-E-目录匹配",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-B-等待下载",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-C-部分数据",
+      "status": 0,
+      "percentDone": 0.5
+    }
+  ],
+  "browserTests": {
+    "passed": 42,
+    "report": ".lab/file-pagination-release-report",
+    "realDaemonExcluded": true
+  },
+  "unitTestsRerun": true,
+  "unitTestsPassed": 92,
+  "fullStressRerun": false,
+  "rollback": {
+    "existingSnapshot": ".lab/comparison/backups/before-table-progress-20261115",
+    "sha256": "566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417",
+    "limitation": "Existing older snapshot; predates rectangular progress, unified toolbar and subsequent interactions; not the exact previous version"
+  },
+  "browserLiveVerified": true,
+  "liveScreenshot": "artifacts/file-pagination-live.png",
+  "initialSnapshotSha256": "1bb3b0ceadc8643abdebc898ff0c246b7b7cf293fd04bd3963e060a6763b6dde",
+  "intermediateCandidateSha256": "015f946831e3bd15b215cebaabf325ed7bf93018d8d4cfbee131ffb077757184",
+  "candidateNote": "Initial controls were deployed and inspected; local width specificity was corrected and all 42 tests rerun on final frozen build before replacement."
+}

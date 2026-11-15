@@ -1,0 +1,70 @@
+{
+  "at": "2026-11-15T17:33:12.246175+00:00",
+  "sha256": "35e96a68ee79b195c448eed40b7c9377249d022978183b78f50a37ff1c5e3cd8",
+  "previousSnapshotSha256": "38cbdf6c8d7267b23a31f6e0e45d481d488d0ac76c73ce3e0235b62edcad14bb",
+  "archiveFilesVerified": 45,
+  "webFilesVerified": 36,
+  "snapshotUpdated": true,
+  "backupCreated": false,
+  "authorization": "本次连续验收，沿用用户回归后直接更新19081、无需额外备份授权",
+  "containerActions": [],
+  "daemonWrites": [],
+  "taskCount": 7,
+  "tasksUnchanged": true,
+  "taskStates": [
+    {
+      "name": "对照-F-零字节文件",
+      "status": 0,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-H-大分块预览",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-A-完整文件22",
+      "status": 6,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-D-多文件与中文",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-E-目录匹配",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-B-等待下载",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-C-部分数据",
+      "status": 0,
+      "percentDone": 0.5
+    }
+  ],
+  "browserTests": {
+    "passed": 63,
+    "report": ".lab/themes-final-report",
+    "realDaemonExcluded": true
+  },
+  "unitTestsRerun": true,
+  "unitTestsPassed": 72,
+  "fullStressRerun": false,
+  "rollback": {
+    "existingSnapshot": ".lab/comparison/backups/before-table-progress-20261115",
+    "sha256": "566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417",
+    "limitation": "Existing older snapshot; predates rectangular progress, unified toolbar and subsequent interactions; not the exact previous version"
+  },
+  "browserLiveVerified": true,
+  "screenshot": "artifacts/themes-picker-live.jpg",
+  "liveEvidence": "themes-live.json",
+  "layoutGeometry": "themes-geometry.json",
+  "designStandard": "docs/theme-design.md",
+  "originalPreferencesRestored": true
+}

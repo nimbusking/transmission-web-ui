@@ -1,0 +1,138 @@
+[
+  {
+    "version": "3.00 (bb6b5a062e)",
+    "rpc": 16,
+    "stats": {
+      "activeTorrentCount": 0,
+      "cumulative-stats": {
+        "downloadedBytes": 2097152,
+        "filesAdded": 2,
+        "secondsActive": 750,
+        "sessionCount": 3,
+        "uploadedBytes": 0
+      },
+      "current-stats": {
+        "downloadedBytes": 0,
+        "filesAdded": 0,
+        "secondsActive": 31,
+        "sessionCount": 1,
+        "uploadedBytes": 0
+      },
+      "downloadSpeed": 0,
+      "pausedTorrentCount": 0,
+      "torrentCount": 0,
+      "uploadSpeed": 0
+    },
+    "torrentCount": 0,
+    "fields": [
+      "downloadDir",
+      "trackers",
+      "trackerStats",
+      "totalSize",
+      "error"
+    ],
+    "readOnly": true
+  },
+  {
+    "version": "4.0.0 (280ace12f8)",
+    "rpc": 17,
+    "stats": {
+      "activeTorrentCount": 0,
+      "cumulative-stats": {
+        "downloadedBytes": 2097152,
+        "filesAdded": 2,
+        "secondsActive": 1471,
+        "sessionCount": 3,
+        "uploadedBytes": 0
+      },
+      "current-stats": {
+        "downloadedBytes": 0,
+        "filesAdded": 0,
+        "secondsActive": 31,
+        "sessionCount": 1,
+        "uploadedBytes": 0
+      },
+      "downloadSpeed": 0,
+      "pausedTorrentCount": 0,
+      "torrentCount": 0,
+      "uploadSpeed": 0
+    },
+    "torrentCount": 0,
+    "fields": [
+      "downloadDir",
+      "trackers",
+      "trackerStats",
+      "totalSize",
+      "error"
+    ],
+    "readOnly": true
+  },
+  {
+    "version": "4.0.6 (38c164933e)",
+    "rpc": 17,
+    "stats": {
+      "activeTorrentCount": 0,
+      "cumulative-stats": {
+        "downloadedBytes": 2097152,
+        "filesAdded": 2,
+        "secondsActive": 1111,
+        "sessionCount": 3,
+        "uploadedBytes": 0
+      },
+      "current-stats": {
+        "downloadedBytes": 0,
+        "filesAdded": 0,
+        "secondsActive": 31,
+        "sessionCount": 1,
+        "uploadedBytes": 0
+      },
+      "downloadSpeed": 0,
+      "pausedTorrentCount": 0,
+      "torrentCount": 0,
+      "uploadSpeed": 0
+    },
+    "torrentCount": 0,
+    "fields": [
+      "downloadDir",
+      "trackers",
+      "trackerStats",
+      "totalSize",
+      "error"
+    ],
+    "readOnly": true
+  },
+  {
+    "version": "4.1.4 (a6d907d9ea)",
+    "rpc": 19,
+    "stats": {
+      "activeTorrentCount": 0,
+      "cumulative-stats": {
+        "downloadedBytes": 1048576,
+        "filesAdded": 1,
+        "secondsActive": 2890,
+        "sessionCount": 2,
+        "uploadedBytes": 0
+      },
+      "current-stats": {
+        "downloadedBytes": 0,
+        "filesAdded": 0,
+        "secondsActive": 31,
+        "sessionCount": 1,
+        "uploadedBytes": 0
+      },
+      "downloadSpeed": 0,
+      "pausedTorrentCount": 0,
+      "torrentCount": 0,
+      "uploadSpeed": 0
+    },
+    "torrentCount": 0,
+    "fields": [
+      "downloadDir",
+      "trackers",
+      "trackerStats",
+      "totalSize",
+      "error"
+    ],
+    "readOnly": true
+  }
+]

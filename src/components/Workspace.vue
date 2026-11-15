@@ -1,32 +1,34 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, onUnmounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, onUnmounted, ref, watch } from 'vue';
 import {
   NButton,
   NInput,
-  NSelect,
   NPagination,
   NDropdown,
   NAlert,
   NModal,
   NCheckbox,
-  NInputNumber,
   NSpin,
   useMessage,
   NProgress,
 } from 'naive-ui';
 import { useI18n } from 'vue-i18n';
 import { useAppStore } from '../stores/app';
-import {
-  selectTorrents,
-  statusMatches,
-  formatBytes,
-  trackerHost,
-  errorMessage,
-  STATUS_NAMES,
-  DEFAULT_COLUMNS,
-} from '../domain/torrents';
+import { selectTorrents, formatBytes, errorMessage, STATUS_NAMES } from '../domain/torrents';
 import type { TorrentTarget } from '../domain/types';
 import TorrentTable from './TorrentTable.vue';
+import { inFolder, torrentServers } from '../domain/navigation';
+import SidebarNavigation from './SidebarNavigation.vue';
+import BrandMark from './BrandMark.vue';
+import WorkspaceToolbar from './WorkspaceToolbar.vue';
+import ColumnSettingsDialog from './ColumnSettingsDialog.vue';
+import ThemePicker from './ThemePicker.vue';
+import LayoutPicker from './LayoutPicker.vue';
+import ColorModeToggle from './ColorModeToggle.vue';
+import WorkspaceStatusbar from './WorkspaceStatusbar.vue';
+import { PanelLeft, X } from '@lucide/vue';
+import { layoutTheme } from '../domain/themes';
+import { visualProfile, visualTheme } from '../domain/visual-themes';
 const DetailPane = defineAsyncComponent(() => import('./DetailPane.vue'));
 const AddDialog = defineAsyncComponent(() => import('./AddDialog.vue'));
 const ActionDialog = defineAsyncComponent(() => import('./ActionDialog.vue'));
@@ -52,11 +54,30 @@ const add = ref(false),
   workflow = ref(''),
   captured = ref<TorrentTarget[]>([]),
   dropped = ref<File[]>([]);
+const preparingGlobal = ref(false);
+const dark = inject(
+  'color-mode-dark',
+  computed(() => app.settings.ui.theme === 'dark'),
+);
+const searchAppearance = computed(() => {
+  if (!dark.value) return undefined;
+  const p = visualProfile(visualTheme(app.settings.ui.visualTheme), true).palette;
+  return {
+    color: p.subtle,
+    colorHover: p.subtle,
+    colorFocus: p.subtle,
+    border: `1px solid ${p.muted}`,
+    borderHover: `1px solid ${p.accent}`,
+    borderFocus: `1px solid ${p.accent}`,
+    boxShadowFocus: `0 0 0 2px ${p.selected}`,
+  };
+});
+const currentLayout = computed(() => layoutTheme(app.settings.ui.layoutTheme));
+watch(currentLayout, () => (navOpen.value = false));
 const user = ref(''),
   password = ref(''),
   showAuth = ref(false),
   showResults = ref(false);
-const menuGeneration = ref(0);
 const context = ref<{ x: number; y: number; ids: number[] } | null>(null);
 let debounce: ReturnType<typeof setTimeout> | undefined;
 watch(search, (v) => {
@@ -98,26 +119,32 @@ watch(
     page.value = Math.min(page.value, Math.max(1, Math.ceil(length / app.settings.ui.pageSize)));
   },
 );
-const categories = computed(() =>
-  ['all', 'active', 'downloading', 'seeding', 'paused', 'checking', 'error', 'private'].map(
-    (key) => ({ key, count: app.torrents.filter((x) => statusMatches(x, key)).length }),
-  ),
+const invalidNavigation = computed(
+  () =>
+    app.ready &&
+    !app.stale &&
+    ((folder.value && !app.torrents.some((x) => inFolder(x.downloadDir, folder.value!))) ||
+      (tracker.value && !app.torrents.some((x) => torrentServers(x).includes(tracker.value!))) ||
+      (label.value && !app.settings.labels.some((x) => x.id === label.value))),
 );
-const folderOptions = computed(() =>
-  [...new Set(app.torrents.map((x) => x.downloadDir).filter(Boolean))]
-    .sort()
-    .map((value) => ({ label: value!, value: value! })),
-);
-const trackerOptions = computed(() =>
-  [...new Set(app.torrents.flatMap((x) => (x.trackers ?? []).map((v) => trackerHost(v.announce))))]
-    .sort()
-    .map((value) => ({ label: value, value })),
-);
+function navigate(kind: string, value: string) {
+  if (kind === 'status') {
+    filter.value = value;
+    if (value === 'all') {
+      folder.value = null;
+      tracker.value = null;
+      label.value = null;
+    }
+  }
+  if (kind === 'folder') folder.value = value;
+  if (kind === 'tracker') tracker.value = value;
+  if (kind === 'label') label.value = value;
+  navOpen.value = false;
+}
 const commands: Record<string, string> = {
   start: 'torrent-start',
   startNow: 'torrent-start-now',
   stop: 'torrent-stop',
-  verify: 'torrent-verify',
   reannounce: 'torrent-reannounce',
   queueTop: 'queue-move-top',
   queueUp: 'queue-move-up',
@@ -141,10 +168,44 @@ const menu = computed(() =>
     'matchFolders',
   ].map((key) => ({ key, label: t(key) })),
 );
-const effectiveIds = computed(() =>
-  app.checkedIds.length ? app.checkedIds : app.selectedId !== null ? [app.selectedId] : [],
+const moreMenu = computed(() =>
+  ['stopAll', 'startAll', 'replaceTrackers'].map((key) => ({
+    key,
+    label: t(key),
+    disabled: key === 'replaceTrackers' && !app.checkedIds.length,
+  })),
 );
-async function operate(key: string, ids = effectiveIds.value) {
+async function operateBulk(key: string) {
+  if (key === 'replaceTrackers') return operateChecked(key);
+  if (
+    !['startAll', 'stopAll'].includes(key) ||
+    !app.ready ||
+    app.stale ||
+    app.operationBusy ||
+    preparingGlobal.value
+  )
+    return;
+  preparingGlobal.value = true;
+  const epoch = app.generation;
+  try {
+    await app.refreshSnapshot();
+    if (epoch !== app.generation) throw new Error(t('globalScopeChanged'));
+    if (!app.ready || app.stale || app.operationBusy) return;
+    await operate(
+      key,
+      app.torrents.map((row) => row.id),
+    );
+  } catch (e) {
+    message.error(errorMessage(e));
+  } finally {
+    preparingGlobal.value = false;
+  }
+}
+function operateChecked(key: string) {
+  if (!app.ready || app.operationBusy || !app.checkedIds.length) return;
+  return operate(key, [...app.checkedIds]);
+}
+async function operate(key: string, ids: number[]) {
   context.value = null;
   try {
     captured.value = app.targets(ids);
@@ -165,11 +226,6 @@ function sort(key: string) {
     sortKey.value = key;
     descending.value = false;
   }
-}
-function reorder(index: number, direction: number) {
-  const list = [...app.settings.ui.columns];
-  [list[index], list[index + direction]] = [list[index + direction], list[index]];
-  void app.updateUi({ columns: list });
 }
 function resizeDetails(event: PointerEvent) {
   const initial = app.settings.ui.detailHeight,
@@ -194,73 +250,95 @@ const desktop = computed(
     app.settings.ui.forceDesktop ||
     new URLSearchParams(location.search).get('devicetype') === 'computer',
 );
-function resetColumns() {
-  void app.updateUi({ columns: structuredClone(DEFAULT_COLUMNS) });
+function collapseOnListBlank(event: MouseEvent) {
+  if (event.button !== 0 || event.defaultPrevented || app.selectedId === null) return;
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  if (
+    target.closest(
+      '[data-torrent-id], .mobile-transfer, thead, th, button, input, select, textarea, a, [role="button"], [role="checkbox"], [role="separator"], [role="scrollbar"], .n-scrollbar-rail, [contenteditable="true"]',
+    )
+  )
+    return;
+  app.select(null);
 }
 </script>
 <template>
   <div
-    :class="['workspace', { 'force-desktop': desktop, 'nav-open': navOpen }]"
+    :class="[
+      'workspace',
+      `layout-${currentLayout}`,
+      { 'force-desktop': desktop, 'nav-open': navOpen },
+    ]"
+    :data-layout-theme="currentLayout"
     @dragover.prevent
     @drop="drop"
   >
     <header class="topbar">
+      <button
+        class="navigation-toggle"
+        :aria-label="t(navOpen ? 'closeNavigation' : 'openNavigation')"
+        :aria-expanded="navOpen"
+        aria-controls="workspace-navigation"
+        @click="navOpen = !navOpen"
+      >
+        <X v-if="navOpen" :size="20" aria-hidden="true" /><PanelLeft
+          v-else
+          :size="20"
+          aria-hidden="true"
+        />
+      </button>
       <button class="brand" @click="navOpen = !navOpen">
-        <span class="brand-mark">↧</span><span>Transmission<small>WEB UI</small></span>
+        <span class="brand-mark"><BrandMark animated /></span
+        ><span>Transmission<small>WEB UI</small></span>
       </button>
-      <div class="connection">
-        <span :class="['connection-dot', { live: app.ready && !app.stale }]" />{{
-          t(app.connecting ? 'connecting' : app.ready && !app.stale ? 'connected' : 'disconnected')
-        }}<span v-if="app.session" class="muted">v{{ app.session.version }}</span>
-      </div>
-      <div class="top-actions">
-        <span class="speed">↓ {{ formatBytes(app.stats.downloadSpeed || 0, true) }}</span
-        ><span class="speed">↑ {{ formatBytes(app.stats.uploadSpeed || 0, true) }}</span
-        ><NButton quaternary size="small" @click="settings = true">{{ t('settings') }}</NButton>
-      </div>
+      <div class="top-actions"><LayoutPicker /><ThemePicker /></div>
     </header>
-    <aside class="sidebar">
-      <div class="sidebar-heading">{{ t('app') }}</div>
-      <button
-        v-for="category in categories"
-        :key="category.key"
-        :class="['nav-item', { active: filter === category.key }]"
-        @click="
-          filter = category.key;
-          navOpen = false;
-        "
-      >
-        <span>{{ t(category.key) }}</span><span class="nav-count">{{ category.count }}</span>
-      </button>
-      <div class="sidebar-heading">{{ t('folders') }}</div>
-      <NSelect
-        v-model:value="folder"
-        clearable
-        filterable
-        :options="folderOptions"
-        :placeholder="t('all')"
-        size="small"
+    <WorkspaceToolbar
+      :ready="app.ready && !app.stale"
+      :busy="app.operationBusy || preparingGlobal"
+      :refreshing="app.refreshing"
+      :target-count="app.checkedIds.length"
+      :menu="menu"
+      :more-menu="moreMenu"
+      :total-count="app.torrents.length"
+      :auto-refresh="app.settings.ui.autoRefresh"
+      :interval-ms="app.settings.ui.refreshIntervalMs"
+      :match-running="app.matchJob ? app.matchJob.running : null"
+      @add="
+        dropped = [];
+        add = true;
+      "
+      @action="operateChecked"
+      @bulk-action="operateBulk"
+      @refresh="app.refresh(true).catch((e) => message.error(errorMessage(e)))"
+      @settings="settings = true"
+      @columns="columns = true"
+      @auto-refresh="(autoRefresh) => app.updateUi({ autoRefresh })"
+      @interval="(refreshIntervalMs) => app.updateUi({ refreshIntervalMs })"
+      @resume-match="
+        captured = [];
+        workflow = 'matchFolders';
+      "
+    />
+    <button
+      v-if="navOpen"
+      class="navigation-scrim"
+      :aria-label="t('closeNavigation')"
+      @click="navOpen = false"
+    />
+    <aside id="workspace-navigation" class="sidebar">
+      <SidebarNavigation
+        :status="filter"
+        :folder="folder"
+        :tracker="tracker"
+        :label="label"
+        @select="navigate"
       />
-      <div class="sidebar-heading">{{ t('trackers') }}</div>
-      <NSelect
-        v-model:value="tracker"
-        clearable
-        filterable
-        :options="trackerOptions"
-        :placeholder="t('all')"
-        size="small"
-      />
-      <div class="sidebar-heading">{{ t('localLabels') }}</div>
-      <button
-        v-for="item in app.settings.labels"
-        :key="item.id"
-        :class="['nav-item', { active: label === item.id }]"
-        @click="label = label === item.id ? null : item.id"
-      >
-        <span><i class="label-dot" :style="{ background: item.color }" />{{ item.name }}</span>
-      </button>
-      <div class="sidebar-bottom"><span>Transmission Web UI</span><small>2.0.0 · Vue 3</small></div>
     </aside>
+    <div class="sidebar-bottom">
+      <ColorModeToggle />
+    </div>
     <main class="main-panel">
       <NAlert v-if="app.error" type="warning" :bordered="false" class="connection-alert"
         ><span>{{ app.error }} · {{ t('stale') }}</span
@@ -275,68 +353,41 @@ function resetColumns() {
           <h1>{{ t(filter) }}</h1>
           <span class="muted">{{ t('tasks', { count: filtered.length }) }}</span>
         </div>
-        <NInput v-model:value="search" clearable :placeholder="t('search')" class="search-input" />
+        <NInput
+          v-model:value="search"
+          clearable
+          :placeholder="t('search')"
+          class="search-input"
+          :theme-overrides="searchAppearance"
+        />
       </div>
-      <div class="toolbar">
-        <NButton
-          type="primary"
-          :disabled="!app.ready"
-          @click="
-            dropped = [];
-            add = true;
-          "
-          >＋ {{ t('add') }}</NButton
-        ><span class="toolbar-divider" /><NButton
-          :disabled="!effectiveIds.length || !app.ready || app.operationBusy"
-          @click="operate('start')"
-          >▷ {{ t('start') }}</NButton
-        ><NButton
-          :disabled="!effectiveIds.length || !app.ready || app.operationBusy"
-          @click="operate('stop')"
-          >Ⅱ {{ t('stop') }}</NButton
-        ><NButton
-          :disabled="!effectiveIds.length || !app.ready || app.operationBusy"
-          @click="operate('remove')"
-          >{{ t('remove') }}</NButton
-        ><NDropdown
-          :key="menuGeneration"
-          trigger="click"
-          :options="menu"
-          @select="
-            (key) => {
-              menuGeneration++;
-              operate(String(key));
-            }
-          "
-          ><NButton :disabled="!effectiveIds.length || !app.ready || app.operationBusy"
-            >{{ t('more') }} ▾</NButton
-          ></NDropdown
-        ><span class="toolbar-spacer" /><NButton
-          v-if="app.matchJob"
-          size="small"
-          @click="
-            captured = [];
-            workflow = 'matchFolders';
-          "
-          >{{ t('matchFolders') }}{{ app.matchJob.running ? ' •' : '' }}</NButton
-        ><NButton
-          quaternary
-          :loading="app.refreshing"
-          @click="app.refresh(true).catch((e) => message.error(errorMessage(e)))"
-          >↻</NButton
-        ><NButton quaternary class="desktop-only" @click="columns = true">{{
-          t('columns')
-        }}</NButton>
+      <div v-if="filter !== 'all' || folder || tracker || label" class="filter-chips">
+        <NButton v-if="filter !== 'all'" size="tiny" @click="filter = 'all'"
+          >{{ t(filter) }} ×</NButton
+        >
+        <NButton v-if="folder" size="tiny" @click="folder = null"
+          >{{ t('folders') }}: {{ folder }} ×</NButton
+        >
+        <NButton v-if="tracker" size="tiny" @click="tracker = null"
+          >{{ t('serverDistribution') }}: {{ tracker }} ×</NButton
+        >
+        <NButton v-if="label" size="tiny" @click="label = null"
+          >{{ t('localLabels') }}:
+          {{ app.settings.labels.find((x) => x.id === label)?.name || label }} ×</NButton
+        >
       </div>
-      <div class="list-region">
+      <p v-if="invalidNavigation" class="invalid-navigation">{{ t('unavailableFilter') }}</p>
+      <div class="list-region" @click="collapseOnListBlank">
         <NSpin v-if="app.connecting && !app.torrents.length" class="centered" /><template
           v-else-if="rows.length"
           ><TorrentTable
             class="desktop-table"
             :rows="rows"
+            :row-offset="app.settings.ui.pagination ? (page - 1) * app.settings.ui.pageSize : 0"
             :sort-key="sortKey"
             :descending="descending"
             @sort="sort"
+            @labels="(id) => operate('labels', [id])"
             @context="(event, ids) => (context = { x: event.clientX, y: event.clientY, ids })"
           />
           <div class="mobile-list">
@@ -363,7 +414,7 @@ function resetColumns() {
                   :height="3"
                 /><small
                   >{{ t(STATUS_NAMES[row.status ?? -1] || 'unknown') }} ·
-                  {{ formatBytes(row.totalSize || 0) }} · ↓
+                  {{ formatBytes(row.totalSize || 0).replace('iB', 'B') }} · ↓
                   {{ formatBytes(row.rateDownload || 0, true) }}</small
                 >
               </div>
@@ -371,7 +422,7 @@ function resetColumns() {
           </div></template
         >
         <div v-else class="empty-state">
-          <span class="empty-icon">↧</span>
+          <span class="empty-icon"><BrandMark /></span>
           <h2>{{ t(app.torrents.length ? 'noMatches' : 'empty') }}</h2>
           <p>{{ t('emptyHint') }}</p>
         </div>
@@ -380,13 +431,59 @@ function resetColumns() {
         <span>{{
           app.checkedIds.length
             ? t('selected', { count: app.checkedIds.length })
-            : t('tasks', { count: filtered.length })
+            : t('pageRange', {
+                from: filtered.length
+                  ? app.settings.ui.pagination
+                    ? (page - 1) * app.settings.ui.pageSize + 1
+                    : 1
+                  : 0,
+                to: app.settings.ui.pagination
+                  ? Math.min(page * app.settings.ui.pageSize, filtered.length)
+                  : filtered.length,
+                count: filtered.length,
+              })
         }}</span><NPagination
           v-if="app.settings.ui.pagination"
           v-model:page="page"
           :page-size="app.settings.ui.pageSize"
           :item-count="filtered.length"
           :page-slot="5"
+          show-size-picker
+          show-quick-jumper
+          :page-sizes="
+            [
+              ...new Set([
+                10,
+                20,
+                30,
+                40,
+                50,
+                100,
+                150,
+                200,
+                250,
+                300,
+                5000,
+                app.settings.ui.pageSize,
+              ]),
+            ]
+              .sort((a, b) => a - b)
+              .map((value) => ({ label: t('perPage', { count: value }), value }))
+          "
+          @update:page-size="
+            (pageSize) => {
+              page = 1;
+              app.checkedIds = [];
+              app.updateUi({ pageSize });
+            }
+          "
+          :prefix="
+            () =>
+              t('pageOf', {
+                page,
+                pages: Math.max(1, Math.ceil(filtered.length / app.settings.ui.pageSize)),
+              })
+          "
           size="small"
         /><NButton v-if="app.operationBusy" text size="tiny" @click="app.cancelOperations">{{
           t('cancelPending')
@@ -405,6 +502,7 @@ function resetColumns() {
       </section>
       <div v-else class="detail-placeholder desktop-only">{{ t('detailsHint') }}</div>
     </main>
+    <WorkspaceStatusbar />
     <NDropdown
       v-if="context"
       :show="true"
@@ -418,7 +516,7 @@ function resetColumns() {
         { key: 'remove', label: t('remove') },
       ]"
       @clickoutside="context = null"
-      @select="(key) => operate(String(key), context?.ids)"
+      @select="(key) => operate(String(key), context?.ids ?? [])"
     />
     <AddDialog v-if="add" :files="dropped" @close="add = false" /><ActionDialog
       v-if="action"
@@ -431,42 +529,7 @@ function resetColumns() {
       :targets="captured"
       @close="workflow = ''"
     />
-    <NModal v-model:show="columns" preset="card" :title="t('columns')" class="dialog medium-dialog"
-      ><div v-for="(col, index) in app.settings.ui.columns" :key="col.key" class="column-setting">
-        <NCheckbox
-          :checked="col.visible"
-          @update:checked="
-            (visible) =>
-              app.updateUi({
-                columns: app.settings.ui.columns.map((c) =>
-                  c.key === col.key ? { ...c, visible } : c,
-                ),
-              })
-          "
-          >{{ t(col.key) }}</NCheckbox><NInputNumber
-          :value="col.width"
-          :min="60"
-          :max="1200"
-          size="small"
-          @update:value="
-            (width) =>
-              width &&
-              app.updateUi({
-                columns: app.settings.ui.columns.map((c) =>
-                  c.key === col.key ? { ...c, width } : c,
-                ),
-              })
-          "
-        /><NButton size="tiny" :disabled="index === 0" @click="reorder(index, -1)">↑</NButton
-        ><NButton
-          size="tiny"
-          :disabled="index === app.settings.ui.columns.length - 1"
-          @click="reorder(index, 1)"
-          >↓</NButton
-        >
-      </div>
-      <NButton @click="resetColumns">{{ t('reset') }}</NButton></NModal
-    >
+    <ColumnSettingsDialog v-model:show="columns" />
     <NModal
       v-model:show="showAuth"
       preset="card"

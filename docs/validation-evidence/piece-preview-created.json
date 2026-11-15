@@ -1,0 +1,40 @@
+{
+  "owner": "twui-compare-piece-preview",
+  "hash": "376d3200b6ffaa19624d837506334fe66972daf2",
+  "name": "对照-H-大分块预览",
+  "directory": "/data/comparison/piece-preview-h",
+  "totalSize": 67108864,
+  "pieceSize": 16384,
+  "pieceCount": 4096,
+  "state": "verified",
+  "fileStats": {
+    "logicalBytes": 67108864,
+    "allocatedBytes": 33558528
+  },
+  "row": {
+    "downloadDir": "/data/comparison/piece-preview-h",
+    "hashString": "376d3200b6ffaa19624d837506334fe66972daf2",
+    "haveUnchecked": 0,
+    "haveValid": 33554432,
+    "id": 7,
+    "leftUntilDone": 33554432,
+    "name": "对照-H-大分块预览",
+    "percentDone": 0.5,
+    "pieceCount": 4096,
+    "pieceSize": 16384,
+    "pieces": "///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////w8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+    "status": 0,
+    "totalSize": 67108864
+  },
+  "expectedCompletePieces": 2048,
+  "cells": {
+    "complete": 128,
+    "partial": 256,
+    "missing": 128
+  },
+  "existingTasksUnchanged": true,
+  "existingTaskCount": 6,
+  "taskCount": 7,
+  "added": true,
+  "at": "2026-11-15T12:08:04.132Z"
+}

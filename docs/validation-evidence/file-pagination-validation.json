@@ -1,0 +1,55 @@
+{
+  "at": "2026-11-15T19:21:14.615693+00:00",
+  "build": "file-pagination-build.json",
+  "unit": {
+    "passed": 92,
+    "files": 11,
+    "newScopes": [
+      "torrent-files model 4 cases",
+      "independent page-size settings compatibility/concurrency 1 case"
+    ]
+  },
+  "browsers": {
+    "passed": 42,
+    "report": ".lab/file-pagination-release-report",
+    "output": ".lab/file-pagination-release-tests",
+    "projects": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "files": [
+      "file-pagination",
+      "details",
+      "detail-dismiss",
+      "toolbar"
+    ],
+    "largeFileCount": 10000,
+    "maxPageSizeVerified": 5000,
+    "renderedRowsAsserted": "<100",
+    "fourSkinsBothModesMobile": true,
+    "desktopFooterHeightAsserted": "<=100px",
+    "modeButtonAvoidanceAsserted": true,
+    "rpcWrites": "Mock only; commands checked for original indices 200 and 9999"
+  },
+  "static": [
+    "lint",
+    "format",
+    "typecheck/build",
+    "strict OpenSpec",
+    "diff",
+    "old816",
+    "gzip345.9KiB <=800"
+  ],
+  "notRerun": [
+    "real four-version RPC suite: methods and existing file command envelope unchanged",
+    "full 30-minute torrent stress",
+    "real DSM hardware"
+  ],
+  "realSite": "file-pagination-live.json",
+  "limitations": [
+    "Complete file metadata is still fetched via existing RPC; page/filter/sort are local",
+    "Page changes/filter/sort/size/task changes clear file checks; only page size persists",
+    "No exact prior snapshot backup per continuous-acceptance authorization; existing older rollback snapshot predates multiple changes"
+  ]
+}

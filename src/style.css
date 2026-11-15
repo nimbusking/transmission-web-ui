@@ -29,32 +29,15 @@ button:disabled {
   cursor: default;
 }
 .application {
-  --surface: #fff;
-  --canvas: #f5f7f9;
-  --subtle: #edf1f4;
-  --border: #e3e8ed;
-  --text: #263540;
-  --muted: #7b8792;
-  --accent: #168c7e;
-  --selected: #edf8f5;
   color: var(--text);
   background: var(--canvas);
-}
-.application.dark {
-  --surface: #1b2027;
-  --canvas: #14181e;
-  --subtle: #252d36;
-  --border: #303944;
-  --text: #dce4ea;
-  --muted: #8f9ba8;
-  --selected: #193b37;
 }
 .workspace {
   height: 100dvh;
   min-height: 400px;
   display: grid;
-  grid-template-columns: 218px minmax(0, 1fr);
-  grid-template-rows: 66px minmax(0, 1fr);
+  grid-template-columns: 290px minmax(0, 1fr);
+  grid-template-rows: 66px 48px minmax(0, 1fr) var(--statusbar-height);
   overflow: hidden;
 }
 .topbar {
@@ -87,14 +70,14 @@ button:disabled {
   margin-top: 0;
 }
 .brand-mark {
-  display: grid;
-  place-content: center;
-  font-size: 31px;
-  background: var(--accent);
-  color: #fff;
+  display: block;
+  flex-shrink: 0;
+  color: var(--accent);
   height: 34px;
   width: 34px;
-  border-radius: 9px;
+}
+.application.dark .brand-mark {
+  color: var(--brand);
 }
 .connection {
   display: flex;
@@ -220,10 +203,43 @@ button:disabled {
 .toolbar {
   display: flex;
   align-items: center;
-  padding: 0 24px 16px;
-  gap: 6px;
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding: 6px 24px;
+  gap: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.toolbar > * {
+  flex-shrink: 0;
 }
 .toolbar .n-button {
+  font-size: 12px;
+}
+.toolbar .toolbar-icon {
+  width: 30px;
+  padding: 0;
+}
+.toolbar .toolbar-menu {
+  padding: 0 6px;
+}
+.toolbar-menu .n-button__content {
+  gap: 3px;
+}
+.toolbar-refresh {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+.toolbar-refresh .n-input-number {
+  width: 80px;
+}
+.toolbar-refresh .n-checkbox__label {
   font-size: 12px;
 }
 .toolbar-spacer {
@@ -278,11 +294,35 @@ button:disabled {
   border-right: 2px solid var(--accent);
 }
 .progress-cell {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: 20px;
+  overflow: hidden;
+  border: 1px solid var(--muted);
+  border-radius: 0;
+  background: var(--subtle);
+  color: var(--text);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.torrent-table td.torrent-progress-column {
+  padding: 5px 6px;
+}
+.progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.progress-label {
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  max-width: 100px;
-  font-size: 10px;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  pointer-events: none;
 }
 .label-list {
   display: flex;
@@ -399,6 +439,27 @@ button:disabled {
   margin: 0;
   overflow-wrap: anywhere;
 }
+.overview-pieces {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.overview-pieces h3 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.piece-cell-tooltip {
+  pointer-events: none;
+  font-size: 12px;
+}
+.piece-cell-tooltip strong {
+  font-size: 14px;
+  font-weight: 500;
+}
 .mono {
   font-family: ui-monospace, monospace;
 }
@@ -417,9 +478,6 @@ button:disabled {
   font-size: 12px;
 }
 .empty-icon {
-  font-size: 42px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -444,6 +502,28 @@ button:disabled {
 }
 .medium-dialog {
   width: 620px;
+}
+/* Only column settings use a short fade; retain other dialog transitions. */
+.column-settings-dialog.n-modal.fade-in-scale-up-transition-enter-active,
+.column-settings-dialog.n-modal.fade-in-scale-up-transition-leave-active {
+  transition: opacity 120ms ease-out;
+}
+.column-settings-dialog.n-modal.fade-in-scale-up-transition-enter-from,
+.column-settings-dialog.n-modal.fade-in-scale-up-transition-leave-to {
+  transform: none;
+}
+.n-modal-container:has(.column-settings-dialog) > .n-modal-mask.fade-in-transition-enter-active,
+.n-modal-container:has(.column-settings-dialog) > .n-modal-mask.fade-in-transition-leave-active {
+  /* Naive's mask transition uses !important; override only this modal. */
+  transition: opacity 120ms ease-out !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .column-settings-dialog.n-modal.fade-in-scale-up-transition-enter-active,
+  .column-settings-dialog.n-modal.fade-in-scale-up-transition-leave-active,
+  .n-modal-container:has(.column-settings-dialog) > .n-modal-mask.fade-in-transition-enter-active,
+  .n-modal-container:has(.column-settings-dialog) > .n-modal-mask.fade-in-transition-leave-active {
+    transition-duration: 0ms !important;
+  }
 }
 .large-dialog {
   width: 900px;
@@ -649,7 +729,7 @@ button:disabled {
 @media (max-width: 767px) {
   .workspace:not(.force-desktop) {
     grid-template-columns: 1fr;
-    grid-template-rows: 58px minmax(0, 1fr);
+    grid-template-rows: 58px 48px minmax(0, 1fr) var(--statusbar-height);
   }
   .workspace:not(.force-desktop) .topbar {
     padding: 0 16px;
@@ -674,7 +754,7 @@ button:disabled {
     display: flex;
     position: fixed;
     left: 0;
-    top: 58px;
+    top: 106px;
     bottom: 0;
     width: 230px;
     z-index: 9;
@@ -696,16 +776,8 @@ button:disabled {
     width: 100%;
   }
   .workspace:not(.force-desktop) .toolbar {
-    padding: 0 12px 12px;
+    padding: 6px 12px;
     gap: 4px;
-    flex-wrap: wrap;
-  }
-  .workspace:not(.force-desktop) .toolbar-divider {
-    display: none;
-  }
-  .workspace:not(.force-desktop) .toolbar .n-button {
-    padding: 0 9px;
-    font-size: 11px;
   }
   .workspace:not(.force-desktop) .desktop-table,
   .workspace:not(.force-desktop) .desktop-only {
@@ -751,5 +823,142 @@ button:disabled {
   }
   .connection-alert .n-alert-body__content {
     flex-wrap: wrap;
+  }
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 24px 10px;
+}
+.filter-chips .n-button {
+  max-width: 100%;
+  overflow: hidden;
+}
+.sidebar-bottom {
+  padding-top: 12px;
+}
+
+.invalid-navigation {
+  margin: 0;
+  padding: 0 24px 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.torrent-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.torrent-name-cell svg {
+  flex-shrink: 0;
+}
+.torrent-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.table-label-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  padding: 0;
+  flex-shrink: 0;
+}
+.table-label-edit:hover {
+  background: var(--selected);
+}
+.text-error {
+  color: #d36d64;
+}
+.text-warning {
+  color: #b5945b;
+}
+.row-number {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.torrent-table .label-list {
+  flex-wrap: nowrap;
+  overflow: hidden;
+  align-items: center;
+  max-height: 28px;
+}
+
+.list-footer {
+  flex-wrap: wrap;
+  min-height: 46px;
+  height: auto;
+  row-gap: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.list-footer .n-pagination {
+  flex-wrap: wrap;
+  row-gap: 6px;
+}
+
+.detail-header .n-button {
+  flex-shrink: 0;
+}
+
+/* File pagination and operations stay outside the virtual table's scroll area. */
+.file-list-footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 6px;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.file-page-controls,
+.file-action-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.file-list-summary {
+  font-size: 11px;
+  color: var(--muted);
+  margin-right: auto;
+}
+.file-action-controls .file-preset {
+  width: 155px;
+}
+.file-action-controls .file-query {
+  width: 180px;
+}
+.file-action-controls .n-checkbox {
+  white-space: nowrap;
+}
+.detail-content > .torrent-file-table {
+  min-height: 70px;
+}
+@media (max-width: 767px) {
+  .file-page-controls .n-pagination {
+    flex-wrap: wrap;
+  }
+  .file-action-controls .file-preset {
+    width: 145px;
+  }
+  .file-action-controls .file-query {
+    width: min(220px, 100%);
+  }
+}
+
+@media (max-width: 767px) {
+  .workspace:not(.force-desktop) .file-list-footer {
+    padding-bottom: 44px;
   }
 }

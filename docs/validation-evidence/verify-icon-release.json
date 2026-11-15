@@ -1,0 +1,73 @@
+{
+  "at": "2026-11-15T16:04:52.379699+00:00",
+  "sha256": "8a38bd3493c5b09b000c105606af1519789936b812a98bf60c598e48d32c85ad",
+  "previousSnapshotSha256": "00332fe05caa30837ecc8150061a3e90637d30822440f6c51663054fc3d890d4",
+  "archiveFilesVerified": 46,
+  "webFilesVerified": 37,
+  "snapshotUpdated": true,
+  "backupCreated": false,
+  "authorization": "本次工具栏验收图标修正，沿用用户直接更新19081、无需额外备份的授权",
+  "containerActions": [],
+  "daemonWrites": [],
+  "taskCount": 7,
+  "tasksUnchanged": true,
+  "taskStates": [
+    {
+      "name": "对照-F-零字节文件",
+      "status": 0,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-H-大分块预览",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-A-完整文件22",
+      "status": 6,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-D-多文件与中文",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-E-目录匹配",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-B-等待下载",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-C-部分数据",
+      "status": 0,
+      "percentDone": 0.5
+    }
+  ],
+  "browserTests": {
+    "passed": 12,
+    "report": ".lab/verify-icon-report",
+    "realDaemonExcluded": true
+  },
+  "unitTestsRerun": false,
+  "fullStressRerun": false,
+  "rollback": {
+    "existingSnapshot": ".lab/comparison/backups/before-table-progress-20261115",
+    "sha256": "566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417",
+    "limitation": "Existing older snapshot; predates rectangular progress bar"
+  },
+  "browserLiveVerified": true,
+  "browserScreenshot": "artifacts/verify-icon-live.jpg",
+  "icons": {
+    "toolbar": "lucide-database-search, 18px",
+    "sidebar": "lucide-database-search, 16px",
+    "listChecking": "DatabaseSearch (source/build + mock regression)"
+  },
+  "liveTemporaryCheckedTask": "对照-B-等待下载",
+  "temporaryCheckCleared": true,
+  "userAcceptance": "pending"
+}

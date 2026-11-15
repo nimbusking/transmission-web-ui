@@ -1,0 +1,125 @@
+[
+  {
+    "project": "chromium",
+    "skins": [
+      {
+        "name": "Modern",
+        "background": "rgb(37, 45, 54)",
+        "panel": "rgb(27, 32, 39)",
+        "border": "rgb(143, 155, 168)",
+        "placeholder": "rgb(143, 155, 168)",
+        "accent": "#48d6bd",
+        "radius": "6px"
+      },
+      {
+        "name": "Metro",
+        "background": "rgb(56, 43, 51)",
+        "panel": "rgb(38, 31, 36)",
+        "border": "rgb(197, 170, 182)",
+        "placeholder": "rgb(197, 170, 182)",
+        "accent": "#f18b98",
+        "radius": "0px"
+      },
+      {
+        "name": "Material",
+        "background": "rgb(46, 51, 74)",
+        "panel": "rgb(34, 37, 54)",
+        "border": "rgb(176, 183, 205)",
+        "placeholder": "rgb(176, 183, 205)",
+        "accent": "#adb5ff",
+        "radius": "10px"
+      },
+      {
+        "name": "Cupertino",
+        "background": "rgb(49, 53, 62)",
+        "panel": "rgb(36, 39, 45)",
+        "border": "rgb(176, 184, 199)",
+        "placeholder": "rgb(176, 184, 199)",
+        "accent": "#78b7ff",
+        "radius": "8px"
+      }
+    ]
+  },
+  {
+    "project": "firefox",
+    "skins": [
+      {
+        "name": "Modern",
+        "background": "rgb(37, 45, 54)",
+        "panel": "rgb(27, 32, 39)",
+        "border": "rgb(143, 155, 168)",
+        "placeholder": "rgb(143, 155, 168)",
+        "accent": "#48d6bd",
+        "radius": "6px"
+      },
+      {
+        "name": "Metro",
+        "background": "rgb(56, 43, 51)",
+        "panel": "rgb(38, 31, 36)",
+        "border": "rgb(197, 170, 182)",
+        "placeholder": "rgb(197, 170, 182)",
+        "accent": "#f18b98",
+        "radius": "0px"
+      },
+      {
+        "name": "Material",
+        "background": "rgb(46, 51, 74)",
+        "panel": "rgb(34, 37, 54)",
+        "border": "rgb(176, 183, 205)",
+        "placeholder": "rgb(176, 183, 205)",
+        "accent": "#adb5ff",
+        "radius": "10px"
+      },
+      {
+        "name": "Cupertino",
+        "background": "rgb(49, 53, 62)",
+        "panel": "rgb(36, 39, 45)",
+        "border": "rgb(176, 184, 199)",
+        "placeholder": "rgb(176, 184, 199)",
+        "accent": "#78b7ff",
+        "radius": "8px"
+      }
+    ]
+  },
+  {
+    "project": "webkit",
+    "skins": [
+      {
+        "name": "Modern",
+        "background": "rgb(37, 45, 54)",
+        "panel": "rgb(27, 32, 39)",
+        "border": "rgb(143, 155, 168)",
+        "placeholder": "rgb(143, 155, 168)",
+        "accent": "#48d6bd",
+        "radius": "6px"
+      },
+      {
+        "name": "Metro",
+        "background": "rgb(56, 43, 51)",
+        "panel": "rgb(38, 31, 36)",
+        "border": "rgb(197, 170, 182)",
+        "placeholder": "rgb(197, 170, 182)",
+        "accent": "#f18b98",
+        "radius": "0px"
+      },
+      {
+        "name": "Material",
+        "background": "rgb(46, 51, 74)",
+        "panel": "rgb(34, 37, 54)",
+        "border": "rgb(176, 183, 205)",
+        "placeholder": "rgb(176, 183, 205)",
+        "accent": "#adb5ff",
+        "radius": "10px"
+      },
+      {
+        "name": "Cupertino",
+        "background": "rgb(49, 53, 62)",
+        "panel": "rgb(36, 39, 45)",
+        "border": "rgb(176, 184, 199)",
+        "placeholder": "rgb(176, 184, 199)",
+        "accent": "#78b7ff",
+        "radius": "8px"
+      }
+    ]
+  }
+]

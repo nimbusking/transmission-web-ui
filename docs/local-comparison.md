@@ -1,5 +1,156 @@
 # 本机新旧 UI 功能对照
 
+## 当前快照：任务配置tab已移除
+
+刷新`http://localhost:19081/transmission/web/?lang=zh-CN`：任务详情仅保留概览/文件/服务器/Peer，任务配置tab、通用表单和专用配置读取/保存入口已移除；其他任务操作及全局设置页保留。按用户追加条件，3.00隔离实测发现空闲时限0返回成功却保留17后取消本轮改造；不据此声称全部配置不支持或四版均不兼容，候选新表单未发布。
+
+最终归档SHA-256`cf927e7a81040fcd1b2b2cfdd030d9167787549ea61aa1872da8504ea9e0c179`，37web/46摘要核对。92unit/48三浏览器及静态检查通过，实页四tab/无配置表单已核对，截图artifacts/remove-task-config-detail.png。连续验收直接更新、无额外备份，7任务不变，无对照任务/daemon写入和容器生命周期动作，无浏览器偏好编辑。取消与交付证据分别torrent-config-cancellation.json及remove-task-config-*.json，原较早快照回退与DSM限制保持。以下为历史记录。
+
+## 此前快照：文件列表分页与底部控制区
+
+刷新`http://localhost:19081/transmission/web/?lang=zh-CN`，点任务→文件：底部可选每页数量/翻页/跳页并看范围、匹配/总数/已选数；独立刷新、下载/跳过、优先级菜单、全部/BitComet填充/不必要文件模板与路径/正则筛选。补已下载列，名称/大小/进度/已下载/下载状态可排序。模板仅筛选，切页/筛选/排序等清勾选；文件条数独立保存，不改主列表，页内虚拟滚动保留，RPC仍完整文件元数据。
+
+最终归档SHA-256`9536af5807bc2cff21de97f52e7654a0bb18e2bae1a70b248b60d2e9dfaa2d5b`，45摘要/36web一致。92unit/42三浏览器及相关静态检查通过；实页D三文件、已下载量、0勾选/200条、约63px两行底栏已核对。沿用连续验收无额外备份授权更新，7任务不变，无对照任务写入/容器生命周期操作，未手动更改既有偏好。截图artifacts/file-pagination-live.png，证据file-pagination-*.json，较早快照回退/真实DSM等限制保持。以下为历史记录。
+
+## 此前快照：总大小单位简写
+
+刷新`http://localhost:19081/transmission/web/?lang=zh-CN`：总大小列显示KB/MB/GB/TB/PB，保留B、原1024换算与数值，移动列表一致；其他列/详情/底部状态栏不改。实页64.00KB/64.00MB已核对。5相关unit/6三浏览器表格回归与静态检查通过。
+
+归档SHA-256`1bb3b0ceadc8643abdebc898ff0c246b7b7cf293fd04bd3963e060a6763b6dde`，45摘要/36web核对；按连续验收无额外备份授权更新19081，7任务不变，无对照容器生命周期/daemon写入或偏好编辑。截图artifacts/size-unit-live.png，较早快照回退限制同此前记录。以下为历史记录。
+
+## 此前快照：全宽底部状态栏
+
+刷新`http://localhost:19081/transmission/web/?lang=zh-CN`：顶部连接/速度及侧栏版本已集中到底部，左侧下载/上传/可用空间含图标，右侧连接/Transmission/RPC/UI版本，32px独立末行、各项竖线分隔，四布局/皮肤/深浅和窄屏适配。太阳月亮仍在左下。可用空间指默认下载目录所在文件系统，悬停查看路径；当前实页为0B/s、904.0GiB，RPC与daemon statvfs只读核对相等，不是假值。关闭自动刷新会停周期，缺失/失败显示不可用，断线标过期。
+
+归档SHA-256`a1fda5808d7d46fe7f5aaadfb584c25e005386274e27167586794b5bf2a089b8`，45摘要/36web一致。87unit、39相关三浏览器+9专题与四版隔离只读核对通过；用户视觉验收待反馈。已按连续验收无额外备份授权更新，7任务保持，未操作对照容器生命周期/daemon写入，实页偏好未改。截图artifacts/statusbar-live.png，证据docs/validation-evidence/statusbar-*.json，既有较早快照回退限制同此前说明。以下为历史记录，非现行界面描述。
+
+
+## 此前快照：深色搜索框可辨边框
+
+刷新`http://localhost:19081/transmission/web/?lang=zh-CN`查看：顶部搜索在四深色皮肤中默认有独立底色/实体边框，悬停聚焦使用强调色，浅色与原尺寸/筛选逻辑不改。归档SHA-256 `b97891f1375714b311609756b69e82ab5f6847e5d0ade6d3230f1c61405bf6bd`，36web/45摘要核对通过。沿用连续验收无额外备份授权更新，7任务不变，无daemon/对照容器操作；实页临时Cupertino核对后恢复原modern/workbench/system。截图artifacts/search-contrast-detail.jpg，较早快照回退限制同此前记录。
+
+## 此前快照：布局、视觉主题、明暗分离
+
+刷新`http://localhost:19081/transmission/web/?lang=zh-CN`，右上“布局”保留经典/紧凑/工作室/专注；“主题”选择Modern/Metro/Material/Cupertino整套视觉皮肤，左下太阳月亮切深浅，三项分别保存。主题不移动区域、不重置勾选/详情/列，弹窗菜单同步；原底部同排规则保持。设计规范docs/theme-design.md。
+
+归档SHA-256 `e18b0f6381ad1cd506164466359671c12b2a5195725fcf2f554a2df994adf8d6`，45摘要/36web文件一致。沿用连续验收无额外备份授权，7任务未变，无daemon/对照容器操作；实页临时切换和刷新后已恢复modern/workbench/system。截图artifacts/visual-skins-picker-live.jpg及visual-*-light-live.jpg；验证范围区分核心72与最终预览修正12专题，见validation.md。无本轮新备份；较早快照回退会撤销后续多轮改动，非精确上一版。以下为此前记录。
+
+## 此前快照：左下明暗按钮同排
+
+刷新`http://localhost:19081/transmission/web/?lang=zh-CN`，侧栏底部文字组与太阳/月亮在同一行垂直居中，不再单独下沉；原布局/明暗保存不改。归档SHA-256 `a612ee54c89125f95c204348422f217f3135f9a5c38eb0c9d0a6ba644fcb6296`，36文件一致/45摘要通过；截图artifacts/theme-footer-detail.jpg。沿用连续验收无额外备份授权，7任务不变，无任务/daemon/对照容器操作或本地偏好编辑；较早快照回退限制同此前说明。以下为此前记录。
+
+## 此前快照：四布局主题与独立明暗
+
+2026-11-16已更新，刷新`http://localhost:19081/transmission/web/?lang=zh-CN`，右上“主题”选择经典工作台/紧凑控制台/侧栏工作室/专注列表；左下太阳月亮切换深浅，布局和明暗分别保持，下次进入恢复。主题面板底部支持明暗跟随系统。设置页不再保留旧主题项，现有自定义列和其他偏好不重置，首次读取缺失布局默认workbench。主题设计规则见docs/theme-design.md。
+
+归档SHA-256 `35e96a68ee79b195c448eed40b7c9377249d022978183b78f50a37ff1c5e3cd8`，45归档摘要/36 web文件一致，沿用本次连续验收直接更新无额外备份授权。7任务关键字段前后不变，无对照容器/daemon写入；实页临时切主题/浅色并刷新验收后恢复原workbench/system。截图artifacts/themes-picker-live.jpg及theme-*-live.jpg。无本轮新备份；原较早before-table-progress回退会撤销之后多轮改动，非精确上一版。以下为此前记录。
+
+## 此前快照：列设置复用与轻过渡
+
+2026-11-16已更新，刷新`http://localhost:19081/transmission/web/?lang=zh-CN`体验：首次打开按需创建，后续复用；卡片/遮罩120ms纯透明度，减少动态效果时0ms。现有列宽/顺序/显隐不重置，Esc/关闭/遮罩与焦点行为保留。归档SHA-256 `38cbdf6c8d7267b23a31f6e0e45d481d488d0ac76c73ce3e0235b62edcad14bb`，36文件一致/45归档摘要通过；实页截图artifacts/column-dialog-live.jpg。
+
+沿用本次连续验收直接更新无额外备份授权，7任务关键字段前后不变，无偏好编辑/任务写入/对照容器操作。无本轮新备份；较早before-table-progress快照可核验后回退，但会撤销之后多轮改动，并非精确上一版。以下为此前记录。
+
+## 此前快照：列设置移除版本预设入口
+
+2026-11-16已更新，刷新`http://localhost:19081/transmission/web/?lang=zh-CN`打开列设置；不再显示应用旧版完整列表/恢复上一份列布局，直接调整显隐、宽度和顺序，当前布局未重置。归档SHA-256 `d3677e3f2f6113d9f19530b96ee269ef126bde8075adae0f23c31c3eaf945c10`，36个web文件与dist一致，45项归档摘要通过；实页底部截图`artifacts/column-settings-cleanup-live.jpg`。
+
+沿用本次工具栏直接更新/无需额外备份授权，无本次新备份。部署前后7任务关键字段不变，实页只查看关闭列设置，未更改偏好/任务或操作对照容器。内部历史兼容字段/数据保留。既有before-table-progress-20261115等较早快照可核验后回退，需资源先行/入口最后恢复及对应deployment.json，会撤销之后多轮交互且不是精确上一版；不清数据库或改任务。以下为此前记录。
+
+## 此前快照：更多批量与自动刷新
+
+2026-11-16已更新，刷新`http://localhost:19081/transmission/web/?lang=zh-CN`。更多仅全部暂停、全部启动、批量替换Tracker；全部操作无需勾选，先列出完整连接范围确认（不受当前筛选/分页影响），Tracker仅勾选可用。校验继续从工具栏/右键进入并二次确认。关闭自动刷新时秒数和加减禁用、保留值，重新开启恢复可改；设置页同样联动，关闭后不再周期/回前台读取，手动刷新仍可用。
+
+当前归档SHA-256 `7d0534121747fa5c45ad22ec4ea5d980a443bbad817bac53afba12118980f8c5`，36个web文件与最终dist一致、45项归档摘要通过。沿用本次工具栏连续验收直接更新/无需备份授权完成。部署前后7任务关键字段不变；实页只打开全部暂停确认（7个目标、取消默认焦点）并取消，未执行真实启停/Tracker写入或操作对照容器。验收临时关闭自动刷新后已恢复原开启/5秒。截图`artifacts/bulk-refresh-live.jpg`和`artifacts/bulk-confirmation-live.jpg`，证据bulk-refresh-release.json。
+
+没有本次精确前一版新备份；已有before-table-progress-20261115较早快照可回退但会撤销后续外观/确认/刷新修正，先核验摘要，再资源先行/入口最后恢复及对应deployment.json，不清数据库或改任务。以下为此前记录。
+
+## 此前快照：重新校验二次确认
+
+2026-11-16已更新，刷新`http://localhost:19081/transmission/web/?lang=zh-CN`，勾选任务点击数据库放大镜/更多中的校验，或右键校验，均先显示名称、数量、I/O耗时提示；默认取消，明确“开始校验”才提交。失败或未知结果需核对并重新选择，不在原框重复提交整批；成功仅表示请求已提交，实际状态和校验进度由daemon刷新。
+
+当前归档SHA-256 `e5463628778ba8a47c5f931382a3873392cd3403ebd818c2d4ef64df2a49ef22`，36个web文件与dist一致，45项归档摘要通过。沿用本次工具栏更新直接部署/无需额外备份授权完成，部署前后7任务关键字段不变。实页只对B打开并取消确认，临时勾选清除，未执行真实校验或操作对照容器；截图`artifacts/verify-confirmation-live.jpg`。四版真实校验测试全部在独立一次性离线容器/自建数据中完成并已清理，无共享端口或挂载。
+
+无本次精确前一版新备份；已有before-table-progress-20261115等较早快照可回退，但会撤销此后的外观与确认修正。先核验摘要，资源先行/入口最后恢复及对应deployment.json，不清数据库或改任务。以下是此前记录。
+
+## 此前快照：数据库放大镜校验图标
+
+2026-11-16已更新校验图标，刷新`http://localhost:19081/transmission/web/?lang=zh-CN`查看工具栏与左侧正在校验的数据库加小放大镜；列表校验状态同步统一。仅勾选才启用任务按钮的规则保留。本次沿用工具栏验收直接更新/无需额外备份授权，未新增备份或操作容器/任务/daemon，部署前后7任务关键字段不变，包括当前用户已修改的名称；实页临时勾选B已清除。
+
+当前归档SHA-256 `8a38bd3493c5b09b000c105606af1519789936b812a98bf60c598e48d32c85ad`，37个web文件与dist一致，截图`artifacts/verify-icon-live.jpg`。回退仍仅能使用已存在before-table-progress-20261115等较早完整快照（会同时撤销矩形进度条和全宽工具栏），先核验摘要，再资源先行/入口最后恢复对应部署记录；没有本次精确前一版的新备份。以下为此前记录。
+
+## 此前快照：工具栏仅勾选任务可操作
+
+本次工具栏验收修正已沿用用户“回归后直接更新、无需备份”授权部署19081。刷新`http://localhost:19081/transmission/web/?lang=zh-CN`：点击任务名仅高亮/打开详情，任务按钮保持禁用；勾选复选框后启用，取消最后一个勾选后立即禁用，即使详情仍打开。添加/刷新/设置/列设置保持独立。
+
+当前归档SHA-256 `00332fe05caa30837ecc8150061a3e90637d30822440f6c51663054fc3d890d4`，37个web文件与dist/归档一致。实页确认仅详情→勾选→取消勾选时10个任务按钮禁用→启用→禁用、详情持续保留；截图`artifacts/toolbar-selection-live.jpg`。部署前后7任务关键字段不变，未操作容器/任务/daemon、未新增备份。此前已存在before-table-progress-20261115及其部署记录/对应归档仍可回退，但会同时撤销矩形进度条和全宽工具栏，并非本次修正的精确前一版；按资源先行/入口最后恢复，不清数据库或改任务。以下为此前记录。
+
+## 此前快照：Logo下全宽工具栏
+
+用户本轮明确授权“回归验证之后直接发布到环境，环境无需备份”，已直接更新19081，未新增快照备份。刷新`http://localhost:19081/transmission/web/?lang=zh-CN`查看Logo下48px全宽图标工具栏，列设置/刷新/设置与添加同排；任务选中后启用操作，自动刷新可直接调整，窄屏横向滚动。
+
+当前归档SHA-256 `d4b9c9641d809d3b278fffc79b1b4c17d49076847e653a4edb8956eb6a5724c2`，37个web文件与最终dist/归档逐项一致；实页确认7任务，部署前后任务关键字段不变，无容器生命周期或daemon写操作，临时4188预览已关闭。截图`artifacts/toolbar-live.jpg`，证据`docs/validation-evidence/toolbar-release.json`。
+
+本轮没有紧邻更新前的完整备份；已有`.lab/comparison/backups/before-table-progress-20261115/`及对应归档`artifacts/transmission-web-ui-before-table-progress.tar.gz`可回退到SHA `566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417`，会同时撤销上一轮矩形进度条。恢复前核验既有摘要，资源先行/入口最后并恢复该备份的deployment.json，不清IndexedDB、不重启容器或改任务；保留额外哈希文件。不能将这个较早备份描述为本轮新增备份或精确上一版。
+
+## 此前快照：列表矩形进度条
+
+用户明确授权后已备份并更新19081，刷新`http://localhost:19081/transmission/web/?lang=zh-CN`即可验收居中百分比/全列宽矩形；列宽120→220px时条宽108→208px，左右留白各6px，20px高度。当前SHA-256 `7fe68e0576c93c8182cb06c641b88fc80157b608b98b4a026e9ce78f20e033fe`，37个web文件与最终构建一致。
+
+回退基线`.lab/comparison/backups/before-table-progress-20261115/`含119文件，同名.deployment.json/.sha256.json保存原部署信息与摘要。按资源先行/入口最后恢复modern-web和部署信息，不清数据库或删除H，无需重启daemon。未执行容器生命周期操作、任务或daemon写入；实页确认7任务，未改19081列宽偏好，临时4188预览已关闭。以下是此前快照记录，当前以本节及deployment.json为准。
+
+## 此前快照：分块全宽与逐格提示
+
+19081已获本轮明确授权备份更新，刷新`http://localhost:19081/transmission/web/?lang=zh-CN`，点击H名称→概览→向下查看全宽方格与大小×完成率提示。约18px方格/4px间距，按宽度自适应，最多512格；末块大小和完成率按实际字节计算，提示附原始块范围。
+
+当前SHA-256为`566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417`。完整备份`.lab/comparison/backups/before-responsive-pieces-20261115/`含103文件，同名.deployment.json/.sha256.json保留部署信息和摘要。仅更新静态资源、入口最后原子替换，保留旧哈希资源；回退按资源先行/入口最后恢复modern-web和部署记录，无需重启容器、改动任务或清浏览器数据库。H独立保留。临时4188预览已关闭，当前部署以本节及deployment.json为准；下面是此前快照记录。
+
+## 此前快照：详情空白收起与大分块预览
+
+19081已获明确授权备份更新，刷新`http://localhost:19081/transmission/web/?lang=zh-CN`后可验收。点击列表空白或“收起详情”按钮关闭详情；工具栏/搜索/任务行/详情/菜单和弹窗保持正常操作。新增H样例见下方，点击名称→概览→向下滚动查看4096块汇总为512格及三种完成色阶。
+
+当前包SHA-256为`dec52d80bd9bc3516833ef857bfe68875cd0a640fecc947f499086379f3c1430`，37个web文件与最终构建一致。回退基线为`.lab/comparison/backups/before-detail-collapse-20261115/`及同名.deployment.json/.sha256.json；资源先行、入口最后恢复modern-web及部署信息，不清浏览器数据库、不操作daemon或卷，H独立保留。此次未启停或重建容器、未修改原6任务。以下快照条目为此前记录，当前部署以本节及`.lab/comparison/deployment.json`为准。
+
+## 新增H：大分块预览
+
+用户明确要求后独立新增“对照-H-大分块预览”（hash `376d3200b6ffaa19624d837506334fe66972daf2`，首次id=7），64MiB、4096块、每块16KiB，实际校验50%有效、暂停。实际数据约32MiB写入，另半为缺失；512个画布格包含128完整/256各半/128缺失。两个入口均可查看；不需要开始下载。
+
+在新版点击H名称→概览→向下滚动到分块完成情况。任务拥有独立`/data/comparison/piece-preview-h`目录；种子文件`/comparison/fixtures/piece-preview-h.torrent`、manifest `.lab/comparison/piece-preview.json`，与原seed.json分离。脚本`node scripts/seed-piece-comparison.mjs`首次只新增/校验H，重跑只读核对已存在H，不覆盖文件或重校验其他任务。未知目录拒绝覆盖，保留所有原任务及容器运行。
+
+H不属于原compare:reset管理的A–F样例，后者不能用于清理H；H保留供用户验收，若以后清理须明确按独立manifest/hash处理，不删除整个卷或其他目录。
+
+## 此前快照：完整任务列表与底部分页
+
+19081已更新本轮完整20列、行号、标签编辑、拖动、底部分页与每页最多5000条。默认出厂9列精确升级；自定义布局保留，可在列设置应用旧版完整列表并恢复前一份。向右横向滚动查看保存目录/最后活动/用户标签/完成时间等后续列，不会按视口自动隐藏。
+
+当前包摘要`336732457a7d5cb28b555ad1defbdfb27cc3109d14c91c30e0c9a618bd637609`；备份为`.lab/comparison/backups/before-table-parity-20261115/`及同名.deployment.json/.sha256.json。本次不操作compare容器或任务，A正在做种、其余5项暂停的既有状态保留。回退按资源先行、入口最后恢复备份与部署信息，不清数据库；列布局使用预设恢复按钮撤销。
+
+功能回归与四版非空字段核对已完成；完整长测排序/筛选超预算，独立短测通过，具体限制见validation.md，不把此快照当作完整性能认证或正式发布。
+
+最新小调整：默认仅展开全部任务，其余菜单缺省折叠；显式保存的偏好优先。19081已更新，当前包摘要`a3a5c0d97c587d4a5ed40840e21e1659292dd6a67fe52fd06e3245af0a3c9eef`。本次回退基线为`.lab/comparison/backups/before-default-collapse-20261115`及其同名.deployment.json，资源先行/入口最后恢复，无需操作daemon或卷。
+
+## 此前快照：2026-11-15 多级导航
+
+19081现为多级导航候选，包含服务器分布、路径树、统计及Lucide图标，保留单段流光Logo。入口：`http://localhost:19081/transmission/web/?lang=zh-CN`，刷新后查看。
+
+本次明确授权后先备份当时含Logo的资源和deployment.json：`.lab/comparison/backups/before-navigation-20261115/`、同目录`before-navigation-20261115.deployment.json`，逐文件摘要在同名`.sha256.json`。当前归档SHA-256：`c1276698e166a4ecc3a1675d200e82a757760f5f730aaae326c5853bafe6688e`。
+
+仅校验包并逐文件写静态资源，最后原子替换入口，保留以前哈希分块；未运行compare:up/down/reset，容器和数据卷不变。回退须将本次备份按资源先行/入口最后复制回modern-web，并恢复对应deployment.json，无需重启daemon或清理浏览器数据库。新增可选导航偏好不妨碍旧构建读取原设置。最初Logo前备份属于更早版本，不是本次回退基线。
+
+浏览器只操作了展开、目录筛选和清除条件；六样例保持暂停和原进度，已返回全部任务。各目录/Tracker筛选会改变右侧任务集合，不改动daemon任务。累计与当前会话反映daemon持久化统计，可能与现存6个fixture数量不同。
+
+## 2026-11-15 品牌优化快照
+
+用户明确授权后，19081 已更新为双向环流标志与单段交替流光版本，页头及空状态统一，SVG/ICO favicon 随包部署。浏览器使用 `http://localhost:19081/transmission/web/?lang=zh-CN` 可验收；刷新页面加载新资源，favicon 缓存未更新时关闭并重开标签页。
+
+更新前备份：`.lab/comparison/backups/before-brand-refresh-20261115/`，原部署信息为同目录的 `before-brand-refresh-20261115.deployment.json`。最终归档 SHA-256 为 `6c9c90d05a32c832baa1d38f4ed9099d9aa1dbfdc0f61c4559f610df1193ad1f`，当前信息仍在 `.lab/comparison/deployment.json`。
+
+本次未执行 compare:up/down/reset：校验完整归档后先写入静态资源，再以同目录临时文件原子替换入口；不删除旧哈希分块，避免已打开页面的懒加载失效。运行目录位于父目录只读挂载内，不需要重启容器；任务、配置与旧 UI 不变。
+
+若用户要求回退，按相同资源先行、入口最后的方式，将上述备份文件复制回 `.lab/comparison/modern-web/` 并恢复备份 deployment.json；保留当前额外哈希文件无碍回退。无需操作数据卷或 daemon，重新刷新页面即可。备份及本次证据在本机忽略目录，不纳入 Release。
+
+以下是初始对照环境及通用说明；其中 compare:up 会重新准备快照并可能构建容器，后续不得未经明确授权执行。
+
 两套 UI 已部署为独立 Docker 入口，连接同一个隔离的 Transmission **4.1.4** 服务。
 
 | 界面 | 地址 | 来源 |

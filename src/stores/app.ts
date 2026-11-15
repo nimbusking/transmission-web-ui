@@ -1,3 +1,5 @@
+import { nonnegativeNumber } from '../domain/status';
+import type { SessionStatistics } from '../domain/navigation';
 import { defineStore } from 'pinia';
 import { computed, ref, shallowReactive, shallowRef } from 'vue';
 import type {
@@ -17,7 +19,6 @@ import type {
 import {
   applyDelta,
   BASE_FIELDS,
-  CONFIG_FIELDS,
   defaultSettings,
   DYNAMIC_FIELDS,
   errorMessage,
@@ -49,7 +50,8 @@ const allowedMethods = new Set([
 export const useAppStore = defineStore('application', () => {
   const settings = shallowRef<Settings>(defaultSettings()),
     session = shallowRef<Session>(),
-    stats = shallowRef<Record<string, number>>({});
+    stats = shallowRef<SessionStatistics>({});
+  const freeSpace = shallowRef<{ path: string; bytes?: number; error?: string }>({ path: '' });
   const byId = shallowReactive(new Map<number, Torrent>()),
     generation = ref(0),
     ready = ref(false),
@@ -79,12 +81,14 @@ export const useAppStore = defineStore('application', () => {
     lastSession = 0,
     detailSequence = 0;
   let operationController: AbortController | undefined;
-  let pendingFull = false;
+  let pendingFull = false,
+    disposed = false;
   const torrents = computed(() => Array.from(byId.values()));
   const current = computed(() =>
     selectedId.value === null ? undefined : byId.get(selectedId.value),
   );
   async function initialize(runtime: RuntimeConfig) {
+    disposed = false;
     config.value = runtime;
     rpc = new RpcClient(runtime.rpcUrl);
     const endpoint = new URL(runtime.rpcUrl),
@@ -123,7 +127,7 @@ export const useAppStore = defineStore('application', () => {
   }
   function schedule() {
     stopTimer();
-    if (!settings.value.ui.autoRefresh) return;
+    if (disposed || !settings.value.ui.autoRefresh) return;
     const delay = document.hidden ? 30000 : Math.max(2000, settings.value.ui.refreshIntervalMs);
     timer = setTimeout(async () => {
       try {
@@ -136,7 +140,8 @@ export const useAppStore = defineStore('application', () => {
     }, delay);
   }
   function visibilityChanged() {
-    if (!document.hidden && ready.value) void refresh(true).catch(() => {});
+    if (!disposed && settings.value.ui.autoRefresh && !document.hidden && ready.value)
+      void refresh(true).catch(() => {});
     schedule();
   }
   async function connect(username?: string, password?: string) {
@@ -146,6 +151,9 @@ export const useAppStore = defineStore('application', () => {
     controller = new AbortController();
     refreshTask = null;
     generation.value++;
+    stats.value = {};
+    session.value = undefined;
+    freeSpace.value = { path: '' };
     const epoch = generation.value;
     ready.value = false;
     connecting.value = true;
@@ -175,7 +183,14 @@ export const useAppStore = defineStore('application', () => {
       }
     }
   }
+  async function refreshSnapshot(): Promise<void> {
+    // A joined full request may only queue reconciliation; wait for the active
+    // chain to settle before capturing the scope of a global operation.
+    while (refreshTask) await refreshTask;
+    await refresh(true);
+  }
   function refresh(full = false): Promise<void> {
+    if (disposed) return Promise.resolve();
     if (refreshTask) {
       pendingFull ||= full;
       return refreshTask;
@@ -222,6 +237,8 @@ export const useAppStore = defineStore('application', () => {
         const statistics = await rpc.call('session-stats', {}, { signal: controller.signal });
         if (epoch !== generation.value) return;
         stats.value = statistics;
+        await refreshFreeSpace(epoch);
+        if (epoch !== generation.value) return;
         lastUpdated.value = Date.now();
         stale.value = false;
         error.value = '';
@@ -247,10 +264,36 @@ export const useAppStore = defineStore('application', () => {
     refreshTask = task;
     return task;
   }
+  async function refreshFreeSpace(epoch: number) {
+    const path = session.value?.['download-dir'];
+    if (typeof path !== 'string' || !path) {
+      freeSpace.value = { path: '' };
+      return;
+    }
+    if (freeSpace.value.path !== path) freeSpace.value = { path };
+    // This read shares the existing refresh lifecycle; a disk query failure must
+    // not disconnect an otherwise healthy torrent list and speed snapshot.
+    try {
+      const result = await rpc.call(
+        'free-space',
+        { path },
+        {
+          signal: controller.signal,
+          timeoutMs: 5000,
+        },
+      );
+      if (epoch !== generation.value || path !== session.value?.['download-dir']) return;
+      freeSpace.value = { path, bytes: nonnegativeNumber(result['size-bytes']) };
+    } catch (e) {
+      if (epoch !== generation.value || path !== session.value?.['download-dir']) return;
+      freeSpace.value = { path, error: errorMessage(e) };
+    }
+  }
   function select(id: number | null) {
     selectedId.value = id;
     detail.value = undefined;
     detailError.value = '';
+    detailLoading.value = false;
     detailController?.abort();
     detailSequence++;
     if (id !== null) void loadDetail();
@@ -286,7 +329,6 @@ export const useAppStore = defineStore('application', () => {
         ...(session.value!['rpc-version'] >= 17 ? ['trackerList'] : []),
       ],
       peers: ['id', 'peers', 'peersFrom'],
-      config: CONFIG_FIELDS,
     };
     try {
       const response = await rpc.torrents(fields[section], [id], {
@@ -586,6 +628,9 @@ export const useAppStore = defineStore('application', () => {
     matchJob.value = { ...job, items: job.items.map((x) => ({ ...x })) };
   }
   function dispose() {
+    disposed = true;
+    pendingFull = false;
+    generation.value++;
     stopTimer();
     controller.abort();
     detailController?.abort();
@@ -596,6 +641,7 @@ export const useAppStore = defineStore('application', () => {
     settings,
     session,
     stats,
+    freeSpace,
     byId,
     torrents,
     generation,
@@ -621,6 +667,7 @@ export const useAppStore = defineStore('application', () => {
     initialize,
     connect,
     refresh,
+    refreshSnapshot,
     select,
     loadDetail,
     targets,

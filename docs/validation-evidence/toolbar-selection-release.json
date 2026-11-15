@@ -1,0 +1,73 @@
+{
+  "at": "2026-11-15T15:56:18.225363+00:00",
+  "sha256": "00332fe05caa30837ecc8150061a3e90637d30822440f6c51663054fc3d890d4",
+  "previousSnapshotSha256": "d4b9c9641d809d3b278fffc79b1b4c17d49076847e653a4edb8956eb6a5724c2",
+  "archiveFilesVerified": 46,
+  "webFilesVerified": 37,
+  "snapshotUpdated": true,
+  "backupCreated": false,
+  "authorization": "本次工具栏验收修正，沿用用户刚才明确授权：回归验证之后直接更新19081，环境无需备份",
+  "containerActions": [],
+  "daemonWrites": [],
+  "taskCount": 7,
+  "tasksUnchanged": true,
+  "taskStates": [
+    {
+      "name": "对照-F-零字节文件",
+      "status": 0,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-H-大分块预览",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-A-完整文件",
+      "status": 6,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-D-多文件与中文",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-E-目录匹配",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-B-等待下载",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-C-部分数据",
+      "status": 0,
+      "percentDone": 0.5
+    }
+  ],
+  "browserTests": {
+    "passed": 36,
+    "report": ".lab/toolbar-selection-report",
+    "realDaemonExcluded": true
+  },
+  "unitTestsPassed": 66,
+  "fullStressRerun": false,
+  "rollback": {
+    "existingSnapshot": ".lab/comparison/backups/before-table-progress-20261115",
+    "sha256": "566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417",
+    "limitation": "Existing older snapshot; predates rectangular progress bar"
+  },
+  "browserLiveVerified": true,
+  "browserLiveStates": "artifacts/toolbar-selection-live.json",
+  "browserScreenshot": "artifacts/toolbar-selection-live.jpg",
+  "liveChecks": {
+    "detailOnlyTaskButtonsDisabled": true,
+    "checkedTaskButtonsEnabled": true,
+    "lastCheckClearedTaskButtonsDisabled": true,
+    "detailPreserved": true
+  },
+  "userAcceptance": "pending"
+}

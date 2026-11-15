@@ -1,0 +1,18 @@
+{
+  "at": "2026-11-15T18:50:09.505Z",
+  "version": "4.1.4 (a6d907d9ea)",
+  "rpc": 19,
+  "downloadSpeed": 0,
+  "uploadSpeed": 0,
+  "path": "/data",
+  "freeSpaceBytes": 970679914496,
+  "statvfsAvailableBytes": 970679914496,
+  "differenceBytes": 0,
+  "toleranceBytes": 1048576,
+  "readOnly": true,
+  "daemonWrites": [],
+  "containerActions": [
+    "read-only exec statvfs"
+  ],
+  "note": "Reads separated in time; filesystem may change due to unrelated host activity."
+}

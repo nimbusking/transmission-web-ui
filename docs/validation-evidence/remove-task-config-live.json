@@ -1,0 +1,16 @@
+{
+  "at": "2026-11-15T19:50:46.337633+00:00",
+  "url": "http://localhost:19081/transmission/web/?lang=zh-CN#/",
+  "task": "对照-D-多文件与中文",
+  "tabs": [
+    "概览",
+    "文件",
+    "服务器",
+    "Peer"
+  ],
+  "configFormPresent": false,
+  "screenshot": "artifacts/remove-task-config-live.png",
+  "detailScreenshot": "artifacts/remove-task-config-detail.png",
+  "browserPreferencesChanged": false,
+  "daemonWrites": []
+}

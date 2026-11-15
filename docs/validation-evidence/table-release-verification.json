@@ -1,0 +1,8 @@
+{
+  "archiveSha256": "336732457a7d5cb28b555ad1defbdfb27cc3109d14c91c30e0c9a618bd637609",
+  "verifiedWebFiles": 37,
+  "finalBuildMatched": true,
+  "backup": ".lab/comparison/backups/before-table-parity-20261115",
+  "containerActions": [],
+  "performance": "isolated short checks passed; full-duration run sort/filter budgets failed and retained. Final build differs only in local date formatting from performance build."
+}

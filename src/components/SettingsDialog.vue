@@ -179,12 +179,6 @@ async function external(kind: 'trackers' | 'release') {
       ><NTabPane name="appearance" :tab="t('appearance')"
         ><div class="form-stack">
           <label
-            >{{ t('theme')
-            }}<NSelect
-              :value="app.settings.ui.theme"
-              :options="['system', 'light', 'dark'].map((value) => ({ label: t(value), value }))"
-              @update:value="(theme) => app.updateUi({ theme })" /></label
-          ><label
             >{{ t('language')
             }}<NSelect
               :value="app.settings.ui.locale"
@@ -198,6 +192,7 @@ async function external(kind: 'trackers' | 'release') {
             >{{ t('refreshInterval')
             }}<NInputNumber
               :value="app.settings.ui.refreshIntervalMs"
+              :disabled="!app.settings.ui.autoRefresh"
               :min="2000"
               :max="300000"
               :step="1000"

@@ -1,3 +1,5 @@
+import type { LayoutTheme } from './themes';
+import type { VisualTheme } from './visual-themes';
 export type TorrentId = number;
 export interface Torrent {
   id: number;
@@ -85,7 +87,7 @@ export interface BatchResult {
   items: ItemResult[];
   completedAt: number;
 }
-export type DetailSection = 'general' | 'files' | 'trackers' | 'peers' | 'config';
+export type DetailSection = 'general' | 'files' | 'trackers' | 'peers';
 export interface ColumnSetting {
   key: string;
   width: number;
@@ -98,12 +100,18 @@ export interface Label {
   description?: string;
 }
 export interface UiSettings {
+  columnPresetVersion?: number;
+  columnsBackup?: ColumnSetting[];
+  navigationExpanded?: Record<string, boolean>;
   locale: string;
   theme: 'light' | 'dark' | 'system';
+  layoutTheme?: LayoutTheme;
+  visualTheme?: VisualTheme;
   refreshIntervalMs: number;
   autoRefresh: boolean;
   pagination: boolean;
   pageSize: number;
+  filePageSize?: number;
   sidebarWidth: number;
   detailHeight: number;
   forceDesktop: boolean;

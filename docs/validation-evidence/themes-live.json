@@ -1,0 +1,107 @@
+{
+  "url": "http://localhost:19081/transmission/web/?lang=zh-CN",
+  "layouts": [
+    {
+      "header": {
+        "bottom": 66,
+        "height": 66,
+        "left": 0,
+        "right": 1280,
+        "top": 0,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
+      "layout": "workbench",
+      "main": {
+        "bottom": 720,
+        "height": 606,
+        "left": 290,
+        "right": 1280,
+        "top": 114,
+        "width": 990,
+        "x": 290,
+        "y": 114
+      }
+    },
+    {
+      "header": {
+        "bottom": 52,
+        "height": 52,
+        "left": 0,
+        "right": 1280,
+        "top": 0,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
+      "layout": "console",
+      "main": {
+        "bottom": 720,
+        "height": 626,
+        "left": 220,
+        "right": 1280,
+        "top": 94,
+        "width": 1060,
+        "x": 220,
+        "y": 94
+      }
+    },
+    {
+      "header": {
+        "bottom": 66,
+        "height": 54,
+        "left": 276,
+        "right": 1264,
+        "top": 12,
+        "width": 988,
+        "x": 276,
+        "y": 12
+      },
+      "layout": "studio",
+      "main": {
+        "bottom": 704,
+        "height": 590,
+        "left": 276,
+        "right": 1264,
+        "top": 114,
+        "width": 988,
+        "x": 276,
+        "y": 114
+      }
+    },
+    {
+      "header": {
+        "bottom": 66,
+        "height": 66,
+        "left": 0,
+        "right": 1280,
+        "top": 0,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
+      "layout": "focus",
+      "main": {
+        "bottom": 720,
+        "height": 606,
+        "left": 56,
+        "right": 1280,
+        "top": 114,
+        "width": 1224,
+        "x": 56,
+        "y": 114
+      }
+    }
+  ],
+  "keyboardThemeSelection": true,
+  "focusDrawerOpenedAndClosed": true,
+  "focusAndExplicitLightSurvivedReload": true,
+  "settingsThemeRemoved": true,
+  "originalPreferencesRestored": {
+    "layout": "workbench",
+    "colorMode": "system"
+  },
+  "screenshot": "artifacts/themes-picker-live.jpg",
+  "taskActions": []
+}

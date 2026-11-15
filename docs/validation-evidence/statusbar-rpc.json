@@ -1,0 +1,81 @@
+{
+  "at": "2026-11-15T18:47:53.107Z",
+  "results": [
+    {
+      "version": "3.00 (bb6b5a062e)",
+      "rpc": 16,
+      "downloadSpeed": 0,
+      "uploadSpeed": 0,
+      "path": "/data",
+      "freeSpaceBytes": 33579069440,
+      "statvfsAvailableBytes": 33579069440,
+      "equal": true,
+      "readOnly": true,
+      "network": "none",
+      "calls": [
+        "session-get",
+        "session-get",
+        "session-get",
+        "session-stats",
+        "free-space"
+      ]
+    },
+    {
+      "version": "4.0.0 (280ace12f8)",
+      "rpc": 17,
+      "downloadSpeed": 0,
+      "uploadSpeed": 0,
+      "path": "/data",
+      "freeSpaceBytes": 33579069440,
+      "statvfsAvailableBytes": 33579069440,
+      "equal": true,
+      "readOnly": true,
+      "network": "none",
+      "calls": [
+        "session-get",
+        "session-get",
+        "session-stats",
+        "free-space"
+      ]
+    },
+    {
+      "version": "4.0.6 (38c164933e)",
+      "rpc": 17,
+      "downloadSpeed": 0,
+      "uploadSpeed": 0,
+      "path": "/data",
+      "freeSpaceBytes": 33579069440,
+      "statvfsAvailableBytes": 33579069440,
+      "equal": true,
+      "readOnly": true,
+      "network": "none",
+      "calls": [
+        "session-get",
+        "session-get",
+        "session-stats",
+        "free-space"
+      ]
+    },
+    {
+      "version": "4.1.4 (a6d907d9ea)",
+      "rpc": 19,
+      "downloadSpeed": 0,
+      "uploadSpeed": 0,
+      "path": "/data",
+      "freeSpaceBytes": 33579069440,
+      "statvfsAvailableBytes": 33579069440,
+      "equal": true,
+      "readOnly": true,
+      "network": "none",
+      "calls": [
+        "session-get",
+        "session-get",
+        "session-stats",
+        "free-space"
+      ]
+    }
+  ],
+  "daemonWrites": [],
+  "compareContainerActions": [],
+  "limitation": "Real idle-zero speeds verified; nonzero display mapping covered by controlled browser fixtures, no transfer started on compare tasks."
+}

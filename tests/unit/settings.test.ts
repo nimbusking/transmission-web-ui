@@ -100,3 +100,96 @@ it('import backup retains raw input and previous state, scoped to the endpoint',
     other.close();
   }
 });
+it('navigation preferences merge nodes transactionally and old v2 files remain valid', async () => {
+  const key = `nav-${crypto.randomUUID()}`,
+    a = new SettingsRepository(key),
+    b = new SettingsRepository(key);
+  try {
+    await Promise.all([a.init(), b.init()]);
+    expect(migrateSettings(defaultSettings()).settings.ui.navigationExpanded).toBeUndefined();
+    await Promise.all([
+      a.updateUi({ navigationExpanded: { 'folder:/a': true } }),
+      b.updateUi({ navigationExpanded: { 'stats:current-stats': false } }),
+    ]);
+    expect((await a.load()).ui.navigationExpanded).toEqual({
+      'folder:/a': true,
+      'stats:current-stats': false,
+    });
+  } finally {
+    a.close();
+    b.close();
+  }
+});
+it('complete preset and undo run in one transaction while preserving other preferences', async () => {
+  const repo = new SettingsRepository(`preset-${crypto.randomUUID()}`);
+  try {
+    await repo.init();
+    await repo.updateUi({
+      theme: 'dark',
+      navigationExpanded: { 'status:all': false },
+      columns: [{ key: 'name', width: 351, visible: true }],
+    });
+    const before = (await repo.load()).ui.columns;
+    const full = await repo.columnPreset();
+    expect(full.ui.columns.filter((x) => x.visible)).toHaveLength(20);
+    await repo.updateUi({ pageSize: 100 });
+    const restored = await repo.columnPreset(true);
+    expect(restored.ui.columns).toEqual(before);
+    expect(restored.ui.theme).toBe('dark');
+    expect(restored.ui.pageSize).toBe(100);
+    expect(restored.ui.navigationExpanded).toEqual({ 'status:all': false });
+  } finally {
+    repo.close();
+  }
+});
+
+it('adds a compatible layout default without resetting color mode or custom settings', () => {
+  const saved = defaultSettings();
+  delete saved.ui.layoutTheme;
+  saved.ui.theme = 'dark';
+  saved.ui.columns[0].width = 381;
+  saved.ui.navigationExpanded = { 'folder:/keep': true };
+  const migrated = migrateSettings(saved).settings;
+  expect(migrated.ui).toEqual({ ...saved.ui, layoutTheme: 'workbench' });
+  const future = { ...saved, ui: { ...saved.ui, layoutTheme: 'future-layout' } };
+  expect(migrateSettings(future).settings.ui).toEqual(migrated.ui);
+});
+
+it('layout and color mode persist independently under concurrent updates and import', async () => {
+  const key = `themes-${crypto.randomUUID()}`,
+    a = new SettingsRepository(key),
+    b = new SettingsRepository(key);
+  try {
+    await Promise.all([a.init(), b.init()]);
+    await Promise.all([a.updateUi({ layoutTheme: 'studio' }), b.updateUi({ theme: 'dark' })]);
+    const exported = await a.load();
+    expect(exported.ui.layoutTheme).toBe('studio');
+    expect(exported.ui.theme).toBe('dark');
+    await b.updateUi({ layoutTheme: 'focus' });
+    expect((await a.load()).ui.theme).toBe('dark');
+    await b.import(migrateSettings(JSON.parse(JSON.stringify(exported))));
+    expect((await a.load()).ui.layoutTheme).toBe('studio');
+    expect((await a.load()).ui.theme).toBe('dark');
+  } finally {
+    a.close();
+    b.close();
+  }
+});
+it('file page size defaults for existing v2 and persists independently from torrent pagination', async () => {
+  const existing = defaultSettings();
+  delete existing.ui.filePageSize;
+  expect(migrateSettings(existing).settings.ui.filePageSize).toBe(200);
+  existing.ui.filePageSize = -1;
+  expect(migrateSettings(existing).settings.ui.filePageSize).toBe(200);
+  const key = `file-pages-${crypto.randomUUID()}`,
+    a = new SettingsRepository(key),
+    b = new SettingsRepository(key);
+  try {
+    await Promise.all([a.init(), b.init()]);
+    await Promise.all([a.updateUi({ filePageSize: 50 }), b.updateUi({ pageSize: 100 })]);
+    expect((await b.load()).ui).toMatchObject({ filePageSize: 50, pageSize: 100 });
+  } finally {
+    a.close();
+    b.close();
+  }
+});

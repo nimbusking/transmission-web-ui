@@ -42,6 +42,8 @@ beforeEach(async () => {
 afterEach(() => {
   app.dispose();
   vi.unstubAllGlobals();
+  vi.useRealTimers();
+  vi.restoreAllMocks();
 });
 it('B01/B03/B10: empty startup works and failed refresh preserves cache and error text', async () => {
   expect(app.ready).toBe(true);
@@ -399,4 +401,263 @@ it('batch cancellation stops future commands while allowing the submitted item t
   ]);
   expect(calls.filter((call) => call.method === 'torrent-verify')).toHaveLength(1);
   expect(app.operationBusy).toBe(false);
+});
+it('statistics retain stale values on failure and clear across reconnect generations', async () => {
+  intercept = (body) =>
+    body.method === 'session-stats'
+      ? Promise.resolve(envelope(body, { 'current-stats': { uploadedBytes: 42 } }))
+      : undefined;
+  await app.refresh(true);
+  expect(app.stats['current-stats']?.uploadedBytes).toBe(42);
+  failList = true;
+  await expect(app.refresh()).rejects.toThrow();
+  expect(app.stale).toBe(true);
+  expect(app.stats['current-stats']?.uploadedBytes).toBe(42);
+  let release!: () => void;
+  intercept = (body) =>
+    body.method === 'session-get'
+      ? new Promise((resolve) => {
+          release = () =>
+            resolve(envelope(body, { version: '4.1.4', 'rpc-version': 19, 'session-id': 'new' }));
+        })
+      : undefined;
+  const reconnect = app.connect();
+  expect(app.stats).toEqual({});
+  failList = false;
+  release();
+  await reconnect;
+});
+it('closing details cancels its loading state and rejects late data without clearing checked tasks', async () => {
+  rows = [{ id: 1, hashString: 'a', name: 'Detail', downloadDir: '/data' }];
+  await app.refresh(true);
+  app.checkedIds = [1];
+  let release!: () => void;
+  intercept = (body) =>
+    body.method === 'torrent-get' && body.arguments.fields.includes('pieces')
+      ? new Promise((resolve) => {
+          release = () =>
+            resolve(envelope(body, { torrents: [{ ...rows[0], pieces: '////', pieceCount: 24 }] }));
+        })
+      : undefined;
+  app.select(1);
+  expect(app.detailLoading).toBe(true);
+  app.select(null);
+  expect(app.detailLoading).toBe(false);
+  expect(app.checkedIds).toEqual([1]);
+  expect(app.detail).toBeUndefined();
+  release();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  expect(app.selectedId).toBeNull();
+  expect(app.detail).toBeUndefined();
+  expect(app.detailLoading).toBe(false);
+});
+
+it('automatic refresh really polls, honors off/foreground, interval changes and manual refresh', async () => {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
+  vi.spyOn(document, 'hidden', 'get').mockReturnValue(false);
+  const lists = () => calls.filter((b) => b.method === 'torrent-get').length;
+  let count = lists();
+  await app.updateUi({ autoRefresh: true, refreshIntervalMs: 2000 });
+  await vi.advanceTimersByTimeAsync(1999);
+  expect(lists()).toBe(count);
+  await vi.advanceTimersByTimeAsync(1);
+  expect(lists()).toBe(++count);
+  await app.updateUi({ autoRefresh: false });
+  document.dispatchEvent(new Event('visibilitychange'));
+  await vi.advanceTimersByTimeAsync(10000);
+  expect(lists()).toBe(count);
+  await app.refresh(true);
+  expect(lists()).toBe(++count);
+  await app.updateUi({ autoRefresh: true, refreshIntervalMs: 4000 });
+  await vi.advanceTimersByTimeAsync(3999);
+  expect(lists()).toBe(count);
+  await vi.advanceTimersByTimeAsync(1);
+  expect(lists()).toBe(++count);
+  for (let i = 0; i < 3; i++) {
+    await app.updateUi({ autoRefresh: false });
+    await app.updateUi({ autoRefresh: true });
+  }
+  await vi.advanceTimersByTimeAsync(4000);
+  expect(lists()).toBe(++count);
+});
+it('automatic refresh uses background cadence and recovers after failed polling', async () => {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
+  let hidden = true;
+  vi.spyOn(document, 'hidden', 'get').mockImplementation(() => hidden);
+  const lists = () => calls.filter((b) => b.method === 'torrent-get').length;
+  let count = lists();
+  await app.updateUi({ autoRefresh: true, refreshIntervalMs: 2000 });
+  await vi.advanceTimersByTimeAsync(29999);
+  expect(lists()).toBe(count);
+  failList = true;
+  await vi.advanceTimersByTimeAsync(1);
+  expect(lists()).toBe(++count);
+  expect(app.stale).toBe(true);
+  failList = false;
+  await vi.advanceTimersByTimeAsync(30000);
+  expect(lists()).toBe(++count);
+  expect(app.stale).toBe(false);
+  hidden = false;
+  document.dispatchEvent(new Event('visibilitychange'));
+  await vi.advanceTimersByTimeAsync(0);
+  expect(lists()).toBe(++count);
+  await vi.advanceTimersByTimeAsync(2000);
+  expect(lists()).toBe(++count);
+});
+it('turning polling off or disposing during an in-flight tick never resurrects timers', async () => {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
+  vi.spyOn(document, 'hidden', 'get').mockReturnValue(false);
+  let release!: () => void;
+  intercept = (b) =>
+    b.method === 'torrent-get'
+      ? new Promise((resolve) => {
+          release = () => resolve(envelope(b, { torrents: [] }));
+        })
+      : undefined;
+  const lists = () => calls.filter((b) => b.method === 'torrent-get').length;
+  let count = lists();
+  await app.updateUi({ autoRefresh: true, refreshIntervalMs: 2000 });
+  await vi.advanceTimersByTimeAsync(2000);
+  expect(lists()).toBe(++count);
+  await app.updateUi({ autoRefresh: false });
+  release();
+  await vi.advanceTimersByTimeAsync(0);
+  await vi.advanceTimersByTimeAsync(10000);
+  expect(lists()).toBe(count);
+  await app.updateUi({ autoRefresh: true });
+  await vi.advanceTimersByTimeAsync(2000);
+  expect(lists()).toBe(++count);
+  const epoch = app.generation;
+  app.dispose();
+  release();
+  await vi.advanceTimersByTimeAsync(0);
+  document.dispatchEvent(new Event('visibilitychange'));
+  await app.refresh(true);
+  await vi.advanceTimersByTimeAsync(10000);
+  expect(lists()).toBe(count);
+  expect(app.generation).toBeGreaterThan(epoch);
+  expect(vi.getTimerCount()).toBe(0);
+});
+it('global scope snapshot waits for polling and deferred reconciliation before a fresh full read', async () => {
+  let release!: () => void;
+  let reads = 0,
+    completed = 0;
+  intercept = (body) => {
+    if (body.method !== 'torrent-get') return;
+    reads++;
+    if (reads === 1)
+      return new Promise((resolve) => {
+        release = () => {
+          completed++;
+          resolve(envelope(body, { torrents: [] }));
+        };
+      });
+    completed++;
+    return Promise.resolve(envelope(body, { torrents: [] }));
+  };
+  const polling = app.refresh(),
+    queued = app.refresh(true),
+    snapshot = app.refreshSnapshot();
+  expect(reads).toBe(1);
+  release();
+  await Promise.all([polling, queued, snapshot]);
+  expect(completed).toBe(reads);
+  expect(reads).toBeGreaterThanOrEqual(2);
+  expect(calls.filter((b) => b.method === 'torrent-get').at(-1).arguments.ids).toBeUndefined();
+});
+
+it('statusbar reads daemon-wide nonzero speeds and real default-directory bytes, preserving zero', async () => {
+  app.session!['download-dir'] = '/data/default';
+  let bytes = 123456789;
+  intercept = (body) => {
+    if (body.method === 'session-stats')
+      return Promise.resolve(envelope(body, { downloadSpeed: 4096, uploadSpeed: 2048 }));
+    if (body.method === 'free-space') {
+      expect(body.arguments).toEqual({ path: '/data/default' });
+      return Promise.resolve(envelope(body, { 'size-bytes': bytes }));
+    }
+  };
+  await app.refresh();
+  expect(app.stats).toEqual({ downloadSpeed: 4096, uploadSpeed: 2048 });
+  expect(app.freeSpace).toEqual({ path: '/data/default', bytes });
+  bytes = 0;
+  await app.refresh();
+  expect(app.freeSpace.bytes).toBe(0);
+  for (bytes of [-1, NaN, Infinity]) {
+    await app.refresh();
+    expect(app.freeSpace.bytes).toBeUndefined();
+  }
+});
+it('space failure clears obsolete directory value without failing healthy speeds/list, then recovers', async () => {
+  app.session!['download-dir'] = '/a';
+  let fail = false;
+  intercept = (body) => {
+    if (body.method === 'free-space')
+      return fail
+        ? Promise.reject(new Error('path denied'))
+        : Promise.resolve(envelope(body, { 'size-bytes': 12 }));
+  };
+  await app.refresh();
+  expect(app.freeSpace.bytes).toBe(12);
+  fail = true;
+  app.session!['download-dir'] = '/b';
+  await app.refresh();
+  expect(app.freeSpace).toEqual({ path: '/b', error: 'path denied' });
+  expect(app.stale).toBe(false);
+  fail = false;
+  await app.refresh();
+  expect(app.freeSpace).toEqual({ path: '/b', bytes: 12 });
+});
+it('reconnect clears disk/stat snapshots and rejects late disk responses from a prior generation', async () => {
+  app.session!['download-dir'] = '/a';
+  let release!: () => void;
+  intercept = (body) =>
+    body.method === 'free-space'
+      ? new Promise((resolve) => {
+          release = () => resolve(envelope(body, { 'size-bytes': 99 }));
+        })
+      : undefined;
+  const old = app.refresh();
+  await vi.waitFor(() => expect(release).toBeTypeOf('function'));
+  await app.connect();
+  expect(app.freeSpace).toEqual({ path: '' });
+  release();
+  await old;
+  expect(app.freeSpace).toEqual({ path: '' });
+});
+it('space result for a path changed during the read cannot populate the new path', async () => {
+  app.session!['download-dir'] = '/old';
+  intercept = (body) => {
+    if (body.method !== 'free-space') return;
+    app.session!['download-dir'] = '/new';
+    return Promise.resolve(envelope(body, { 'size-bytes': 99 }));
+  };
+  await app.refresh();
+  expect(app.freeSpace.bytes).toBeUndefined();
+});
+it('a slow disk query times out independently and does not disconnect valid transfer statistics', async () => {
+  app.session!['download-dir'] = '/data';
+  vi.useFakeTimers();
+  intercept = (body) => {
+    if (body.method === 'session-stats')
+      return Promise.resolve(envelope(body, { downloadSpeed: 42 }));
+    return undefined;
+  };
+  const original = globalThis.fetch;
+  vi.stubGlobal('fetch', (url: any, options: any) => {
+    const body = JSON.parse(options.body);
+    if (body.method !== 'free-space') return original(url, options);
+    return new Promise((_resolve, reject) => {
+      options.signal.addEventListener('abort', () =>
+        reject(new DOMException('timeout', 'AbortError')),
+      );
+    });
+  });
+  const reading = app.refresh();
+  await vi.advanceTimersByTimeAsync(5001);
+  await reading;
+  expect(app.freeSpace.bytes).toBeUndefined();
+  expect(app.freeSpace.error).toBeTruthy();
+  expect(app.stats.downloadSpeed).toBe(42);
+  expect(app.stale).toBe(false);
 });

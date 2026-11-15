@@ -95,7 +95,11 @@ test('mobile layout exposes common task operations and details', async ({ page }
   await expect(page.locator('.desktop-table')).toBeHidden();
   await page.locator('.mobile-transfer').click();
   await expect(page.locator('.detail-header')).toContainText('Mobile transfer');
-  await expect(page.getByRole('button', { name: '▷ Start', exact: true })).toBeEnabled();
-  await page.locator('.detail-header').getByRole('button', { name: 'Close' }).click();
+  await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeDisabled();
+  await page.locator('.mobile-transfer').getByRole('checkbox').check();
+  await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeEnabled();
+  await page.locator('.mobile-transfer').getByRole('checkbox').uncheck();
+  await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeDisabled();
+  await page.locator('.detail-header').getByRole('button', { name: 'Collapse details' }).click();
   await expect(page.locator('.detail-pane')).toHaveCount(0);
 });

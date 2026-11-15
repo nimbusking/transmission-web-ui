@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
-import { NModal, NButton, NInput, NInputNumber, NCheckbox, NSelect, NAlert } from 'naive-ui';
+import {
+  NModal,
+  NButton,
+  NInput,
+  NInputNumber,
+  NCheckbox,
+  NSelect,
+  NAlert,
+  useMessage,
+} from 'naive-ui';
 import { useI18n } from 'vue-i18n';
 import { useAppStore } from '../stores/app';
 import type { TorrentTarget } from '../domain/types';
@@ -9,6 +18,7 @@ const props = defineProps<{ action: string; targets: TorrentTarget[] }>(),
   emit = defineEmits<{ close: [] }>();
 const app = useAppStore(),
   { t } = useI18n(),
+  message = useMessage(),
   frozen = props.targets.map((x) => ({ ...x }));
 const names = frozen.map((x) => app.byId.get(x.id)?.name ?? x.hashString);
 const name = ref(names[0] ?? ''),
@@ -16,8 +26,12 @@ const name = ref(names[0] ?? ''),
   move = ref(false),
   verify = ref(false),
   deleteData = ref(false),
-  labels = ref<string[]>([]),
+  labels = ref<string[]>(
+    frozen.length === 1 ? [...(app.settings.torrentLabels[frozen[0].hashString] ?? [])] : [],
+  ),
   busy = ref(false),
+  verificationAttempted = ref(false),
+  globalAttempted = ref(false),
   error = ref('');
 const limits = reactive({
   downloadLimited: true,
@@ -25,7 +39,12 @@ const limits = reactive({
   uploadLimited: true,
   uploadLimit: 100,
 });
+const cancelButton = ref<{ $el: HTMLButtonElement } | null>(null);
+function focusCancel() {
+  if (['verify', 'startAll', 'stopAll'].includes(props.action)) cancelButton.value?.$el.focus();
+}
 async function submit() {
+  if (busy.value) return;
   busy.value = true;
   error.value = '';
   try {
@@ -59,11 +78,16 @@ async function submit() {
         method = 'torrent-set';
         args = { ...limits };
       }
+      if (props.action === 'verify') method = 'torrent-verify';
+      if (props.action === 'startAll') method = 'torrent-start';
+      if (props.action === 'stopAll') method = 'torrent-stop';
+      if (props.action === 'verify') verificationAttempted.value = true;
+      if (['startAll', 'stopAll'].includes(props.action)) globalAttempted.value = true;
       const result = await app.execute(method, frozen, args);
       if (result.items.some((x) => x.status !== 'success')) {
         error.value = result.items
           .filter((x) => x.status !== 'success')
-          .map((x) => `${x.name}: ${t(x.status)} ${x.message}`)
+          .map((x) => `${x.name}: ${t(x.status)} ${x.message ?? ''}`)
           .join('\n');
         return;
       }
@@ -76,6 +100,9 @@ async function submit() {
           return;
         }
       }
+    }
+    if (props.action === 'verify') {
+      message.info(t('verifySubmitted'));
     }
     emit('close');
   } catch (e) {
@@ -100,11 +127,21 @@ async function submit() {
     :closable="!busy"
     :mask-closable="!busy"
     @close="emit('close')"
+    @after-enter="focusCancel"
     ><p>{{ t('targetCount', { count: frozen.length }) }}</p>
     <div class="target-list">
       <div v-for="(item, index) in names" :key="index">{{ item }}</div>
     </div>
     <div class="form-stack">
+      <NAlert v-if="action === 'verify'" type="warning" :bordered="false">{{
+        t('verifyHint')
+      }}</NAlert>
+      <NAlert
+        v-if="action === 'startAll' || action === 'stopAll'"
+        type="warning"
+        :bordered="false"
+        >{{ t('globalActionHint') }}</NAlert
+      >
       <template v-if="action === 'remove'"
         ><p>{{ t('removeHint') }}</p>
         <NCheckbox v-model:checked="deleteData">{{ t('deleteData') }}</NCheckbox></template
@@ -118,6 +155,7 @@ async function submit() {
           @update:value="(value) => (directory = value)"
         /><NCheckbox v-model:checked="move">{{ t('moveData') }}</NCheckbox
         ><NCheckbox v-model:checked="verify">{{ t('verifyAfter') }}</NCheckbox
+        ><small v-if="verify">{{ t('verifyHint') }}</small
         ><small>{{ t('locateHint') }}</small></template
       ><template v-if="action === 'limits'"
         ><NCheckbox v-model:checked="limits.downloadLimited">{{ t('downloadLimited') }}</NCheckbox
@@ -139,15 +177,29 @@ async function submit() {
         multiple
         :options="app.settings.labels.map((x) => ({ label: x.name, value: x.id }))"
         :placeholder="t('labels')"
-      /><NAlert v-if="error" type="error">{{ error }}</NAlert>
+      /><NAlert v-if="error" type="error"
+        >{{ error }}
+        <p v-if="action === 'verify' && verificationAttempted">
+          {{ t('verifyReconcile') }}
+        </p>
+        <p v-if="globalAttempted">{{ t('globalReconcile') }}</p></NAlert
+      >
     </div>
     <template #footer
       ><div class="dialog-actions">
-        <NButton :disabled="busy" @click="emit('close')">{{ t('cancel') }}</NButton><NButton
+        <NButton
+          v-if="['verify', 'startAll', 'stopAll'].includes(action) && busy"
+          @click="app.cancelOperations"
+          >{{ t('cancelPending') }}</NButton
+        >
+        <NButton ref="cancelButton" :disabled="busy" @click="emit('close')">{{
+          t('cancel')
+        }}</NButton><NButton
           :type="action === 'remove' ? 'error' : 'primary'"
           :loading="busy"
+          :disabled="(action === 'verify' && verificationAttempted) || globalAttempted"
           @click="submit"
-          >{{ t('confirm') }}</NButton
+          >{{ t(action === 'verify' ? 'confirmVerify' : 'confirm') }}</NButton
         >
       </div></template
     ></NModal

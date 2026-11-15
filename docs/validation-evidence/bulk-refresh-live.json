@@ -1,0 +1,37 @@
+{
+  "intervalDisabled": true,
+  "intervalValue": "5",
+  "menu": [
+    {
+      "disabled": false,
+      "text": "全部暂停"
+    },
+    {
+      "disabled": false,
+      "text": "全部启动"
+    },
+    {
+      "disabled": true,
+      "text": "批量替换 Tracker"
+    }
+  ],
+  "stepButtonsDisabled": [
+    true,
+    true
+  ],
+  "confirmation": {
+    "count": 7,
+    "focusedButton": "取消",
+    "taskNames": [
+      "对照-A-完整文件22",
+      "对照-B-等待下载",
+      "对照-C-部分数据",
+      "对照-D-多文件与中文",
+      "对照-E-目录匹配",
+      "对照-F-零字节文件",
+      "对照-H-大分块预览"
+    ]
+  },
+  "originalAutoRefresh": "true",
+  "restoredAutoRefresh": "true"
+}

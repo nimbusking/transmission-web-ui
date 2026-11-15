@@ -1,0 +1,17 @@
+{
+  "archiveSha256": "7fe68e0576c93c8182cb06c641b88fc80157b608b98b4a026e9ce78f20e033fe",
+  "verifiedArchiveFiles": 46,
+  "verifiedWebFiles": 37,
+  "finalBuildMatched": true,
+  "snapshotUpdated": false,
+  "runningSnapshotSha256": "566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417",
+  "unitTestsPassed": 66,
+  "browserTestsPassed": 12,
+  "browserEvidence": {
+    "tableParity": "6 cases passed in table-progress; same final build",
+    "rectangularProgress": "6 cases passed in table-progress-final; light/dark, 3 browsers"
+  },
+  "longStressRerun": false,
+  "containerActions": [],
+  "daemonWrites": []
+}

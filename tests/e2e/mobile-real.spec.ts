@@ -13,23 +13,33 @@ for (const [port, version] of [
       data = fixture(name);
     await page.goto(`http://127.0.0.1:${port}/transmission/web/index.mobile.html?lang=en`);
     await expect(page).toHaveURL(/index\.html\?lang=en#\/torrents$/);
-    await page.getByRole('button', { name: '＋ Add transfer', exact: true }).click();
+    await page
+      .locator('.toolbar')
+      .getByRole('button', { name: 'Add transfer', exact: true })
+      .click();
     await page.locator('input[type=file]').setInputFiles({
       name: 'mobile.torrent',
       mimeType: 'application/x-bittorrent',
       buffer: Buffer.from(data.metainfo, 'base64'),
     });
-    await page.getByRole('button', { name: 'Add transfer', exact: true }).click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Add transfer', exact: true })
+      .click();
     const row = page.locator('.mobile-transfer').filter({ hasText: name });
     await expect(row).toBeVisible();
     await row.click();
+    await row.getByRole('checkbox').check();
     await expect(page.locator('.detail-pane')).toContainText(name);
-    await page.getByRole('button', { name: '▷ Start', exact: true }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
     await expect(row).toContainText('Downloading');
-    await page.getByRole('button', { name: 'Ⅱ Pause', exact: true }).click();
+    await page.getByRole('button', { name: 'Pause', exact: true }).click();
     await expect(row).toContainText('Paused');
-    await page.getByRole('button', { name: 'More ▾', exact: true }).click();
-    await page.locator('.n-dropdown-menu').getByText('Verify data', { exact: true }).click();
+    await page
+      .locator('.toolbar')
+      .getByRole('button', { name: 'Verify data', exact: true })
+      .click();
+    await page.getByRole('button', { name: 'Start verification', exact: true }).click();
     await expect(row).toContainText('Paused', { timeout: 10000 });
     await page.getByRole('button', { name: 'Remove', exact: true }).first().click();
     await page.getByRole('button', { name: 'Confirm', exact: true }).click();

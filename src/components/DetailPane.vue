@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { computed, h, reactive, ref, watch } from 'vue';
+import { computed, h, ref, watch } from 'vue';
+import {
+  fileRows,
+  filePattern,
+  filterFiles,
+  sortFiles,
+  type FilePreset,
+  type FileSortKey,
+} from '../domain/torrent-files';
+import { ChevronDown, RefreshCw, Check, Ban, Flag } from '@lucide/vue';
 import {
   NTabs,
   NTab,
   NButton,
   NInput,
   NCheckbox,
-  NInputNumber,
+  NPagination,
+  NSelect,
+  NDropdown,
   NDataTable,
   NModal,
   NAlert,
@@ -18,7 +29,6 @@ import { useAppStore } from '../stores/app';
 import type { DetailSection, TorrentTarget } from '../domain/types';
 import PieceMap from './PieceMap.vue';
 import {
-  CONFIG_FIELDS,
   STATUS_NAMES,
   formatDuration,
   errorMessage,
@@ -30,6 +40,10 @@ import { externalText } from '../services/files';
 const app = useAppStore(),
   { t } = useI18n(),
   message = useMessage();
+const filePage = ref(1),
+  filePreset = ref<FilePreset>('all'),
+  fileSort = ref<{ key?: FileSortKey; descending: boolean }>({ descending: false });
+const filePageSize = computed(() => app.settings.ui.filePageSize ?? 200);
 const fileQuery = ref(''),
   regex = ref(false),
   checkedFiles = ref<number[]>([]),
@@ -38,10 +52,7 @@ const fileQuery = ref(''),
   trackerTarget = ref<TorrentTarget>(),
   expectedTrackers = ref<string[]>([]),
   originalTrackers = ref<{ id: number; announce: string; tier: number }[]>([]);
-const configDraft = reactive<Record<string, any>>({}),
-  dirty = ref(false),
-  configTarget = ref<TorrentTarget>(),
-  busy = ref(false),
+const busy = ref(false),
   failure = ref(''),
   ipResult = ref(''),
   renamePath = ref(''),
@@ -50,53 +61,112 @@ const configDraft = reactive<Record<string, any>>({}),
 watch(
   () => app.selectedId,
   () => {
-    dirty.value = false;
     checkedFiles.value = [];
     fileQuery.value = '';
+    filePreset.value = 'all';
+    fileSort.value = { descending: false };
+    filePage.value = 1;
     failure.value = '';
-    configTarget.value = undefined;
   },
 );
-watch(
-  () => app.detail,
-  (detail) => {
-    if (detail && app.detailSection === 'config' && !dirty.value && app.selectedId !== null) {
-      for (const key of CONFIG_FIELDS.filter((x) => x !== 'id')) configDraft[key] = detail[key];
-      configTarget.value = app.targets([app.selectedId])[0];
-    }
-  },
-);
-const fileFilter = computed(() => {
-  try {
-    return regex.value ? new RegExp(fileQuery.value, 'i') : null;
-  } catch {
-    return 'invalid';
-  }
-});
+const fileFilter = computed(() => filePattern(fileQuery.value, regex.value));
+const allFiles = computed(() => fileRows(app.detail));
 const files = computed(() =>
-  (app.detail?.files ?? [])
-    .map((file, index) => ({ ...file, index, stat: app.detail?.fileStats?.[index] }))
-    .filter((file) =>
-      fileFilter.value === 'invalid'
-        ? false
-        : fileFilter.value
-          ? fileFilter.value.test(file.name)
-          : file.name.toLowerCase().includes(fileQuery.value.toLowerCase()),
-    ),
+  sortFiles(
+    filterFiles(allFiles.value, fileQuery.value, fileFilter.value, filePreset.value),
+    fileSort.value.key,
+    fileSort.value.descending,
+  ),
 );
-watch([fileQuery, regex], () => (checkedFiles.value = []));
+const filePages = computed(() => Math.max(1, Math.ceil(files.value.length / filePageSize.value)));
+const pagedFiles = computed(() =>
+  files.value.slice((filePage.value - 1) * filePageSize.value, filePage.value * filePageSize.value),
+);
+watch([fileQuery, regex, filePreset, fileSort, filePageSize], () => {
+  filePage.value = 1;
+  checkedFiles.value = [];
+});
+watch(filePage, () => (checkedFiles.value = []));
+watch(pagedFiles, (rows) => {
+  if (filePage.value > filePages.value) filePage.value = filePages.value;
+  const valid = new Set(rows.map((row) => row.index));
+  checkedFiles.value = checkedFiles.value.filter((index) => valid.has(index));
+});
+function fileSortChanged(
+  sorter: { columnKey: string | number; order: 'ascend' | 'descend' | false } | null,
+) {
+  fileSort.value = {
+    key: sorter?.order ? (sorter.columnKey as FileSortKey) : undefined,
+    descending: sorter?.order === 'descend',
+  };
+}
+function sortableFile(key: FileSortKey) {
+  return {
+    sorter: 'default' as const,
+    sortOrder:
+      fileSort.value.key === key
+        ? fileSort.value.descending
+          ? ('descend' as const)
+          : ('ascend' as const)
+        : (false as const),
+  };
+}
+const filePresets = computed(() =>
+  (['all', 'padding', 'unnecessary'] as const).map((value) => ({
+    value,
+    label: t(`filePreset_${value}`),
+  })),
+);
+const filePriorityOptions = computed(() =>
+  ['high', 'normal', 'low'].map((level) => ({
+    key: `priority-${level}`,
+    label: t(
+      level === 'high' ? 'priorityHigh' : level === 'normal' ? 'priorityNormal' : 'priorityLow',
+    ),
+  })),
+);
+const fileActionDisabled = computed(
+  () => !checkedFiles.value.length || busy.value || !app.ready || app.stale || app.detailLoading,
+);
+async function refreshFiles() {
+  await attempt(async () => {
+    await app.loadDetail('files');
+    if (app.detailError) throw new Error(app.detailError);
+  });
+}
 const fileColumns = computed<DataTableColumns<any>>(() => [
   { type: 'selection', width: 40 },
-  { key: 'name', title: t('name'), minWidth: 320, ellipsis: { tooltip: true } },
-  { key: 'length', title: t('totalSize'), width: 110, render: (row) => formatBytes(row.length) },
+  {
+    key: 'name',
+    title: t('name'),
+    minWidth: 280,
+    ellipsis: { tooltip: true },
+    ...sortableFile('name'),
+  },
+  {
+    key: 'length',
+    title: t('totalSize'),
+    width: 110,
+    render: (row) => formatBytes(row.length),
+    ...sortableFile('length'),
+  },
   {
     key: 'progress',
+    ...sortableFile('progress'),
     title: t('percentDone'),
     width: 100,
     render: (row) => `${(fileProgress(row.bytesCompleted, row.length) * 100).toFixed(1)}%`,
   },
   {
+    key: 'bytesCompleted',
+    title: t('fileDownloaded'),
+    width: 110,
+    ...sortableFile('bytesCompleted'),
+    render: (row) => formatBytes(row.bytesCompleted),
+  },
+  {
     key: 'wanted',
+    ...sortableFile('wanted'),
     title: t('wantedColumn'),
     width: 90,
     render: (row) => (row.stat?.wanted ? '✓' : '—'),
@@ -281,23 +351,6 @@ async function saveTrackers() {
     if (trackerTarget.value === target) trackerEdit.value = false;
   });
 }
-async function saveConfig() {
-  const target = configTarget.value!,
-    draft = { ...configDraft };
-  await attempt(async () => {
-    await app.command('torrent-set', [target], draft);
-    if (
-      app.selectedId === target.id &&
-      app.generation === target.generation &&
-      app.detailSection === 'config' &&
-      JSON.stringify(configDraft) === JSON.stringify(draft)
-    ) {
-      dirty.value = false;
-      await app.loadDetail('config');
-    }
-    message.success(t('success'));
-  });
-}
 async function lookup(ip: string) {
   await attempt(async () => {
     ipResult.value = await externalText(
@@ -319,10 +372,10 @@ async function copyMagnet() {
     <header class="detail-header">
       <strong :title="app.current?.name">{{ app.current?.name }}</strong><NButton
         quaternary
-        size="tiny"
-        :aria-label="t('close')"
+        size="small"
+        :aria-label="t('collapseDetails')"
         @click="app.select(null)"
-        >×</NButton
+        ><template #icon><ChevronDown :size="14" /></template>{{ t('collapseDetails') }}</NButton
       >
     </header>
     <NTabs
@@ -333,7 +386,7 @@ async function copyMagnet() {
       type="line"
       @update:value="(value) => app.loadDetail(value as DetailSection)"
       ><NTab
-        v-for="section in ['general', 'files', 'trackers', 'peers', 'config']"
+        v-for="section in ['general', 'files', 'trackers', 'peers']"
         :key="section"
         :name="section"
         role="tab"
@@ -365,53 +418,114 @@ async function copyMagnet() {
             t('copyMagnet')
           }}</NButton>
         </dd>
-        <dt>{{ t('pieceProgress') }}</dt>
-        <dd>
-          <PieceMap
-            v-if="app.detail?.pieces"
-            :encoded="app.detail.pieces"
-            :count="app.detail.pieceCount || 0"
-          />
-        </dd>
       </dl>
-      <template v-if="app.detailSection === 'files'"
-        ><div class="detail-toolbar">
-          <NInput
-            v-model:value="fileQuery"
-            size="small"
-            :placeholder="t('fileSearch')"
-            clearable
-          /><NCheckbox v-model:checked="regex">{{ t('regex') }}</NCheckbox
-          ><NButton
-            v-for="[key, text] in [
-              ['files-wanted', 'wanted'],
-              ['files-unwanted', 'unwanted'],
-              ['priority-high', 'priorityHigh'],
-              ['priority-normal', 'priorityNormal'],
-              ['priority-low', 'priorityLow'],
-            ]"
-            :key="key"
-            size="tiny"
-            :disabled="!checkedFiles.length || busy"
-            @click="fileCommand(key)"
-            >{{ t(text) }}</NButton
-          >
-        </div>
-        <span v-if="fileFilter === 'invalid'" class="error-text">{{
-          t('invalidRegex')
-        }}</span><NDataTable
+      <section
+        v-if="app.detailSection === 'general' && app.detail?.pieces"
+        class="overview-pieces"
+        :aria-label="t('pieceProgress')"
+      >
+        <h3>{{ t('pieceProgress') }}</h3>
+        <PieceMap
+          :key="app.selectedId!"
+          :encoded="app.detail.pieces"
+          :count="app.detail.pieceCount || 0"
+          :piece-size="app.detail.pieceSize ?? NaN"
+          :total-size="app.detail.totalSize ?? NaN"
+        />
+      </section>
+      <template v-if="app.detailSection === 'files'">
+        <span v-if="fileFilter === 'invalid'" class="error-text">{{ t('invalidRegex') }}</span>
+        <NDataTable
+          class="torrent-file-table"
           v-model:checked-row-keys="checkedFiles"
           :columns="fileColumns"
-          :data="files"
+          :data="pagedFiles"
           :row-key="(row) => row.index"
+          remote
           virtual-scroll
           flex-height
           :min-row-height="32"
           :height-for-row="() => 32"
-          :scroll-x="900"
+          :scroll-x="990"
           size="small"
           :bordered="false"
-      /></template>
+          @update:sorter="fileSortChanged"
+        />
+        <footer class="file-list-footer">
+          <div class="file-page-controls">
+            <span class="file-list-summary">{{
+              t('fileListSummary', {
+                from: files.length ? (filePage - 1) * filePageSize + 1 : 0,
+                to: Math.min(filePage * filePageSize, files.length),
+                matched: files.length,
+                total: allFiles.length,
+                selected: checkedFiles.length,
+              })
+            }}</span>
+            <NPagination
+              v-model:page="filePage"
+              :page-size="filePageSize"
+              :item-count="files.length"
+              :page-slot="3"
+              size="small"
+              show-size-picker
+              show-quick-jumper
+              :page-sizes="
+                [...new Set([10, 20, 30, 40, 50, 100, 150, 200, 250, 300, 5000, filePageSize])]
+                  .sort((a, b) => a - b)
+                  .map((value) => ({ label: t('perPage', { count: value }), value }))
+              "
+              :prefix="() => t('pageOf', { page: filePage, pages: filePages })"
+              :aria-label="t('filePagination')"
+              @update:page-size="(filePageSize) => app.updateUi({ filePageSize })"
+            />
+          </div>
+          <div class="file-action-controls">
+            <NButton
+              size="tiny"
+              :title="t('refreshFiles')"
+              :aria-label="t('refreshFiles')"
+              :loading="app.detailLoading"
+              :disabled="busy || !app.ready || app.stale"
+              @click="refreshFiles"
+              ><template #icon><RefreshCw :size="15" /></template
+            ></NButton>
+            <NButton size="tiny" :disabled="fileActionDisabled" @click="fileCommand('files-wanted')"
+              ><template #icon><Check :size="15" /></template>{{ t('wanted') }}</NButton
+            >
+            <NButton
+              size="tiny"
+              :disabled="fileActionDisabled"
+              @click="fileCommand('files-unwanted')"
+              ><template #icon><Ban :size="15" /></template>{{ t('unwanted') }}</NButton
+            >
+            <NDropdown
+              :options="filePriorityOptions"
+              :disabled="fileActionDisabled"
+              trigger="click"
+              @select="fileCommand"
+              ><NButton size="tiny" :aria-label="t('filePriority')" :disabled="fileActionDisabled"
+                ><template #icon><Flag :size="15" /></template>{{ t('priority')
+                }}<ChevronDown :size="12" /></NButton
+            ></NDropdown>
+            <NSelect
+              v-model:value="filePreset"
+              class="file-preset"
+              size="small"
+              :options="filePresets"
+              :aria-label="t('filePreset')"
+            />
+            <NInput
+              v-model:value="fileQuery"
+              class="file-query"
+              size="small"
+              :placeholder="t('fileSearch')"
+              clearable
+            />
+            <NCheckbox v-model:checked="regex">{{ t('regex') }}</NCheckbox>
+          </div>
+        </footer>
+      </template>
       <template v-if="app.detailSection === 'trackers'"
         ><div class="detail-toolbar">
           <NButton size="tiny" :disabled="!app.detail || busy" @click="editTrackers">{{
@@ -439,29 +553,6 @@ async function copyMagnet() {
         size="small"
         :bordered="false"
       />
-      <div v-if="app.detailSection === 'config'" class="config-grid">
-        <label
-          v-for="key in CONFIG_FIELDS.filter((x) => x !== 'id' && configDraft[x] !== undefined)"
-          :key="key"
-          ><span>{{ t(key) }}</span
-          ><NCheckbox
-            v-if="typeof configDraft[key] === 'boolean'"
-            v-model:checked="configDraft[key]"
-            @update:checked="dirty = true" /><NInputNumber
-            v-else
-            v-model:value="configDraft[key]"
-            :min="key === 'bandwidthPriority' ? -1 : 0"
-            :max="key.endsWith('Mode') ? 2 : key === 'bandwidthPriority' ? 1 : undefined"
-            size="small"
-            @update:value="dirty = true" /></label
-        ><NButton
-          type="primary"
-          :loading="busy"
-          :disabled="!dirty || !configTarget"
-          @click="saveConfig"
-          >{{ t('save') }}</NButton
-        >
-      </div>
     </div>
     <NModal
       v-model:show="trackerEdit"

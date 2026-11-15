@@ -1,0 +1,122 @@
+{
+  "at": "2026-11-15T16:16:02.918Z",
+  "results": [
+    {
+      "version": "3.00 (bb6b5a062e)",
+      "cases": [
+        {
+          "case": "corrupt-half",
+          "haveValid": 16384,
+          "percentDone": 0.5,
+          "status": 0,
+          "pieces": "gA==",
+          "requestAccepted": true,
+          "actualCompletionChecked": true,
+          "fileUnchanged": true
+        },
+        {
+          "case": "complete",
+          "haveValid": 32768,
+          "percentDone": 1,
+          "status": 0,
+          "pieces": "wA==",
+          "requestAccepted": true,
+          "actualCompletionChecked": true,
+          "fileUnchanged": true
+        }
+      ],
+      "hashOnlyRequests": true,
+      "network": "none",
+      "hostPorts": [],
+      "sharedMounts": []
+    },
+    {
+      "version": "4.0.0 (280ace12f8)",
+      "cases": [
+        {
+          "case": "corrupt-half",
+          "haveValid": 16384,
+          "percentDone": 0.5,
+          "status": 0,
+          "pieces": "gA==",
+          "requestAccepted": true,
+          "actualCompletionChecked": true,
+          "fileUnchanged": true
+        },
+        {
+          "case": "complete",
+          "haveValid": 32768,
+          "percentDone": 1,
+          "status": 0,
+          "pieces": "wA==",
+          "requestAccepted": true,
+          "actualCompletionChecked": true,
+          "fileUnchanged": true
+        }
+      ],
+      "hashOnlyRequests": true,
+      "network": "none",
+      "hostPorts": [],
+      "sharedMounts": []
+    },
+    {
+      "version": "4.0.6 (38c164933e)",
+      "cases": [
+        {
+          "case": "corrupt-half",
+          "haveValid": 16384,
+          "percentDone": 0.5,
+          "status": 0,
+          "pieces": "gA==",
+          "requestAccepted": true,
+          "actualCompletionChecked": true,
+          "fileUnchanged": true
+        },
+        {
+          "case": "complete",
+          "haveValid": 32768,
+          "percentDone": 1,
+          "status": 0,
+          "pieces": "wA==",
+          "requestAccepted": true,
+          "actualCompletionChecked": true,
+          "fileUnchanged": true
+        }
+      ],
+      "hashOnlyRequests": true,
+      "network": "none",
+      "hostPorts": [],
+      "sharedMounts": []
+    },
+    {
+      "version": "4.1.4 (a6d907d9ea)",
+      "cases": [
+        {
+          "case": "corrupt-half",
+          "haveValid": 16384,
+          "percentDone": 0.5,
+          "status": 0,
+          "pieces": "gA==",
+          "requestAccepted": true,
+          "actualCompletionChecked": true,
+          "fileUnchanged": true
+        },
+        {
+          "case": "complete",
+          "haveValid": 32768,
+          "percentDone": 1,
+          "status": 0,
+          "pieces": "wA==",
+          "requestAccepted": true,
+          "actualCompletionChecked": true,
+          "fileUnchanged": true
+        }
+      ],
+      "hashOnlyRequests": true,
+      "network": "none",
+      "hostPorts": [],
+      "sharedMounts": []
+    }
+  ],
+  "comparisonContainersTouched": false
+}

@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-16",
+  "timezone": "Asia/Shanghai",
+  "scope": "Transmission 3.00 actual UI behavior; excludes interface coverage and other-platform certification",
+  "releaseSha256": "cf927e7a81040fcd1b2b2cfdd030d9167787549ea61aa1872da8504ea9e0c179",
+  "frozenFiles": 37,
+  "frozenFilesMatch": true,
+  "unitPassed": 92,
+  "browserControlledPassed": 162,
+  "browserReport": ".lab/seal-audit-report",
+  "diagnosticsReproduced": 6,
+  "diagnosticsAreAcceptancePass": false,
+  "nativeVersion": "3.00 (bb6b5a062e)",
+  "nativeCase": "32768 total / 16384 wanted verified / 0 left -> current UI completeSize 32768; limits100 readback matches",
+  "comparisonWrites": [],
+  "productionCodeChanged": false,
+  "deployed": false,
+  "containersCleaned": true,
+  "report": "docs/transmission-3-ui-review-2026-11-16.md",
+  "nativeScript": "artifacts/ui3-native-audit.mjs",
+  "diagnosticScript": "artifacts/seal-audit.test.ts",
+  "notes": [
+    "A05 is an RPC17 diagnostic, not native 3.00 evidence",
+    "162 UI cases were already running before user narrowed scope; do not equate with native 3.00"
+  ]
+}

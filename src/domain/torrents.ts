@@ -1,3 +1,4 @@
+import { hasWarning, inFolder, torrentServers, trackerServer } from './navigation';
 import type { Torrent, ColumnSetting, Settings } from './types';
 
 export const BASE_FIELDS = [
@@ -59,7 +60,7 @@ export const STATUS_NAMES: Record<number, string> = {
   5: 'seedWait',
   6: 'seeding',
 };
-export const DEFAULT_COLUMNS: ColumnSetting[] = [
+export const PREVIOUS_DEFAULT_COLUMNS: ColumnSetting[] = [
   ['name', 300, true],
   ['totalSize', 100, true],
   ['percentDone', 120, true],
@@ -88,20 +89,53 @@ export const DEFAULT_COLUMNS: ColumnSetting[] = [
   width: Number(width),
   visible: Boolean(visible),
 }));
+export const DEFAULT_COLUMNS: ColumnSetting[] = [
+  ['name', 300, true],
+  ['totalSize', 100, true],
+  ['percentDone', 120, true],
+  ['eta', 100, true],
+  ['uploadRatio', 80, true],
+  ['status', 110, true],
+  ['seederCount', 110, true],
+  ['leecherCount', 110, true],
+  ['rateDownload', 110, true],
+  ['rateUpload', 110, true],
+  ['completeSize', 110, true],
+  ['uploadedEver', 110, true],
+  ['addedDate', 170, true],
+  ['id', 60, true],
+  ['queuePosition', 70, true],
+  ['trackers', 200, true],
+  ['downloadDir', 220, true],
+  ['activityDate', 170, true],
+  ['labels', 170, true],
+  ['doneDate', 170, true],
+  ['downloadedEver', 110, false],
+  ['isPrivate', 80, false],
+  ['errorString', 220, false],
+].map(([key, width, visible]) => ({
+  key: String(key),
+  width: Number(width),
+  visible: Boolean(visible),
+}));
 export function defaultSettings(): Settings {
   return {
     schemaVersion: 2,
     ui: {
       locale: 'auto',
       theme: 'system',
+      layoutTheme: 'workbench',
+      visualTheme: 'modern',
       refreshIntervalMs: 5000,
       autoRefresh: true,
       pagination: true,
       pageSize: 200,
+      filePageSize: 200,
       sidebarWidth: 220,
       detailHeight: 310,
       forceDesktop: false,
       columns: structuredClone(DEFAULT_COLUMNS),
+      columnPresetVersion: 1,
       ipUrl: 'https://ipinfo.io/{ip}/json',
       trackerListUrl:
         'https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_best.txt',
@@ -117,14 +151,13 @@ export function normalizeTorrent(raw: Torrent): Torrent {
   if (raw.fileStats)
     item.fileStats = raw.fileStats.map((x) => ({ ...x, wanted: Boolean(x.wanted) }));
   if (raw.trackerStats) {
-    item.seederCount = raw.trackerStats.reduce(
-      (sum, tracker) => sum + Math.max(0, tracker.seederCount ?? 0),
-      0,
-    );
-    item.leecherCount = raw.trackerStats.reduce(
-      (sum, tracker) => sum + Math.max(0, tracker.leecherCount ?? 0),
-      0,
-    );
+    for (const field of ['seederCount', 'leecherCount']) {
+      const values = raw.trackerStats.map((x) => x[field]);
+      item[field] =
+        values.length && values.every((x) => typeof x === 'number' && Number.isFinite(x) && x >= 0)
+          ? values.reduce((sum: number, x: number) => sum + x, 0)
+          : undefined;
+    }
   }
   return item;
 }
@@ -177,6 +210,8 @@ export function statusMatches(t: Torrent, filter: string): boolean {
       return t.status === 1 || t.status === 2;
     case 'error':
       return Boolean(t.error);
+    case 'warning':
+      return hasWarning(t);
     case 'private':
       return Boolean(t.isPrivate);
     default:
@@ -204,8 +239,8 @@ export function selectTorrents(
         `${t.name || ''} ${t.hashString || ''} ${t.downloadDir || ''}`
           .toLocaleLowerCase()
           .includes(query)) &&
-      (!options.folder || t.downloadDir === options.folder) &&
-      (!options.tracker || t.trackers?.some((x) => trackerHost(x.announce) === options.tracker)) &&
+      (!options.folder || inFolder(t.downloadDir, options.folder)) &&
+      (!options.tracker || torrentServers(t).includes(options.tracker)) &&
       (!options.label || settings.torrentLabels[t.hashString || '']?.includes(options.label)),
   );
   const key = options.sortKey,
@@ -224,7 +259,7 @@ export function selectTorrents(
                   .join(', ')
               : [
                   ...new Set(
-                    (torrent.trackers ?? []).map((tracker) => trackerHost(tracker.announce)),
+                    (torrent.trackers ?? []).map((tracker) => trackerServer(tracker.announce)),
                   ),
                 ]
                   .sort()
@@ -232,12 +267,29 @@ export function selectTorrents(
           ]),
         )
       : undefined;
+  const sortValue = (row: Torrent) => {
+    const value = derived?.get(row.id) ?? row[key];
+    if (typeof value === 'number') {
+      if (!Number.isFinite(value)) return undefined;
+      if (key === 'uploadRatio' && value === -2) return Infinity;
+      if ((key === 'eta' || key === 'uploadRatio') && value < 0) return undefined;
+      if (key.endsWith('Date') && value <= 0) return undefined;
+    }
+    return value;
+  };
   return result.sort((a, b) => {
-    const av = derived?.get(a.id) ?? a[key],
-      bv = derived?.get(b.id) ?? b[key];
+    const av = sortValue(a),
+      bv = sortValue(b);
+    const missingA = av == null;
+    const missingB = bv == null;
+    if (missingA !== missingB) return missingA ? 1 : -1;
     const value =
       typeof av === 'number' && typeof bv === 'number'
-        ? av - bv
+        ? av === bv
+          ? 0
+          : av > bv
+            ? 1
+            : -1
         : String(av ?? '').localeCompare(String(bv ?? ''), undefined, { numeric: true });
     return value * direction || a.id - b.id;
   });

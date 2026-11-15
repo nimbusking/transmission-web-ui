@@ -1,0 +1,40 @@
+{
+  "at": "2026-11-15T19:50:46.337633+00:00",
+  "deliveredScope": "Removed task configuration tab, generic editor/draft/save and config detail request route; preserved four other detail sections and global settings shared CSS",
+  "unit": {
+    "passed": 92,
+    "files": 11
+  },
+  "browser": {
+    "passed": 48,
+    "report": ".lab/remove-task-config-verified-report",
+    "output": ".lab/remove-task-config-verified-tests",
+    "projects": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "checks": [
+      "four detail tabs/no config field reads or writes",
+      "10000 files and pagination/original indices",
+      "detail dismissal",
+      "toolbar checkbox/controls",
+      "global settings grid display retained",
+      "local import/cross-tab values, diff confirmation/manual diagnostics"
+    ]
+  },
+  "static": [
+    "lint",
+    "format",
+    "typecheck/build",
+    "strict OpenSpec",
+    "diff",
+    "legacy816",
+    "gzip345.8KiB <=800"
+  ],
+  "cancelledWork": "Proposed typed task-config redesign/validator/readback path and candidate-only tests removed; not published",
+  "nativeEvidence": "torrent-config-cancellation.json",
+  "nativeLimitations": "Only 3.00 isolated config test reached the zero-idle boundary failure; other versions and seeding behavior phases were not reached, not a four-version pass",
+  "stressRerun": false,
+  "dsmHardwareVerified": false
+}

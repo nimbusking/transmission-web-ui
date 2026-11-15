@@ -40,7 +40,7 @@ test('mixed URL/file queue settles errors, reports duplicates and handles drag/d
     await route.fulfill({ json: { result: 'success', arguments: args, tag: body.tag } });
   });
   await page.goto('/?lang=en');
-  await page.getByRole('button', { name: '＋ Add transfer', exact: true }).click();
+  await page.locator('.toolbar').getByRole('button', { name: 'Add transfer', exact: true }).click();
   await page
     .getByPlaceholder('One link per line')
     .fill(`magnet:?xt=urn:btih:${'b'.repeat(40)}\nhttps://example.invalid/fixture.torrent\n`);
@@ -56,7 +56,7 @@ test('mixed URL/file queue settles errors, reports duplicates and handles drag/d
       buffer: Buffer.from(data.metainfo, 'base64'),
     },
   ]);
-  await page.getByRole('button', { name: 'Add transfer', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Add transfer', exact: true }).click();
   await expect(page.locator('.result-row')).toContainText(['invalid metainfo']);
   await expect(page.locator('[data-torrent-id]')).toHaveCount(3);
   expect(writes).toHaveLength(4);
@@ -74,7 +74,7 @@ test('mixed URL/file queue settles errors, reports duplicates and handles drag/d
         new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: transfer }),
       );
   }, data);
-  await page.getByRole('button', { name: 'Add transfer', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Add transfer', exact: true }).click();
   await expect(page.locator('.result-row')).toContainText(['Already exists']);
   expect(rows).toHaveLength(3);
 });
@@ -112,6 +112,7 @@ test('task identity changes during confirmation reject deletion', async ({ page 
   });
   await page.goto('/?lang=en');
   await page.locator('[data-torrent-id="1"] .torrent-name').click();
+  await page.locator('[data-torrent-id="1"]').getByRole('checkbox').check();
   await page.getByRole('button', { name: 'Remove', exact: true }).first().click();
   hash = 'b'.repeat(40);
   await page.waitForTimeout(2300);
@@ -154,13 +155,25 @@ test('cancelling a sequential batch leaves submitted command intact and skips th
   });
   await page.goto('/?lang=en');
   await page.getByRole('checkbox', { name: 'Select current page', exact: true }).check();
-  await page.getByRole('button', { name: 'More ▾', exact: true }).click();
-  await page.locator('.n-dropdown-menu').getByText('Verify data', { exact: true }).click();
+  await page.locator('.toolbar').getByRole('button', { name: 'Verify data', exact: true }).click();
+  expect(submitted).toBe(0);
+  await page.getByRole('button', { name: 'Start verification', exact: true }).click();
   await expect.poll(() => submitted).toBe(1);
-  await page.getByRole('button', { name: 'Cancel pending items', exact: true }).click();
+  await expect(
+    page.locator('.toolbar').getByRole('button', { name: 'Start', exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByRole('dialog')
+    .getByRole('button', { name: 'Cancel pending items', exact: true })
+    .click();
   release();
-  await expect(page.locator('.n-modal')).toBeVisible();
-  await expect(page.locator('.result-row')).toHaveCount(3);
-  await expect(page.locator('.result-row').filter({ hasText: 'Cancelled' })).toHaveCount(2);
+  await expect(page.getByRole('dialog')).toContainText('Cancelled');
+  await expect(page.getByRole('dialog')).toContainText('Cancel 1');
+  await expect(page.getByRole('dialog')).toContainText('Cancel 2: Cancelled');
+  await expect(page.getByRole('dialog')).toContainText('Cancel 3: Cancelled');
+  await expect(page.getByRole('dialog')).not.toContainText('undefined');
+  await expect(
+    page.getByRole('button', { name: 'Start verification', exact: true }),
+  ).toBeDisabled();
   expect(submitted).toBe(1);
 });

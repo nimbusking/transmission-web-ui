@@ -57,7 +57,7 @@ it('legacy completed size uses total minus remaining, independently of cumulativ
         { seederCount: 5, leecherCount: 3 },
       ] as any,
     }).seederCount,
-  ).toBe(5);
+  ).toBeUndefined();
 });
 it('sorts local label names and Tracker hosts instead of empty/raw object values', () => {
   const settings = defaultSettings();

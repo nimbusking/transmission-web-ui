@@ -1,0 +1,13 @@
+{
+  "fullReportAssertions": "passed",
+  "report": "navigation-soak-1800.json",
+  "runnerExit": "failed during trace teardown: concurrent output directory cleanup",
+  "limits": {
+    "initialMs": 1000,
+    "incrementalP95Ms": 150,
+    "sortP95Ms": 200,
+    "filterP95ExcludingConfiguredDebounceMs": 200,
+    "heapMaxBytes": 209715200,
+    "heapGrowthBytes": 20971520
+  }
+}

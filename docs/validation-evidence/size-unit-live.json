@@ -1,0 +1,13 @@
+{
+  "at": "2026-11-15T19:01:03.493862+00:00",
+  "url": "http://localhost:19081/transmission/web/?lang=zh-CN#/",
+  "totalSizeSamples": [
+    "64.00 KB",
+    "64.00 MB"
+  ],
+  "otherColumnSample": "64.00 KiB",
+  "conversionBaseUnchanged": 1024,
+  "browserPreferencesChanged": false,
+  "daemonWrites": [],
+  "screenshot": "artifacts/size-unit-live.png"
+}

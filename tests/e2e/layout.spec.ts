@@ -29,7 +29,7 @@ test('column order, visibility, pointer width and continuous mode persist by fie
   await page.getByRole('button', { name: 'Columns', exact: true }).click();
   await page
     .locator('.column-setting')
-    .filter({ has: page.getByRole('checkbox', { name: 'Size', exact: true }) })
+    .filter({ has: page.getByRole('checkbox', { name: 'Total size', exact: true }) })
     .getByRole('button', { name: '↑', exact: true })
     .click();
   await page
@@ -41,8 +41,8 @@ test('column order, visibility, pointer width and continuous mode persist by fie
   ).not.toBeChecked();
   await page.keyboard.press('Escape');
   await expect(page.locator('.n-modal-mask')).toBeHidden();
-  await expect(page.locator('.n-modal')).toHaveCount(0);
-  await expect(page.locator('.column-sort').first()).toHaveText('Size');
+  await expect(page.locator('.column-settings-dialog')).toBeHidden();
+  await expect(page.locator('.column-sort').first()).toHaveText('Total size');
   await expect(page.locator('.column-sort').filter({ hasText: /^Upload$/ })).toHaveCount(0);
   const separator = page.getByRole('separator', { name: 'Width Name', exact: true }),
     box = (await separator.boundingBox())!;
@@ -74,7 +74,7 @@ test('column order, visibility, pointer width and continuous mode persist by fie
   await page.getByRole('checkbox', { name: 'Pagination', exact: true }).click();
   await expect(page.getByRole('checkbox', { name: 'Pagination', exact: true })).not.toBeChecked();
   await page.reload();
-  await expect(page.locator('.column-sort').first()).toHaveText('Size');
+  await expect(page.locator('.column-sort').first()).toHaveText('Total size');
   await expect(page.locator('.column-sort').filter({ hasText: /^Upload$/ })).toHaveCount(0);
   await expect(page.locator('.list-footer .n-pagination')).toHaveCount(0);
   expect(await savedWidth()).toBe(380);

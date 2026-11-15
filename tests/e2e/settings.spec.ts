@@ -47,8 +47,11 @@ test('local import broadcasts to another tab and daemon changes require separate
     buffer: Buffer.from(JSON.stringify(input)),
   });
   await page.getByRole('button', { name: 'Import local data', exact: true }).click();
-  await expect(page.locator('.sidebar')).toContainText('Shared label');
-  await expect(other.locator('.sidebar')).toContainText('Shared label');
+  // Navigation groups may be collapsed; assert the visible settings values instead.
+  await expect(page.getByPlaceholder('Label name', { exact: true })).toHaveValue('Shared label');
+  await other.getByRole('button', { name: 'Settings', exact: true }).click();
+  await other.locator('.n-tabs-tab').getByText('Local data', { exact: true }).click();
+  await expect(other.getByPlaceholder('Label name', { exact: true })).toHaveValue('Shared label');
   expect(writes).toEqual([]);
   await page.getByRole('button', { name: /^Apply daemon changes/ }).click();
   await expect(page.locator('.diff-table')).toContainText('/old');

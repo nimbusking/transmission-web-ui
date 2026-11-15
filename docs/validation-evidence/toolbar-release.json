@@ -1,0 +1,84 @@
+{
+  "at": "2026-11-15T15:43:37.857350+00:00",
+  "sha256": "d4b9c9641d809d3b278fffc79b1b4c17d49076847e653a4edb8956eb6a5724c2",
+  "previousSnapshotSha256": "7fe68e0576c93c8182cb06c641b88fc80157b608b98b4a026e9ce78f20e033fe",
+  "archiveFilesVerified": 46,
+  "webFilesVerified": 37,
+  "snapshotUpdated": true,
+  "backupCreated": false,
+  "authorization": "用户本轮明确授权：回归验证之后直接发布到环境，环境无需备份",
+  "containerActions": [],
+  "daemonWrites": [],
+  "taskCount": 7,
+  "tasksUnchanged": true,
+  "taskStates": [
+    {
+      "name": "对照-F-零字节文件",
+      "status": 0,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-H-大分块预览",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-A-完整文件",
+      "status": 6,
+      "percentDone": 1.0
+    },
+    {
+      "name": "对照-D-多文件与中文",
+      "status": 0,
+      "percentDone": 0.5
+    },
+    {
+      "name": "对照-E-目录匹配",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-B-等待下载",
+      "status": 0,
+      "percentDone": 0.0
+    },
+    {
+      "name": "对照-C-部分数据",
+      "status": 0,
+      "percentDone": 0.5
+    }
+  ],
+  "browserTests": {
+    "passed": 51,
+    "report": ".lab/toolbar-isolated-report",
+    "realDaemonExcluded": true
+  },
+  "unitTestsPassed": 66,
+  "fullStressRerun": false,
+  "rollback": {
+    "existingSnapshot": ".lab/comparison/backups/before-table-progress-20261115",
+    "sha256": "566622662191fd70e9821a91e119ecb65a0bf888054ac37a98ed04387726c417",
+    "limitation": "Existing older snapshot; predates rectangular progress bar"
+  },
+  "browserLiveVerified": true,
+  "browserScreenshot": "artifacts/toolbar-live.jpg",
+  "liveGeometry": {
+    "viewportWidth": 1280,
+    "toolbarTop": 66,
+    "toolbarHeight": 48,
+    "toolbarWidth": 1280,
+    "mainTop": 114,
+    "addAndColumnsSameY": true,
+    "pageHorizontalOverflow": false
+  },
+  "liveConsoleWarningsErrors": [],
+  "temporaryPreviewClosed": true,
+  "userAcceptance": "pending",
+  "testScopeFailures": {
+    "initial": ".lab/toolbar (26 pass / 10 fail: glyph label scopes, retained focus across resize, asynchronous checkbox assertion)",
+    "unfiltered": ".lab/toolbar-final (51 pass / 12 connection refused to inactive lab 19091/19092/19093/19095)",
+    "sharedPreview": ".lab/toolbar-scoped (51 connection failures: previous test preview teardown)",
+    "final": ".lab/toolbar-isolated (51 pass, real daemon excluded; dedicated 4189)"
+  },
+  "approvalReview": "One rerun rejected over real-daemon selection concerns; --list proved 51 mock tests only, subsequent review approved same filtered command."
+}
