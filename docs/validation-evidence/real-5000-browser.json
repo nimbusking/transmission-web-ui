@@ -1,0 +1,8 @@
+{
+  "navigationToRowsMs": 424.69792500000005,
+  "filterIncludingDebounceAndAutomationMs": 216.06885499999999,
+  "usedHeapBytes": 61427076,
+  "renderedRows": 15,
+  "errors": [],
+  "scope": "single Chromium smoke sample; not P95 or 30-minute budget certification"
+}

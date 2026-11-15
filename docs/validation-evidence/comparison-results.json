@@ -1,0 +1,64 @@
+{
+  "at": "2026-11-15T07:55:55.757Z",
+  "deployment": {
+    "at": "2026-11-15T07:44:47.670Z",
+    "transmission": "4.1.4",
+    "release": "2.0.0",
+    "sha256": "4fc716f416f8797f215a3c0baf523dc4208d36c4c7bd5d57f13d6ec1a8f32259",
+    "legacy": "http://127.0.0.1:19080/transmission/web/",
+    "modern": "http://127.0.0.1:19081/transmission/web/",
+    "sharedBackend": true,
+    "legacySource": "old/src (read-only)",
+    "legacyConfiguration": "all tasks, Chinese default, local automatic-update stub",
+    "modernSource": "verified precompiled release snapshot (independent of subsequent dist rebuilds)"
+  },
+  "sameBackendHashes": true,
+  "daemon": "4.1.4",
+  "configurationPersistence": "passed; original setting restored",
+  "samples": [
+    {
+      "hashString": "41d7458a15f6e813b773fe95e6466468f1be5f41",
+      "id": 1,
+      "name": "对照-A-完整文件",
+      "percentDone": 1,
+      "status": 0
+    },
+    {
+      "hashString": "db4f970b3ac3a2c2f19e366bda97c61f841fafb8",
+      "id": 2,
+      "name": "对照-B-等待下载",
+      "percentDone": 0,
+      "status": 0
+    },
+    {
+      "hashString": "fec2af74bf9cfde1d7624e31901dc661a006eb25",
+      "id": 3,
+      "name": "对照-C-部分数据",
+      "percentDone": 0.5,
+      "status": 0
+    },
+    {
+      "hashString": "5e97af4b1545956c4c150a23fbca0df24eedce4e",
+      "id": 4,
+      "name": "对照-D-多文件与中文",
+      "percentDone": 0.5,
+      "status": 0
+    },
+    {
+      "hashString": "b7b9348ca9d10279ff1f0ec92866a62196bf478e",
+      "id": 5,
+      "name": "对照-E-目录匹配",
+      "percentDone": 0,
+      "status": 0
+    },
+    {
+      "hashString": "29ef36177fea8d0b83c23dc24e624097446c9ec0",
+      "id": 6,
+      "name": "对照-F-零字节文件",
+      "percentDone": 1,
+      "status": 0
+    }
+  ],
+  "browserReport": "comparison-browsers.log",
+  "browserCases": "separate Chromium/Firefox/WebKit start in modern, pause in legacy with cross-view synchronization"
+}

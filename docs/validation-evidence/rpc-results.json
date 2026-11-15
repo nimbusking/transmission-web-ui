@@ -1,0 +1,119 @@
+{
+  "at": "2026-11-15T07:17:36.691Z",
+  "results": [
+    {
+      "version": "3.00 (bb6b5a062e)",
+      "rpcVersion": 16,
+      "wantedType": "number",
+      "duplicateResponse": "torrent-duplicate",
+      "result": "passed",
+      "checks": [
+        "409",
+        "metainfo",
+        "duplicate",
+        "invalid metainfo",
+        "wanted",
+        "priority",
+        "tracker IDs/tiers",
+        "locate",
+        "verify",
+        "start/stop",
+        "default directory unchanged",
+        "static web",
+        "real file verification",
+        "rename",
+        "move data",
+        "free-space",
+        "session limit settings/restoration"
+      ]
+    },
+    {
+      "version": "4.0.0 (280ace12f8)",
+      "rpcVersion": 17,
+      "wantedType": "boolean",
+      "duplicateResponse": "duplicate torrent",
+      "result": "passed",
+      "checks": [
+        "409",
+        "metainfo",
+        "duplicate",
+        "invalid metainfo",
+        "wanted",
+        "priority",
+        "tracker IDs/tiers",
+        "locate",
+        "verify",
+        "start/stop",
+        "default directory unchanged",
+        "static web",
+        "real file verification",
+        "rename",
+        "move data",
+        "free-space",
+        "session limit settings/restoration"
+      ]
+    },
+    {
+      "version": "4.0.6 (38c164933e)",
+      "rpcVersion": 17,
+      "wantedType": "number",
+      "duplicateResponse": "torrent-duplicate",
+      "result": "passed",
+      "checks": [
+        "409",
+        "metainfo",
+        "duplicate",
+        "invalid metainfo",
+        "wanted",
+        "priority",
+        "tracker IDs/tiers",
+        "locate",
+        "verify",
+        "start/stop",
+        "default directory unchanged",
+        "static web",
+        "real file verification",
+        "rename",
+        "move data",
+        "free-space",
+        "session limit settings/restoration"
+      ]
+    },
+    {
+      "version": "4.1.4 (a6d907d9ea)",
+      "rpcVersion": 19,
+      "wantedType": "number",
+      "duplicateResponse": "torrent-duplicate",
+      "result": "passed",
+      "checks": [
+        "409",
+        "metainfo",
+        "duplicate",
+        "invalid metainfo",
+        "wanted",
+        "priority",
+        "tracker IDs/tiers",
+        "locate",
+        "verify",
+        "start/stop",
+        "default directory unchanged",
+        "static web",
+        "real file verification",
+        "rename",
+        "move data",
+        "free-space",
+        "session limit settings/restoration"
+      ]
+    },
+    {
+      "version": "4.0.6",
+      "authentication": "401 then explicit Basic credentials",
+      "result": "passed"
+    },
+    {
+      "version": "4.1.4",
+      "authentication": "401 then explicit Basic credentials",
+      "result": "passed"
+    }
+  ]
+}

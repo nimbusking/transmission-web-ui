@@ -1,0 +1,9 @@
+{
+  "at": "2026-11-15T07:29:32.810Z",
+  "results": [
+    "initial non-root daemon loads release A",
+    "running daemon sees release B without restart",
+    "running daemon sees rollback A without restart",
+    "same-origin RPC handshake remains available"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "at": "2026-11-15T07:08:21.659Z",
+  "results": [
+    {
+      "version": "3.00 (bb6b5a062e)",
+      "magnetAccepted": true,
+      "queueDirections": 4,
+      "taskLimitsReadBack": true,
+      "startNowStop": true,
+      "reannounceAcknowledged": true,
+      "result": "passed"
+    },
+    {
+      "version": "4.0.0 (280ace12f8)",
+      "magnetAccepted": true,
+      "queueDirections": 4,
+      "taskLimitsReadBack": true,
+      "startNowStop": true,
+      "reannounceAcknowledged": true,
+      "result": "passed"
+    },
+    {
+      "version": "4.0.6 (38c164933e)",
+      "magnetAccepted": true,
+      "queueDirections": 4,
+      "taskLimitsReadBack": true,
+      "startNowStop": true,
+      "reannounceAcknowledged": true,
+      "result": "passed"
+    },
+    {
+      "version": "4.1.4 (a6d907d9ea)",
+      "magnetAccepted": true,
+      "queueDirections": 4,
+      "taskLimitsReadBack": true,
+      "startNowStop": true,
+      "reannounceAcknowledged": true,
+      "result": "passed"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "at": "2026-11-15T07:09:14.646Z",
+  "results": [
+    {
+      "version": "3.00 (bb6b5a062e)",
+      "bytes": 1048576,
+      "sha256": "b8c3c8bdec39a101a79c2cb54bed8b3a3414414831b500bef3d2ec482a5a7448",
+      "result": "passed"
+    },
+    {
+      "version": "4.0.0 (280ace12f8)",
+      "bytes": 1048576,
+      "sha256": "b8c3c8bdec39a101a79c2cb54bed8b3a3414414831b500bef3d2ec482a5a7448",
+      "result": "passed"
+    },
+    {
+      "version": "4.0.6 (38c164933e)",
+      "bytes": 1048576,
+      "sha256": "b8c3c8bdec39a101a79c2cb54bed8b3a3414414831b500bef3d2ec482a5a7448",
+      "result": "passed"
+    },
+    {
+      "version": "4.1.4 (a6d907d9ea)",
+      "bytes": 1048576,
+      "sha256": "b8c3c8bdec39a101a79c2cb54bed8b3a3414414831b500bef3d2ec482a5a7448",
+      "result": "passed"
+    }
+  ]
+}

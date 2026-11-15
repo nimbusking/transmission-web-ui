@@ -1,0 +1,17 @@
+{
+  "start": "Start",
+  "stop": "Pauze",
+  "remove": "Verwijder",
+  "verify": "Verifi&euml;ren",
+  "rename": "Rename",
+  "all": "Alles",
+  "active": "Actief",
+  "downloading": "Downloaden",
+  "seeding": "Uploaden",
+  "paused": "Gepauzeerd",
+  "checking": "Controleren",
+  "error": "Fout",
+  "labels": "User Labels",
+  "save": "OK",
+  "cancel": "Annuleren"
+}

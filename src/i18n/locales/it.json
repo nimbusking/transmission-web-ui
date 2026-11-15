@@ -1,0 +1,17 @@
+{
+  "start": "Avvia",
+  "stop": "Pausa",
+  "remove": "Rimuovi",
+  "verify": "Ricontrolla",
+  "rename": "Rinomina",
+  "all": "Tutti",
+  "active": "Attivi",
+  "downloading": "In Download",
+  "seeding": "In Seed",
+  "paused": "In Pausa",
+  "checking": "In Controllo",
+  "error": "Errori",
+  "labels": "Etichette Utente",
+  "save": "OK",
+  "cancel": "Annulla"
+}

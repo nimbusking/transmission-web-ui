@@ -1,0 +1,16 @@
+{
+  "at": "2026-11-15T07:31:54.609Z",
+  "target": "4.1.4-32",
+  "sourceCommit": "5e012dab21d616c9f5a41dabab755caf73b660aa",
+  "daemonCommit": "a6d907d9ea2313143af714d7830feb6c1b60b84c",
+  "shell": "BusyBox v1.35.0 (Debian 1:1.35.0-4+deb12u1+b1) multi-call binary.",
+  "scope": "Linux package-layout simulation using pinned upstream start-stop-status and package setup, with real 4.1.4; not DSM certification",
+  "results": [
+    "BusyBox read-only inspection identifies actual service UID, binary, configuration and effective home",
+    "attachment is idempotent, requires real service account and refuses an existing unmanaged XDG UI",
+    "running 4.1.4 daemon follows upgrade/rollback; attached installation refuses premature uninstall",
+    "fresh Linux container and reinstalled upstream scripts retain binding through persistent package-data/UI volumes",
+    "unsupported version/override/external-link edits are refused; explicit detach and restart restore original UI",
+    "RPC session handshake remains available after restoring original UI"
+  ]
+}

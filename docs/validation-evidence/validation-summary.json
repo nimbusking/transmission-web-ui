@@ -1,0 +1,190 @@
+{
+  "at": "2026-11-15T16:04:19.860193+08:00",
+  "status": "local-validation-passed-dsm-integration-pending",
+  "unit": {
+    "passed": 49,
+    "files": 7
+  },
+  "browser": {
+    "passed": 78,
+    "skipped": 6,
+    "projects": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ]
+  },
+  "daemons": [
+    "3.00",
+    "4.0.0",
+    "4.0.6",
+    "4.1.4"
+  ],
+  "performance": {
+    "fullThirtyMinutes": "soak-1800.json",
+    "frozenBuild": "soak-baseline-build.json",
+    "finalBuildSixtySeconds": "soak-60.json",
+    "sameBuild": false
+  },
+  "legacyFiles": 816,
+  "productionAuditVulnerabilities": 0,
+  "developmentAuditModerate": 11,
+  "release": {
+    "file": "transmission-web-ui-2.0.0.tar.gz",
+    "sha256": "4fc716f416f8797f215a3c0baf523dc4208d36c4c7bd5d57f13d6ec1a8f32259",
+    "bytes": 341290,
+    "offlineBusyBox": "passed",
+    "nonRootParentMount": "passed",
+    "liveDaemonSwitchRollback": "passed"
+  },
+  "pending": [
+    "Real DSM 7.1 process environment/ACL/reboot/package upgrade validation",
+    "OpenSpec final archive"
+  ],
+  "finalAssets": [
+    {
+      "name": "ActionDialog-DnpH5A7Q.js",
+      "sha256": "83d018712caad02b00ec589de26fd109688a8972047298d7fedc1d2f4eb6ab3a"
+    },
+    {
+      "name": "AddDialog-gNhRgbFA.js",
+      "sha256": "1d8e36ad368596b63f3483ae5f5c608f10541c320bf339c33f21aa2cbde82e6a"
+    },
+    {
+      "name": "DataTable-CDjlR_vL.js",
+      "sha256": "84c51f833283bb489bb6bf5ab9ee18eeee1eeb19b4011999300dd4faeccd19e5"
+    },
+    {
+      "name": "DetailPane-Xwpuwym3.js",
+      "sha256": "108ce1c429110a8c127cf34ef768970a888ae67d76c35ccdeeae8f563b3aa216"
+    },
+    {
+      "name": "DetailPane-_eH-htSf.css",
+      "sha256": "1539af3264991b03a2637e8d169bc3840874b4285c4d9e9bd7e644fe6fbcd305"
+    },
+    {
+      "name": "InputNumber-Drx0o02j.js",
+      "sha256": "1473d0bafb646be58dd0de8faa2ad365a0a9c2b7d29d3652048f1021aa023821"
+    },
+    {
+      "name": "Select-B-sUYmzA.js",
+      "sha256": "bdb6a5e9bd20f2a0a3fc82379db68a0614c7b2f280b573ed04cff2d04bc5963d"
+    },
+    {
+      "name": "SettingsDialog-B9j2lU6G.js",
+      "sha256": "1490a24295df4d9953b34ca61921f8bfe24e1d36d60494280aef3f45eac65587"
+    },
+    {
+      "name": "Tabs-B-iAsitS.js",
+      "sha256": "61417a996e11dbc5b7ee6b5bc19696fbeafeaeb4919839cf1ecf83184774ea31"
+    },
+    {
+      "name": "WorkflowDialog-CMoyCm0V.js",
+      "sha256": "0f483b6e0fb3ce7becf653ba9bf65639a7c01eebe1d6f35e7a0747592f3456e0"
+    },
+    {
+      "name": "app-PFm7DFpL.js",
+      "sha256": "536e30ca14ca980c51fcf7675a6c5b1736bee1a38d0b1f035bd7023c75ead83c"
+    },
+    {
+      "name": "de-BJpA7Nal.js",
+      "sha256": "5af62e758b530a0ff897d92fd22c7546d36b48640d95c4842c498e35d187ab20"
+    },
+    {
+      "name": "es-Eab3iivm.js",
+      "sha256": "af6e8c56f2de9b3193c799a812ede7250cde0939bf244c61a3c81eb2ab6357c9"
+    },
+    {
+      "name": "files-yLxVvO94.js",
+      "sha256": "78e8367f853ef1e452847232bac4665925a3293a5d9bedb0aa4bbd85122e0524"
+    },
+    {
+      "name": "fr-BwZvF2fv.js",
+      "sha256": "1f176fe2f549ed6c0a08b4bb802e4d5543e5e7bd524a1037b62f5310e51cfe43"
+    },
+    {
+      "name": "hu-CiptC3EZ.js",
+      "sha256": "a35afd3b8f3f63e257b95f883725db735c39c11f7415de0121a816c28a8c90e5"
+    },
+    {
+      "name": "index-CqLfKwp6.js",
+      "sha256": "5051939e0c6d1e314c7daf63ae7203b5ff0f248535d45a285e08d19575f1694a"
+    },
+    {
+      "name": "index-_yQSwwSw.css",
+      "sha256": "432c115fe090885815e3954607931449ed83eb246d9cd3758fbfef4043622827"
+    },
+    {
+      "name": "it-BY_4Q5FI.js",
+      "sha256": "bea39293393f4ada40347068d0b8bc2159b63a5cb38dd8241a95d686fe965474"
+    },
+    {
+      "name": "ko-mzxJ0y6n.js",
+      "sha256": "7e718608060f6b5e51ab0615160457b20f893bc588907811e70520c15126b154"
+    },
+    {
+      "name": "light-84X9m8fM.js",
+      "sha256": "01c526fbf800774252843a67d1e853ddf1ab53653a7dad383d0016f4d55ffde7"
+    },
+    {
+      "name": "light-BWysQtLv.js",
+      "sha256": "fe05dff061b06284f221a5ffc7528cd6c6f6c6f01a3d40177e84407cab1bbc8d"
+    },
+    {
+      "name": "nl-BZNl4_81.js",
+      "sha256": "53882a653f4a12881768bf2e8f89305d3ab7e87378f7050cec54ac4c7e7bcecd"
+    },
+    {
+      "name": "pl-C62LNtKR.js",
+      "sha256": "814e9c022cfb5372fe963d33e0b65646fee439425467d7d80d2b4d70a25a1866"
+    },
+    {
+      "name": "pt-BR-CUVulu4J.js",
+      "sha256": "768a790a743544d94688cc8c4e79a9721133ca4448406bd975cdff2f4e7d3b7c"
+    },
+    {
+      "name": "pt-PT-CnVatU1E.js",
+      "sha256": "4201e811323d3bc14d247feb4def83afb906f4b072f75ddd3d70c49ed388f88b"
+    },
+    {
+      "name": "ro-ZzvsEqEN.js",
+      "sha256": "844c069d8f5c82b617a434e577d35024c53c72b3c265549ffbcb1b8a90b2fed0"
+    },
+    {
+      "name": "ru-C13dH4uw.js",
+      "sha256": "6a0f9e9804b3fc990ecb339af90e461732ff181143826fd5bbd443a75d7085b0"
+    },
+    {
+      "name": "uk-D5SbkTVi.js",
+      "sha256": "f690cca79ac97975bfdb01dfe17bb87b710e9a69732abe12093319905f2fee84"
+    },
+    {
+      "name": "use-message-BY1m5fXN.js",
+      "sha256": "f85630afd16159b7abb5bff4cc5c395183ec4d9ee906bc501e168ded84d046ab"
+    },
+    {
+      "name": "zh-TW-Cx1BW17T.js",
+      "sha256": "1bfc5108056ceeb555f3f6a7c841816538d5316ded7c5d79dc42113f59e1be73"
+    }
+  ],
+  "synocommunity": {
+    "version": "4.1.4-32",
+    "localSimulation": "passed",
+    "report": "synocommunity-results.json",
+    "actualDsm": "pending"
+  },
+  "comparison": {
+    "state": "left running for user",
+    "browserPassed": 3,
+    "daemon": "4.1.4",
+    "ports": [
+      19080,
+      19081
+    ],
+    "sameBackend": true,
+    "samples": 6,
+    "configurationPersistence": "passed",
+    "report": "comparison-results.json"
+  },
+  "frontendUnchangedSincePriorSixtySecondPerformanceRun": true
+}

@@ -1,0 +1,125 @@
+{
+  "scope": "Frozen dist used by 1800s run; candidate built separately under .lab/candidate-dist",
+  "assets": [
+    {
+      "name": "ActionDialog-TVTClpXd.js",
+      "sha256": "3dfe672582fc63621a830c41a4601f98ae8b17690c5e2001707ec51d0003d274"
+    },
+    {
+      "name": "AddDialog-BQ_Hpyvh.js",
+      "sha256": "6f368c09c30a6400ad6af841adb95f8cf3263502f9676305f67e292b1954bbef"
+    },
+    {
+      "name": "DataTable-BWUPjpcc.js",
+      "sha256": "98334656890aa2877f47f4aafa16e6cbcf14105bcdec05c4878228650dfed0f4"
+    },
+    {
+      "name": "DetailPane-AT2dkRkw.js",
+      "sha256": "6adebd1d707f5daa482b368a3b0c38706e0406380c75e25d847f198b897ccd76"
+    },
+    {
+      "name": "InputNumber-DF0mBw-W.js",
+      "sha256": "ece113f673f72febfe505e9437ba458350a71409a65e8c23bbc83d4b0387aed9"
+    },
+    {
+      "name": "Select-0LTDMIUg.js",
+      "sha256": "ff9544fd87780c5076844e26d344dba782f6b8abbfe3388e03683271aa8a5ebc"
+    },
+    {
+      "name": "SettingsDialog-CvkDU9Bq.js",
+      "sha256": "0afd6eb2a1d9ed57d8c74c1674622d3b4f7ce1d8558e4361f0efce6b19f966c1"
+    },
+    {
+      "name": "Tabs-DLzfEfZf.js",
+      "sha256": "ad9b1124c23da85e1e14da505cca97fba3c009a38eebfc069533df625b729509"
+    },
+    {
+      "name": "WorkflowDialog-Bz2zdCXW.js",
+      "sha256": "78f2fc7e9c5d254eb06bcd4ff35ad65b9753f5a4f66b57e7a97bf73c06ddb9c7"
+    },
+    {
+      "name": "app-Bq4PMbC2.js",
+      "sha256": "ac76d0073e6af9eefc743f6fd70508ac195166d55b8c33736baf2697e922f7db"
+    },
+    {
+      "name": "de-BJpA7Nal.js",
+      "sha256": "5af62e758b530a0ff897d92fd22c7546d36b48640d95c4842c498e35d187ab20"
+    },
+    {
+      "name": "es-Eab3iivm.js",
+      "sha256": "af6e8c56f2de9b3193c799a812ede7250cde0939bf244c61a3c81eb2ab6357c9"
+    },
+    {
+      "name": "files-yLxVvO94.js",
+      "sha256": "78e8367f853ef1e452847232bac4665925a3293a5d9bedb0aa4bbd85122e0524"
+    },
+    {
+      "name": "fr-BwZvF2fv.js",
+      "sha256": "1f176fe2f549ed6c0a08b4bb802e4d5543e5e7bd524a1037b62f5310e51cfe43"
+    },
+    {
+      "name": "hu-CiptC3EZ.js",
+      "sha256": "a35afd3b8f3f63e257b95f883725db735c39c11f7415de0121a816c28a8c90e5"
+    },
+    {
+      "name": "index-COIqayXB.js",
+      "sha256": "1bca84b854dcc7d05cabf3b85fd64a719821c4f705c25853e38c5efafb986a9f"
+    },
+    {
+      "name": "index-DV-4fHsW.css",
+      "sha256": "a61571f8bfc774feec6e45c99a34aaa84f82bde7dae059c69eb8eac987b5b85d"
+    },
+    {
+      "name": "it-BY_4Q5FI.js",
+      "sha256": "bea39293393f4ada40347068d0b8bc2159b63a5cb38dd8241a95d686fe965474"
+    },
+    {
+      "name": "ko-mzxJ0y6n.js",
+      "sha256": "7e718608060f6b5e51ab0615160457b20f893bc588907811e70520c15126b154"
+    },
+    {
+      "name": "light-D8B_XGsI.js",
+      "sha256": "3330374b4d0361d618d3c5d7f3c1bab00fd83d8b1fcb6185fce55cc11e5268ff"
+    },
+    {
+      "name": "light-eLTshRfI.js",
+      "sha256": "afc80821a38d07d37280ce3e9208b4fa1f19bcf758b7ca3dc06685a18cbd1e8b"
+    },
+    {
+      "name": "nl-BZNl4_81.js",
+      "sha256": "53882a653f4a12881768bf2e8f89305d3ab7e87378f7050cec54ac4c7e7bcecd"
+    },
+    {
+      "name": "pl-C62LNtKR.js",
+      "sha256": "814e9c022cfb5372fe963d33e0b65646fee439425467d7d80d2b4d70a25a1866"
+    },
+    {
+      "name": "pt-BR-CUVulu4J.js",
+      "sha256": "768a790a743544d94688cc8c4e79a9721133ca4448406bd975cdff2f4e7d3b7c"
+    },
+    {
+      "name": "pt-PT-CnVatU1E.js",
+      "sha256": "4201e811323d3bc14d247feb4def83afb906f4b072f75ddd3d70c49ed388f88b"
+    },
+    {
+      "name": "ro-ZzvsEqEN.js",
+      "sha256": "844c069d8f5c82b617a434e577d35024c53c72b3c265549ffbcb1b8a90b2fed0"
+    },
+    {
+      "name": "ru-C13dH4uw.js",
+      "sha256": "6a0f9e9804b3fc990ecb339af90e461732ff181143826fd5bbd443a75d7085b0"
+    },
+    {
+      "name": "uk-D5SbkTVi.js",
+      "sha256": "f690cca79ac97975bfdb01dfe17bb87b710e9a69732abe12093319905f2fee84"
+    },
+    {
+      "name": "use-message-DUIMFALO.js",
+      "sha256": "6ef2112a545b8a7701d3241bea1d6ae93ab00adaec4a43054b80a3e1ee4b57ba"
+    },
+    {
+      "name": "zh-TW-Cx1BW17T.js",
+      "sha256": "1bfc5108056ceeb555f3f6a7c841816538d5316ded7c5d79dc42113f59e1be73"
+    }
+  ]
+}

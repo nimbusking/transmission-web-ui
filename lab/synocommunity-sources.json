@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/SynoCommunity/spksrc",
+  "commit": "5e012dab21d616c9f5a41dabab755caf73b660aa",
+  "packageVersion": "4.1.4-32",
+  "files": [
+    { "path": "mk/spksrc.service/start-stop-status", "name": "start-stop-status", "sha256": "029477bc5300a99e59a5224128d99846ef0c2bf9f828bc16a6bfd9cbea07d31f" },
+    { "path": "spk/transmission/src/service-setup.sh", "name": "service-setup.sh", "sha256": "edd129b9175ffc89d357309cc80bb2629118cd81ba68715066892a63b8c217a0" }
+  ]
+}

@@ -1,0 +1,265 @@
+{
+  "at": "2026-11-14T23:34:45.258Z",
+  "durationSeconds": 1800,
+  "fullThirtyMinutes": true,
+  "columns": 20,
+  "tasks": 5000,
+  "changesPerCycle": 500,
+  "intervalMs": 2000,
+  "updates": 854,
+  "initialMs": 235.39999999850988,
+  "incrementalP95Ms": 68.60000000149012,
+  "sortP95Ms": 152.30000000447035,
+  "filterP95IncludingDebounceMs": 280.20000000298023,
+  "filterP95ExcludingConfiguredDebounceMs": 160.20000000298023,
+  "heapMaxBytes": 49555268,
+  "heapGrowthBytes": 540764,
+  "samples": [
+    {
+      "seconds": 0,
+      "bytes": 49012168
+    },
+    {
+      "seconds": 30.024,
+      "bytes": 49125768
+    },
+    {
+      "seconds": 60.099,
+      "bytes": 49146384
+    },
+    {
+      "seconds": 90.172,
+      "bytes": 49166624
+    },
+    {
+      "seconds": 120.247,
+      "bytes": 49201772
+    },
+    {
+      "seconds": 150.312,
+      "bytes": 49179596
+    },
+    {
+      "seconds": 180.383,
+      "bytes": 49196940
+    },
+    {
+      "seconds": 210.444,
+      "bytes": 48920632
+    },
+    {
+      "seconds": 240.513,
+      "bytes": 48935964
+    },
+    {
+      "seconds": 270.584,
+      "bytes": 48938180
+    },
+    {
+      "seconds": 300.653,
+      "bytes": 49053024
+    },
+    {
+      "seconds": 330.719,
+      "bytes": 49090260
+    },
+    {
+      "seconds": 360.785,
+      "bytes": 49146032
+    },
+    {
+      "seconds": 390.853,
+      "bytes": 49098272
+    },
+    {
+      "seconds": 420.914,
+      "bytes": 49125560
+    },
+    {
+      "seconds": 450.979,
+      "bytes": 49162304
+    },
+    {
+      "seconds": 481.045,
+      "bytes": 49128528
+    },
+    {
+      "seconds": 511.109,
+      "bytes": 49173240
+    },
+    {
+      "seconds": 541.169,
+      "bytes": 49214724
+    },
+    {
+      "seconds": 571.233,
+      "bytes": 49210332
+    },
+    {
+      "seconds": 601.295,
+      "bytes": 49199600
+    },
+    {
+      "seconds": 631.353,
+      "bytes": 49284408
+    },
+    {
+      "seconds": 661.417,
+      "bytes": 49228100
+    },
+    {
+      "seconds": 691.484,
+      "bytes": 49234284
+    },
+    {
+      "seconds": 721.551,
+      "bytes": 49257468
+    },
+    {
+      "seconds": 751.611,
+      "bytes": 49215904
+    },
+    {
+      "seconds": 781.673,
+      "bytes": 49219860
+    },
+    {
+      "seconds": 811.74,
+      "bytes": 49289968
+    },
+    {
+      "seconds": 841.816,
+      "bytes": 49242584
+    },
+    {
+      "seconds": 871.885,
+      "bytes": 49224804
+    },
+    {
+      "seconds": 901.951,
+      "bytes": 49303216
+    },
+    {
+      "seconds": 932.01,
+      "bytes": 49248560
+    },
+    {
+      "seconds": 962.078,
+      "bytes": 49275280
+    },
+    {
+      "seconds": 992.139,
+      "bytes": 49490300
+    },
+    {
+      "seconds": 1022.206,
+      "bytes": 49417192
+    },
+    {
+      "seconds": 1052.275,
+      "bytes": 49457884
+    },
+    {
+      "seconds": 1082.346,
+      "bytes": 49502896
+    },
+    {
+      "seconds": 1112.406,
+      "bytes": 49471216
+    },
+    {
+      "seconds": 1142.476,
+      "bytes": 49473512
+    },
+    {
+      "seconds": 1172.555,
+      "bytes": 49502600
+    },
+    {
+      "seconds": 1202.62,
+      "bytes": 49478624
+    },
+    {
+      "seconds": 1232.685,
+      "bytes": 49473592
+    },
+    {
+      "seconds": 1262.756,
+      "bytes": 49527544
+    },
+    {
+      "seconds": 1292.834,
+      "bytes": 49477220
+    },
+    {
+      "seconds": 1322.905,
+      "bytes": 49483800
+    },
+    {
+      "seconds": 1352.97,
+      "bytes": 49481260
+    },
+    {
+      "seconds": 1383.039,
+      "bytes": 49484436
+    },
+    {
+      "seconds": 1413.116,
+      "bytes": 49498676
+    },
+    {
+      "seconds": 1443.182,
+      "bytes": 49482596
+    },
+    {
+      "seconds": 1473.255,
+      "bytes": 49501152
+    },
+    {
+      "seconds": 1503.346,
+      "bytes": 49501452
+    },
+    {
+      "seconds": 1533.45,
+      "bytes": 49553248
+    },
+    {
+      "seconds": 1563.518,
+      "bytes": 49508568
+    },
+    {
+      "seconds": 1593.588,
+      "bytes": 49507264
+    },
+    {
+      "seconds": 1623.653,
+      "bytes": 49537832
+    },
+    {
+      "seconds": 1653.723,
+      "bytes": 49521724
+    },
+    {
+      "seconds": 1683.795,
+      "bytes": 49479060
+    },
+    {
+      "seconds": 1713.869,
+      "bytes": 49555268
+    },
+    {
+      "seconds": 1743.943,
+      "bytes": 49494900
+    },
+    {
+      "seconds": 1774.034,
+      "bytes": 49511560
+    },
+    {
+      "seconds": 1800.029,
+      "bytes": 49552932
+    }
+  ],
+  "errors": [],
+  "measurement": "JSON parsed to two animation frames; filtering includes native input, configured 120ms debounce and two frames; heap samples after explicit CDP GC"
+}

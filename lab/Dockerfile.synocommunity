@@ -1,0 +1,4 @@
+FROM twui-lab/transmission:4.1.4
+# Test only: the standalone official BusyBox image uses a newer glibc than bookworm.
+# Debian's static BusyBox lets the real daemon and ash/file tools share one process namespace.
+RUN apt-get update && apt-get install -y --no-install-recommends busybox-static procps && mkdir /test-tools && cp /bin/busybox /test-tools/busybox && rm -rf /var/lib/apt/lists/*

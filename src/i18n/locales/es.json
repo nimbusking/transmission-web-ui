@@ -1,0 +1,17 @@
+{
+  "start": "Iniciar",
+  "stop": "Pausar",
+  "remove": "Eliminar",
+  "verify": "Comprobar",
+  "rename": "Renombrar",
+  "all": "Todos",
+  "active": "Activos",
+  "downloading": "Descargando",
+  "seeding": "Subiendo",
+  "paused": "Pausados",
+  "checking": "Comprobando",
+  "error": "Errores",
+  "labels": "User Labels",
+  "save": "Aceptar",
+  "cancel": "Cancelar"
+}

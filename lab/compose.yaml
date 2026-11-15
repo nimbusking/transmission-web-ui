@@ -1,0 +1,93 @@
+services:
+  tr3:
+    image: twui-lab/transmission:3.00
+    environment: {OPENSSL_CONF: /openssl-3-legacy.cnf}
+    build:
+      context: ..
+      dockerfile: lab/Dockerfile
+      args:
+        SOURCE_COMMIT: bb6b5a062ee594dfd4b7a12a6b6e860c43849bfd
+    ports: ["127.0.0.1:19091:9091"]
+    volumes: ["./openssl-3-legacy.cnf:/openssl-3-legacy.cnf:ro,z", "tr3-config:/config", "tr3-data:/data", "../dist:/webui:ro,z"]
+    networks: [lab]
+  tr4-base:
+    image: twui-lab/transmission:4.0.0
+    build:
+      context: ..
+      dockerfile: lab/Dockerfile
+      args:
+        SOURCE_COMMIT: 280ace12f8a2b99fdf144011cd4f6fed8be876fe
+    ports: ["127.0.0.1:19092:9091"]
+    volumes: ["tr40-config:/config", "tr40-data:/data", "../dist:/webui:ro,z"]
+    networks: [lab]
+  tr4:
+    image: twui-lab/transmission:4.0.6
+    build:
+      context: ..
+      dockerfile: lab/Dockerfile
+      args:
+        SOURCE_COMMIT: 38c164933e9f77c110b48fe745861c3b98e3d83e
+    ports: ["127.0.0.1:19093:9091"]
+    volumes: ["tr46-config:/config", "tr46-data:/data", "../dist:/webui:ro,z"]
+    networks: [lab]
+  tr-auth:
+    image: twui-lab/transmission:4.0.6
+    profiles: [auth]
+    environment: {TR_USER: lab, TR_PASS: lab-only-password}
+    ports: ["127.0.0.1:19094:9091"]
+    volumes: ["auth-config:/config", "auth-data:/data", "../dist:/webui:ro,z"]
+    networks: [lab]
+  tr4-current:
+    image: twui-lab/transmission:4.1.4
+    build:
+      context: ..
+      dockerfile: lab/Dockerfile
+      args:
+        SOURCE_COMMIT: a6d907d9ea2313143af714d7830feb6c1b60b84c
+    ports: ["127.0.0.1:19095:9091"]
+    volumes: ["tr414-config:/config", "tr414-data:/data", "../dist:/webui:ro,z"]
+    networks: [lab]
+  tr-current-auth:
+    image: twui-lab/transmission:4.1.4
+    profiles: [auth]
+    environment: {TR_USER: lab, TR_PASS: lab-only-password}
+    ports: ["127.0.0.1:19090:9091"]
+    volumes: ["auth414-config:/config", "auth414-data:/data", "../dist:/webui:ro,z"]
+    networks: [lab]
+  fixture:
+    image: twui-lab/transmission:4.0.6
+    profiles: [fixtures]
+    entrypoint: [python3, /fixture-server.py]
+    volumes: ["./fixture-server.py:/fixture-server.py:ro,z", "../.lab/fixtures:/fixtures:ro,z"]
+    ports: ["127.0.0.1:19097:8080"]
+    networks: [lab]
+  tr-seed:
+    image: twui-lab/transmission:4.0.6
+    profiles: [fixtures]
+    ports: ["127.0.0.1:19096:9091"]
+    volumes: ["seed-config:/config", "seed-data:/data", "../dist:/webui:ro,z"]
+    networks: [lab]
+  proxy:
+    image: twui-lab/transmission:4.0.6
+    profiles: [proxy]
+    entrypoint: [python3, /proxy.py]
+    volumes: ["./proxy.py:/proxy.py:ro,z"]
+    ports: ["127.0.0.1:19098:8080"]
+    networks: [lab]
+networks:
+  lab: {}
+volumes:
+  tr3-config: {}
+  tr3-data: {}
+  tr40-config: {}
+  tr40-data: {}
+  tr46-config: {}
+  tr46-data: {}
+  auth-config: {}
+  auth-data: {}
+  auth414-config: {}
+  auth414-data: {}
+  tr414-config: {}
+  tr414-data: {}
+  seed-config: {}
+  seed-data: {}

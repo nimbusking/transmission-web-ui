@@ -1,0 +1,17 @@
+{
+  "start": "Start",
+  "stop": "Wstrzymaj",
+  "remove": "Usuń",
+  "verify": "Sprawdź",
+  "rename": "Zmień nazwę",
+  "all": "Wszystkie torrenty",
+  "active": "Aktywne",
+  "downloading": "Pobierane",
+  "seeding": "Wysyłane",
+  "paused": "Wstrzymane",
+  "checking": "Sprawdzane",
+  "error": "Błędy",
+  "labels": "Własne etykiety",
+  "save": "OK",
+  "cancel": "Anuluj"
+}

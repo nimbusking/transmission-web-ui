@@ -1,0 +1,6 @@
+{
+  "rpcUrl": "../rpc",
+  "defaultLocale": "auto",
+  "refreshIntervalMs": 5000,
+  "releaseApi": "https://api.github.com/repos/nimbusking/transmission-web-ui/releases/latest"
+}

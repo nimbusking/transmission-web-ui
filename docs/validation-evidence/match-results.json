@@ -1,0 +1,45 @@
+{
+  "at": "2026-11-15T07:09:19.707Z",
+  "results": [
+    {
+      "version": "3.00 (bb6b5a062e)",
+      "partialWait": true,
+      "otherItemContinued": true,
+      "nextCandidateMatched": true,
+      "restoreVerified": true,
+      "cancelStopsFutureCommands": true,
+      "result": "passed",
+      "savedTransitions": 19
+    },
+    {
+      "version": "4.0.0 (280ace12f8)",
+      "partialWait": true,
+      "otherItemContinued": true,
+      "nextCandidateMatched": true,
+      "restoreVerified": true,
+      "cancelStopsFutureCommands": true,
+      "result": "passed",
+      "savedTransitions": 19
+    },
+    {
+      "version": "4.0.6 (38c164933e)",
+      "partialWait": true,
+      "otherItemContinued": true,
+      "nextCandidateMatched": true,
+      "restoreVerified": true,
+      "cancelStopsFutureCommands": true,
+      "result": "passed",
+      "savedTransitions": 19
+    },
+    {
+      "version": "4.1.4 (a6d907d9ea)",
+      "partialWait": true,
+      "otherItemContinued": true,
+      "nextCandidateMatched": true,
+      "restoreVerified": true,
+      "cancelStopsFutureCommands": true,
+      "result": "passed",
+      "savedTransitions": 19
+    }
+  ]
+}

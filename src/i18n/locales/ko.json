@@ -1,0 +1,17 @@
+{
+  "start": "시작",
+  "stop": "정지",
+  "remove": "제거",
+  "verify": "재확인",
+  "rename": "Rename",
+  "all": "모두",
+  "active": "활성화 중",
+  "downloading": "다운로드 중",
+  "seeding": "전송 중",
+  "paused": "정지",
+  "checking": "확인 중",
+  "error": "오류",
+  "labels": "User Labels",
+  "save": "확인",
+  "cancel": "취소"
+}

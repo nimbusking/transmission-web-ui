@@ -1,0 +1,17 @@
+{
+  "start": "開始",
+  "stop": "暫停",
+  "remove": "刪除",
+  "verify": "檢查",
+  "rename": "重新命名",
+  "all": "全部",
+  "active": "正在使用",
+  "downloading": "正在下載",
+  "seeding": "正在做種",
+  "paused": "暫停",
+  "checking": "正在檢查",
+  "error": "錯誤",
+  "labels": "使用者標籤",
+  "save": "確定",
+  "cancel": "取消"
+}

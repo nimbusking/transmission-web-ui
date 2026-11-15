@@ -1,0 +1,65 @@
+services:
+  transmission:
+    image: twui-lab/transmission:4.1.4
+    build:
+      context: ..
+      dockerfile: lab/Dockerfile
+      args: {SOURCE_COMMIT: a6d907d9ea2313143af714d7830feb6c1b60b84c}
+    restart: unless-stopped
+    environment: {TR_INITIAL_SETTINGS_ONLY: "1"}
+    volumes:
+      - "compare-config:/config"
+      - "compare-data:/data"
+      - "./entrypoint.py:/entrypoint.py:ro,z"
+    networks: [comparison]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import socket; socket.create_connection(('127.0.0.1',9091),2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+  legacy:
+    image: twui-lab/transmission:4.1.4
+    restart: unless-stopped
+    user: "12345:12345"
+    entrypoint: ["python3", "/compare-proxy.py"]
+    environment: {UI_ROOT: /web, UI_VARIANT: legacy, TR_UPSTREAM: "http://transmission:9091"}
+    ports: ["127.0.0.1:19080:8080"]
+    volumes:
+      - "../old/src:/web:ro,z"
+      - "../.lab/comparison:/comparison:ro,z"
+      - "./compare-proxy.py:/compare-proxy.py:ro,z"
+    depends_on:
+      transmission: {condition: service_healthy}
+    networks: [comparison]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=2).read()"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+  modern:
+    image: twui-lab/transmission:4.1.4
+    restart: unless-stopped
+    user: "12345:12345"
+    entrypoint: ["python3", "/compare-proxy.py"]
+    environment: {UI_ROOT: /comparison/modern-web, UI_VARIANT: modern, TR_UPSTREAM: "http://transmission:9091"}
+    ports: ["127.0.0.1:19081:8080"]
+    volumes:
+      - "../.lab/comparison:/comparison:ro,z"
+      - "./compare-proxy.py:/compare-proxy.py:ro,z"
+    depends_on:
+      transmission: {condition: service_healthy}
+    networks: [comparison]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=2).read()"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+networks:
+  comparison: {}
+volumes:
+  compare-config: {}
+  compare-data: {}

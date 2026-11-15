@@ -1,0 +1,17 @@
+{
+  "start": "Indítás",
+  "stop": "Szünet",
+  "remove": "Törlés",
+  "verify": "Ellenőrzés",
+  "rename": "Átnevezés",
+  "all": "Összes",
+  "active": "Aktív",
+  "downloading": "Letöltés",
+  "seeding": "Feltöltés",
+  "paused": "Szünetel",
+  "checking": "Ellenőrzés",
+  "error": "Hiba",
+  "labels": "User Labels",
+  "save": "OK",
+  "cancel": "Mégsem"
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "Name": "twui-compare-legacy-1",
+    "Service": "legacy",
+    "Image": "twui-lab/transmission:4.1.4",
+    "State": "running",
+    "Health": "healthy",
+    "Ports": "127.0.0.1:19080->8080/tcp"
+  },
+  {
+    "Name": "twui-compare-modern-1",
+    "Service": "modern",
+    "Image": "twui-lab/transmission:4.1.4",
+    "State": "running",
+    "Health": "healthy",
+    "Ports": "127.0.0.1:19081->8080/tcp"
+  },
+  {
+    "Name": "twui-compare-transmission-1",
+    "Service": "transmission",
+    "Image": "twui-lab/transmission:4.1.4",
+    "State": "running",
+    "Health": "healthy",
+    "Ports": ""
+  }
+]

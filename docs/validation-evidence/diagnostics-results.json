@@ -1,0 +1,29 @@
+{
+  "at": "2026-11-15T07:09:20.597Z",
+  "results": [
+    {
+      "version": "3.00 (bb6b5a062e)",
+      "blocklistSize": 1,
+      "freeSpaceBytes": 973600415744,
+      "result": "passed"
+    },
+    {
+      "version": "4.0.0 (280ace12f8)",
+      "blocklistSize": 1,
+      "freeSpaceBytes": 973600415744,
+      "result": "passed"
+    },
+    {
+      "version": "4.0.6 (38c164933e)",
+      "blocklistSize": 1,
+      "freeSpaceBytes": 973600415744,
+      "result": "passed"
+    },
+    {
+      "version": "4.1.4 (a6d907d9ea)",
+      "blocklistSize": 1,
+      "freeSpaceBytes": 973600407552,
+      "result": "passed"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "start": "Start",
+  "stop": "Pauză",
+  "remove": "Şterge",
+  "verify": "Reverifică",
+  "rename": "Rename",
+  "all": "Toate",
+  "active": "Active",
+  "downloading": "În descărcare",
+  "seeding": "În transmitere",
+  "paused": "În pauză",
+  "checking": "În verificare",
+  "error": "Erori",
+  "labels": "User Labels",
+  "save": "OK",
+  "cancel": "Renunță"
+}

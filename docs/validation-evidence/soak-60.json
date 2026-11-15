@@ -1,0 +1,33 @@
+{
+  "at": "2026-11-14T23:48:47.607Z",
+  "durationSeconds": 60,
+  "fullThirtyMinutes": false,
+  "columns": 20,
+  "tasks": 5000,
+  "changesPerCycle": 500,
+  "intervalMs": 2000,
+  "updates": 33,
+  "initialMs": 227.40000000596046,
+  "incrementalP95Ms": 66.70000000298023,
+  "sortP95Ms": 163.09999999403954,
+  "filterP95IncludingDebounceMs": 254.70000000298023,
+  "filterP95ExcludingConfiguredDebounceMs": 134.70000000298023,
+  "heapMaxBytes": 49670096,
+  "heapGrowthBytes": 162772,
+  "samples": [
+    {
+      "seconds": 0,
+      "bytes": 49507324
+    },
+    {
+      "seconds": 30.021,
+      "bytes": 49639900
+    },
+    {
+      "seconds": 60.023,
+      "bytes": 49670096
+    }
+  ],
+  "errors": [],
+  "measurement": "JSON parsed to two animation frames; filtering includes native input, configured 120ms debounce and two frames; heap samples after explicit CDP GC"
+}
