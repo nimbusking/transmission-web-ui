@@ -1,0 +1,50 @@
+{
+  "version": "4.1.4",
+  "writes": [
+    {
+      "cache-size-mb": 5
+    },
+    {
+      "cache-size-mb": 6
+    },
+    {
+      "speed-limit-down-enabled": true,
+      "speed-limit-down": 128
+    },
+    {
+      "alt-speed-time-enabled": true,
+      "alt-speed-down": 32,
+      "alt-speed-time-begin": 545,
+      "alt-speed-time-end": 546
+    }
+  ],
+  "results": {
+    "savedBaseline": {
+      "cacheMB": 6,
+      "noUnsavedChanges": true
+    },
+    "actualScheduleAndDraft": {
+      "daemonTimezone": "UTC",
+      "begin": "09:05",
+      "end": "09:06",
+      "normal": {
+        "bytes": 770048,
+        "seconds": 6.005,
+        "bytesPerSecond": 128234.47127393838
+      },
+      "alternate": {
+        "bytes": 180224,
+        "seconds": 6.002,
+        "bytesPerSecond": 30027.32422525825
+      },
+      "restored": {
+        "bytes": 753664,
+        "seconds": 6.002,
+        "bytesPerSecond": 125568.81039653449
+      },
+      "checkboxFollowedBothTransitions": true,
+      "otherDraftPreserved": true,
+      "draftPortNotApplied": true
+    }
+  }
+}

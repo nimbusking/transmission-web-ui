@@ -26,7 +26,7 @@ import ThemePicker from './ThemePicker.vue';
 import LayoutPicker from './LayoutPicker.vue';
 import ColorModeToggle from './ColorModeToggle.vue';
 import WorkspaceStatusbar from './WorkspaceStatusbar.vue';
-import { PanelLeft, X } from '@lucide/vue';
+import { Info, PanelLeft, X } from '@lucide/vue';
 import { layoutTheme } from '../domain/themes';
 import { visualProfile, visualTheme } from '../domain/visual-themes';
 const DetailPane = defineAsyncComponent(() => import('./DetailPane.vue'));
@@ -34,6 +34,7 @@ const AddDialog = defineAsyncComponent(() => import('./AddDialog.vue'));
 const ActionDialog = defineAsyncComponent(() => import('./ActionDialog.vue'));
 const SettingsDialog = defineAsyncComponent(() => import('./SettingsDialog.vue'));
 const WorkflowDialog = defineAsyncComponent(() => import('./WorkflowDialog.vue'));
+const AboutDialog = defineAsyncComponent(() => import('./AboutDialog.vue'));
 const app = useAppStore(),
   { t } = useI18n(),
   message = useMessage();
@@ -50,6 +51,7 @@ const sortKey = ref('queuePosition'),
 const add = ref(false),
   settings = ref(false),
   columns = ref(false),
+  about = ref(false),
   action = ref(''),
   workflow = ref(''),
   captured = ref<TorrentTarget[]>([]),
@@ -292,7 +294,20 @@ function collapseOnListBlank(event: MouseEvent) {
         <span class="brand-mark"><BrandMark animated /></span
         ><span>Transmission<small>WEB UI</small></span>
       </button>
-      <div class="top-actions"><LayoutPicker /><ThemePicker /></div>
+      <div class="top-actions">
+        <LayoutPicker /><ThemePicker />
+        <NButton
+          class="appearance-trigger about-trigger"
+          secondary
+          :aria-label="t('about')"
+          :title="t('about')"
+          aria-haspopup="dialog"
+          @click="about = true"
+        >
+          <template #icon><Info :size="18" aria-hidden="true" /></template>
+          <span>{{ t('about') }}</span>
+        </NButton>
+      </div>
     </header>
     <WorkspaceToolbar
       :ready="app.ready && !app.stale"
@@ -530,6 +545,7 @@ function collapseOnListBlank(event: MouseEvent) {
       @close="workflow = ''"
     />
     <ColumnSettingsDialog v-model:show="columns" />
+    <AboutDialog v-if="about" @close="about = false" />
     <NModal
       v-model:show="showAuth"
       preset="card"

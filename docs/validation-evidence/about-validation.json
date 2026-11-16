@@ -1,0 +1,72 @@
+{
+  "at": "2026-11-15T21:06:40.472Z",
+  "frozenBuild": "about-build.json",
+  "initialFocusedRun": {
+    "report": ".lab/about-focused-report",
+    "passed": 9,
+    "failed": 15,
+    "reason": "Missing accessible dialog name; screenshot also exposed ineffective scoped modal width. Both fixed before the final build."
+  },
+  "relatedRun": {
+    "report": ".lab/about-final-report",
+    "total": 66,
+    "passed": 63,
+    "failed": 3,
+    "reason": "Historical localization test clicked the removed settings theme selector."
+  },
+  "finalLocalization": {
+    "report": ".lab/about-localization-final-report",
+    "passed": 6,
+    "failed": 0,
+    "changes": "Use the existing bottom-left color control and verify About copy/fallback for all 16 locales; same frozen dist."
+  },
+  "acceptedUniqueScenarios": {
+    "about": 24,
+    "themes": 12,
+    "toolbar": 15,
+    "statusbar": 9,
+    "localization": 6,
+    "total": 66,
+    "accounting": "Exclude all six localization cases from the first related report and replace them with the six final localization cases."
+  },
+  "unit": {
+    "scope": "tests/unit/localization.test.ts",
+    "passed": 1
+  },
+  "checks": {
+    "lint": true,
+    "format": true,
+    "typecheck": true,
+    "productionBuild": true,
+    "openspecStrict": true,
+    "legacyFiles": 816,
+    "legacyUnchanged": true,
+    "gzipBytes": 358981,
+    "gzipLimitBytes": 819200
+  },
+  "controlledVersions": [
+    {
+      "transmission": "3.00",
+      "rpc": 16
+    },
+    {
+      "transmission": "4.0.0",
+      "rpc": 17
+    },
+    {
+      "transmission": "4.0.6",
+      "rpc": 17
+    },
+    {
+      "transmission": "4.1.4",
+      "rpc": 19
+    }
+  ],
+  "limitations": [
+    "Version display is controlled browser data, not a new four-daemon business matrix.",
+    "No installer matrix or 1800-second performance run repeated for this display-only change.",
+    "DSM 7.1 / SynoCommunity 4.1.4-32 remains pending real-device validation.",
+    "Existing task 13.12 and section 30 remain open.",
+    "User visual review pending."
+  ]
+}

@@ -34,10 +34,10 @@ test('5000 tasks: renders, filters, sorts and preserves safe text', async ({ pag
   await expect(page.getByText('5000 transfers').first()).toBeVisible();
   await expect(page.locator('[data-torrent-id="0"]')).toContainText('<img src=x onerror=alert(1)>');
   expect(await page.locator('[data-torrent-id]').count()).toBeLessThan(100);
-  await page.getByPlaceholder('Search name, hash or directory').fill('Transfer 4999');
+  await page.getByPlaceholder('Search names, separate keywords with spaces').fill('Transfer 4999');
   await expect(page.getByText('1 transfers').first()).toBeVisible();
   await expect(page.locator('[data-torrent-id="4999"]')).toBeVisible();
-  await page.getByPlaceholder('Search name, hash or directory').clear();
+  await page.getByPlaceholder('Search names, separate keywords with spaces').clear();
   await expect(page.getByText('5000 transfers').first()).toBeVisible();
   await page.getByRole('button', { name: /^Name/ }).click();
   expect(errors).toEqual([]);

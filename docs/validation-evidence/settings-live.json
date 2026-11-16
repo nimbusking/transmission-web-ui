@@ -1,0 +1,28 @@
+{
+  "activeTab": "用户标签",
+  "footerInViewport": true,
+  "noHorizontalOverflow": true,
+  "tabs": [
+    "基本设置",
+    "网络传输",
+    "带宽限制",
+    "时段限制",
+    "目录字典",
+    "额外设置",
+    "用户标签"
+  ],
+  "taskCount": 7,
+  "transferButton": true,
+  "url": "http://127.0.0.1:19081/transmission/web/?lang=zh-CN",
+  "checkedReadOnly": [
+    "categories",
+    "schedule",
+    "labels",
+    "transfer"
+  ],
+  "settingsOrTaskWrites": 0,
+  "screenshots": [
+    "artifacts/settings-live.jpg",
+    "artifacts/settings-transfer-live.jpg"
+  ]
+}

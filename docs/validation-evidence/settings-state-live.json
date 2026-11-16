@@ -1,0 +1,13 @@
+{
+  "at": "2026-11-16",
+  "url": "http://127.0.0.1:19081/transmission/web/?lang=zh-CN",
+  "method": "CUA刷新并只读打开时段页；未改值/点击保存",
+  "mode": "服务端当前使用：常规限速",
+  "altSpeedEnabled": false,
+  "saveDisabled": true,
+  "taskCount": 7,
+  "layout": "dark; input borders and inline rows retained",
+  "screenshot": "artifacts/settings-state-live.jpg",
+  "daemonWrites": 0,
+  "runtimeEvidence": "settings-state-runtime-4.1.4.json"
+}

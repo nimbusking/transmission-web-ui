@@ -88,7 +88,7 @@ test('dark search has a visible default frame, readable placeholder and accent h
     await choose(page, name);
     await settledSearch(page);
     const search = page.locator('.search-input'),
-      input = page.getByPlaceholder('Search name, hash or directory');
+      input = page.getByPlaceholder('Search names, separate keywords with spaces');
     const metrics = await search.evaluate((node) => {
       const style = getComputedStyle(node);
       return {

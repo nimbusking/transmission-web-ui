@@ -49,7 +49,7 @@ test('checked scope, detail selection, sorted Shift range and context menu are i
       .flatMap((x) => x.arguments.ids)
       .sort(),
   ).toEqual(rows.map((x) => x.hashString).sort());
-  await page.getByPlaceholder('Search name, hash or directory').fill('Task 1');
+  await page.getByPlaceholder('Search names, separate keywords with spaces').fill('Task 1');
   await expect(page.locator('.list-footer')).not.toContainText('selected');
   await page.locator('[data-torrent-id="1"]').click({ button: 'right' });
   await page.locator('.n-dropdown-menu').getByText('Pause', { exact: true }).click();

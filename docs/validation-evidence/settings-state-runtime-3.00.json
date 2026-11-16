@@ -1,0 +1,17 @@
+{
+  "version": "3.00",
+  "writes": [
+    {
+      "cache-size-mb": 5
+    },
+    {
+      "cache-size-mb": 6
+    }
+  ],
+  "results": {
+    "savedBaseline": {
+      "cacheMB": 6,
+      "noUnsavedChanges": true
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "version": "3.00",
+  "uiWrites": [
+    {
+      "speed-limit-down-enabled": true,
+      "speed-limit-down": 64
+    },
+    {
+      "speed-limit-down-enabled": false
+    },
+    {
+      "speed-limit-up-enabled": true,
+      "speed-limit-up": 64
+    },
+    {
+      "speed-limit-up-enabled": false
+    },
+    {
+      "queue-stalled-enabled": false,
+      "speed-limit-down-enabled": true,
+      "speed-limit-down": 128
+    },
+    {
+      "download-queue-enabled": true,
+      "download-queue-size": 1
+    },
+    {
+      "download-queue-size": 2
+    }
+  ],
+  "results": {
+    "initialDownloadSample": {
+      "configuredLimit": 64,
+      "sample": {
+        "bytes": 317613,
+        "seconds": 6.003,
+        "bytesPerSecond": 52909.04547726137
+      },
+      "task": {
+        "downloadedEver": 570311,
+        "errorString": "",
+        "hashString": "07d0ec06d845b898b0517c0ea4cbadb4a58fd3cc",
+        "honorsSessionLimits": true,
+        "id": 1,
+        "isStalled": false,
+        "peers": [
+          {
+            "address": "172.20.0.3",
+            "clientIsChoked": false,
+            "clientIsInterested": true,
+            "clientName": "Transmission 4.14",
+            "flagStr": "TDE",
+            "isDownloadingFrom": true,
+            "isEncrypted": true,
+            "isIncoming": false,
+            "isUTP": true,
+            "isUploadingTo": false,
+            "peerIsChoked": true,
+            "peerIsInterested": false,
+            "port": 51413,
+            "progress": 1,
+            "rateToClient": 47000,
+            "rateToPeer": 0
+          }
+        ],
+        "peersConnected": 1,
+        "percentDone": 0.0083,
+        "rateDownload": 47000,
+        "rateUpload": 0,
+        "seedIdleMode": 0,
+        "seedRatioMode": 0,
+        "status": 4,
+        "uploadedEver": 0
+      }
+    },
+    "actualDownloadLimit": {
+      "limitKBps": 64,
+      "limited": {
+        "bytes": 317613,
+        "seconds": 6.003,
+        "bytesPerSecond": 52909.04547726137
+      },
+      "disabled": {
+        "bytes": 10285726,
+        "seconds": 3.002,
+        "bytesPerSecond": 3426291.1392405066
+      }
+    },
+    "actualUploadLimit": {
+      "limitKBps": 64,
+      "limited": {
+        "bytes": 384000,
+        "seconds": 6.003,
+        "bytesPerSecond": 63968.015992003995
+      },
+      "disabled": {
+        "bytes": 16646190,
+        "seconds": 3.002,
+        "bytesPerSecond": 5545033.311125916
+      }
+    },
+    "downloadQueueOne": {
+      "active": 1,
+      "waiting": 2,
+      "transferring": 1
+    },
+    "downloadQueueTwo": {
+      "active": 2,
+      "waiting": 1,
+      "transferring": 2
+    }
+  },
+  "limits": [
+    "DHT/PEX/LPD/uTP/router forwarding and actual connection ceilings are not fully validated by these fixtures."
+  ]
+}

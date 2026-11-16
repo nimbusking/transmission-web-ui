@@ -246,7 +246,7 @@ test('only checkbox selections enable toolbar; clearing checks never falls back 
   await all.uncheck();
   await disabled();
   await check.check();
-  await page.getByPlaceholder('Search name, hash or directory').fill('Toolbar 2');
+  await page.getByPlaceholder('Search names, separate keywords with spaces').fill('Toolbar 2');
   await expect(page.locator('[data-torrent-id="1"]')).toHaveCount(0);
   await disabled();
   await expect(page.locator('.detail-header')).toContainText('Toolbar 2');

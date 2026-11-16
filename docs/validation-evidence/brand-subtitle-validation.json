@@ -1,0 +1,29 @@
+{
+  "at": "2026-11-15T21:47:48.399Z",
+  "change": "Brand WEB UI subtitle 8px to 10px; other brand styles retained",
+  "browserTests": {
+    "report": ".lab/brand-subtitle-report",
+    "passed": 6,
+    "failed": 0,
+    "scope": "Existing four real layouts tests: light/dark, desktop/tablet/390px/forced desktop, Chromium/Firefox/WebKit"
+  },
+  "checks": {
+    "typecheckAndBuild": true,
+    "format": true,
+    "openspecStrict": true,
+    "legacyFiles": 816,
+    "gzipBytes": 358993
+  },
+  "realPage": {
+    "url": "http://127.0.0.1:19081/transmission/web/?lang=zh-CN",
+    "observedThrough": "CUA",
+    "screenshot": "artifacts/brand-subtitle-live.jpg",
+    "sha256": "7d87e56efd3384efb42b23cde5c968fa2ae1c6004c136e5cbe19b21e9a698ca6",
+    "preferencesEdited": false
+  },
+  "limitations": [
+    "User visual review pending",
+    "No new unit, daemon matrix, installer or performance test for this one-line CSS change",
+    "DSM, task 13.12 and section 30 remain pending"
+  ]
+}

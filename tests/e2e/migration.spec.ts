@@ -33,7 +33,7 @@ test('legacy migration preserves old keys, backs up raw input and survives UI re
   });
   await page.goto('/?lang=en');
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
-  await page.locator('.n-tabs-tab').getByText('Local data', { exact: true }).click();
+  await page.getByRole('button', { name: 'Import and export', exact: true }).click();
   await page.getByRole('button', { name: 'Review legacy migration', exact: true }).click();
   await page.getByRole('button', { name: 'Import local data', exact: true }).click();
 
@@ -44,7 +44,7 @@ test('legacy migration preserves old keys, backs up raw input and survives UI re
     backup = JSON.parse(await readFile((await download.path())!, 'utf8'));
   expect(backup.raw.originalStorage['transmission-web-control']).toBe('{malformed-user-json');
   expect(backup.raw.system.labels[0].description).toBe('legacy description');
-  await page.locator('.n-tabs-tab').getByText('Appearance', { exact: true }).click();
+  await page.locator('.settings-transfer .n-base-close').click();
   await page.getByRole('button', { name: 'Reset display preferences', exact: true }).click();
   await page.reload();
   await expect(
@@ -56,6 +56,6 @@ test('legacy migration preserves old keys, backs up raw input and survives UI re
     '{malformed-user-json',
   );
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
-  await page.locator('.n-tabs-tab').getByText('Local data', { exact: true }).click();
+  await page.locator('.n-tabs-tab').getByText('Folder dictionary', { exact: true }).click();
   await expect(page.locator('textarea').first()).toHaveValue('/data/one\n/data/two');
 });

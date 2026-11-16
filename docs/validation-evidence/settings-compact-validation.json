@@ -1,0 +1,119 @@
+{
+  "at": "2026-11-16T07:34:51.758132+00:00",
+  "scope": "All short server settings and existing short interface preferences use inline rows; adjacent enabled numeric limits are paired. Long text stays wide.",
+  "implementation": {
+    "serverShortFields": 17,
+    "existingShortPreferences": [
+      "locale",
+      "refreshIntervalMs",
+      "pageSize"
+    ],
+    "pairedRows": 7,
+    "numericWidth": 160,
+    "timeWidth": 150,
+    "choiceWidth": 210,
+    "pairedNumericWidth": 210,
+    "maxShortRowWidth": 720,
+    "narrowNumericWidth": 130,
+    "narrowChoiceWidth": 160,
+    "sameStartingColumn": true,
+    "noNewRpcStorageOrDependency": true
+  },
+  "browsers": {
+    "report": ".lab/settings-compact-final-report",
+    "output": ".lab/settings-compact-final-tests",
+    "log": "artifacts/settings-compact-final-browsers.log",
+    "passed": 63,
+    "failed": 0,
+    "skipped": 0,
+    "engines": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "coverage": [
+      "all supported fields remain exactly once and in original category/order",
+      "short labels and controls share centerline, control widths and unified starting column",
+      "seven adjacent enabled numeric pairs with visible KB/s/minute units",
+      "wide directory/script/URL/text areas preserved",
+      "existing UI preferences inline",
+      "dependency disabling preserves values",
+      "large integer 1234567 and decimal 0.75 submitted unchanged in minimal mock patch",
+      "English and Chinese at 1280/390px, all seven categories",
+      "four visual skins in light/dark, footer reachable",
+      "path label/four outside edges, input/keyboard, dark contrast and light unchanged",
+      "legacy migration, labels, categorized transfer and diagnostics"
+    ],
+    "supersedes": ".lab/settings-compact-report also passed 63 on the initial layout; final alignment build is the sole counted acceptance report."
+  },
+  "checks": {
+    "typecheck": true,
+    "productionBuild": true,
+    "lint": true,
+    "format": true,
+    "openspecStrict": true,
+    "diffWhitespace": true,
+    "legacyIntactFiles": 816,
+    "allJsCssGzipKiB": 375.0,
+    "budgetKiB": 800
+  },
+  "deployment": {
+    "at": "2026-11-16T07:31:23.040Z",
+    "archive": "artifacts/transmission-web-ui-2.0.0.tar.gz",
+    "archiveSha256": "bcf6016589ba25c0a71e9a1ecf0cd35034b78f199c7d0ae152002a0ef4f76ac2",
+    "manifestEntries": 52,
+    "verifiedWebFiles": 43,
+    "replacedFiles": 20,
+    "frozenBuildMatched": true,
+    "allServedWebHashesMatched": true,
+    "backupCreated": false,
+    "previousHashedAssetsRetained": true,
+    "taskCount": 7,
+    "taskFields": [
+      "id",
+      "hashString",
+      "name",
+      "status",
+      "percentDone",
+      "downloadDir",
+      "totalSize"
+    ],
+    "taskFieldsUnchanged": true,
+    "daemonSettingsUnchanged": true,
+    "containersUnchanged": true,
+    "containerStates": [
+      "/twui-compare-legacy-1 2026-11-15T08:47:55.766362578Z 0",
+      "/twui-compare-modern-1 2026-11-15T08:47:55.763738803Z 0",
+      "/twui-compare-transmission-1 2026-11-15T08:47:55.763101513Z 0"
+    ],
+    "legacyEntryUnchanged": true,
+    "methods": [
+      "session-get",
+      "torrent-get"
+    ],
+    "daemonWrites": 0,
+    "rollback": "Existing verified candidate immediately before the settings-compact change; no new backup created"
+  },
+  "live": {
+    "evidence": "settings-compact-live.json",
+    "cacheValue": "4",
+    "cacheInputWidth": 160,
+    "cacheSameRow": true,
+    "bandwidthAllRowsInline": true,
+    "bandwidthControlStartsAligned": true,
+    "settingsOrTaskWrites": 0
+  },
+  "rollback": {
+    "candidate": ".lab/settings-path-verified-release/web",
+    "build": "artifacts/settings-path-build.json",
+    "archiveSha256": "0cf47de03809d841aa1550eeb0b27c331fbd101fbd118e02e135bcb66e23fba9",
+    "existingCandidateVerified": true,
+    "newBackup": false
+  },
+  "limits": [
+    "UI-only layout correction; no unrelated unit/real daemon writes/installer/soak reruns. Existing real four-version compatibility evidence remains prior-round evidence.",
+    "Legacy extra settings additions deferred; OpenSpec section30 and 13.12 acceptance remain open.",
+    "DSM7.1/SynoCommunity4.1.4-32 device acceptance pending.",
+    "No commit/push/external publication."
+  ]
+}

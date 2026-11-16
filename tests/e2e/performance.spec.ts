@@ -17,10 +17,10 @@ test('real 5000 tasks render and filter', async ({ page, browserName }) => {
   expect(names.length).toBeGreaterThan(0);
   expect(names.length).toBeLessThan(100);
   const filterStart = performance.now();
-  await page.getByPlaceholder('Search name, hash or directory').fill(names[0]);
+  await page.getByPlaceholder('Search names, separate keywords with spaces').fill(names[0]);
   await expect(page.locator('.section-title')).toContainText('1 transfers');
   const filterIncludingDebounceAndAutomationMs = performance.now() - filterStart;
-  await page.getByPlaceholder('Search name, hash or directory').clear();
+  await page.getByPlaceholder('Search names, separate keywords with spaces').clear();
   await expect(page.locator('.section-title')).toContainText('5000 transfers');
   const cdp = await page.context().newCDPSession(page);
   const heap = await cdp.send('Runtime.getHeapUsage');

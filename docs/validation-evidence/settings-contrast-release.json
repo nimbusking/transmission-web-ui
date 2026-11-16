@@ -1,0 +1,37 @@
+{
+  "at": "2026-11-16T07:56:06.791Z",
+  "archive": "artifacts/transmission-web-ui-2.0.0.tar.gz",
+  "archiveSha256": "f1c811c689cec14d4da149d3a9bf262bbe1a3e4e0df6f0c536db916ca2bfd1c5",
+  "manifestEntries": 52,
+  "verifiedWebFiles": 43,
+  "replacedFiles": 19,
+  "frozenBuildMatched": true,
+  "allServedWebHashesMatched": true,
+  "backupCreated": false,
+  "previousHashedAssetsRetained": true,
+  "taskCount": 7,
+  "taskFields": [
+    "id",
+    "hashString",
+    "name",
+    "status",
+    "percentDone",
+    "downloadDir",
+    "totalSize"
+  ],
+  "taskFieldsUnchanged": true,
+  "daemonSettingsUnchanged": true,
+  "containersUnchanged": true,
+  "containerStates": [
+    "/twui-compare-legacy-1 2026-11-15T08:47:55.766362578Z 0",
+    "/twui-compare-modern-1 2026-11-15T08:47:55.763738803Z 0",
+    "/twui-compare-transmission-1 2026-11-15T08:47:55.763101513Z 0"
+  ],
+  "legacyEntryUnchanged": true,
+  "methods": [
+    "session-get",
+    "torrent-get"
+  ],
+  "daemonWrites": 0,
+  "rollback": "Existing verified candidate immediately before the settings-contrast change; no new backup created"
+}

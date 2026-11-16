@@ -1,0 +1,40 @@
+{
+  "version": "4.0.0",
+  "writes": [
+    {
+      "cache-size-mb": 5
+    },
+    {
+      "cache-size-mb": 6
+    },
+    {
+      "utp-enabled": false
+    },
+    {
+      "speed-limit-down-enabled": true,
+      "speed-limit-down": 64
+    },
+    {
+      "speed-limit-down-enabled": false
+    }
+  ],
+  "results": {
+    "savedBaseline": {
+      "cacheMB": 6,
+      "noUnsavedChanges": true
+    },
+    "actualTcpLimit": {
+      "sourceAndTargetUtpDisabled": true,
+      "limited": {
+        "bytes": 383699,
+        "seconds": 6.006,
+        "bytesPerSecond": 63885.94738594738
+      },
+      "disabled": {
+        "bytes": 65814528,
+        "seconds": 3.002,
+        "bytesPerSecond": 21923560.293137908
+      }
+    }
+  }
+}

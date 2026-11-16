@@ -1,0 +1,123 @@
+{
+  "date": "2026-11-16",
+  "scope": "网络传输、带宽限制、时段限制的真实行为审计；未修改业务代码或部署",
+  "snapshotArchiveSha256": "f1c811c689cec14d4da149d3a9bf262bbe1a3e4e0df6f0c536db916ca2bfd1c5",
+  "method": "实际生产 UI 点击保存；新建临时四版 daemon、本地 tracker/peer、64MiB 私有自有数据；按累计传输字节差/真实耗时测量，不用 RPC 读回代替生效证据；分钟级计时不改系统时间",
+  "finalRun": {
+    "passed": 1,
+    "failed": 3,
+    "duration": "5.5 minutes",
+    "passedVersion": "4.1.4",
+    "rawReport": ".lab/settings-effects-report",
+    "rawLog": "artifacts/settings-effects-run.log"
+  },
+  "versions": {
+    "3.00": {
+      "complete": false,
+      "observedScenarios": [
+        "initialDownloadSample",
+        "actualDownloadLimit",
+        "actualUploadLimit",
+        "downloadQueueOne",
+        "downloadQueueTwo"
+      ],
+      "failure": "关闭下载队列后的显式开始未在40秒内达到3个传输任务；后续分享率/空闲/时段未执行。"
+    },
+    "4.0.0": {
+      "complete": false,
+      "observedScenarios": [
+        "initialDownloadSample"
+      ],
+      "failure": "记录uTP实际超速后，关闭uTP/重启任务仍未在40秒内观测TCP下载连接；后续未执行。"
+    },
+    "4.0.6": {
+      "complete": false,
+      "observedScenarios": [
+        "initialDownloadSample",
+        "actualDownloadLimit",
+        "actualUploadLimit",
+        "downloadQueueOne",
+        "downloadQueueTwo",
+        "actualDownloadQueue",
+        "actualRatioStop",
+        "actualIdleAndStalledQueue"
+      ],
+      "failure": "时段内约19108B/s，上时段前基线约36030B/s，未达到预设2倍对照差异；恢复步骤未执行，因此定时端到端未计通过。"
+    },
+    "4.1.4": {
+      "complete": true,
+      "observedScenarios": [
+        "initialDownloadSample",
+        "actualDownloadLimit",
+        "actualUploadLimit",
+        "downloadQueueOne",
+        "downloadQueueTwo",
+        "actualDownloadQueue",
+        "actualRatioStop",
+        "actualIdleAndStalledQueue",
+        "actualScheduledBandwidth"
+      ],
+      "failure": null
+    }
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "kind": "前端状态缺陷",
+      "detail": "保存成功且真实传输已改变，未保存更改计数/按钮仍可能残留；initialDaemon 是非响应式对象，draft 同值读回没有可靠使 changes 缓存失效。",
+      "location": "src/components/SettingsDialog.vue:118,129,298",
+      "fixed": false
+    },
+    {
+      "id": "F2",
+      "kind": "前端状态缺陷",
+      "detail": "4.1.4 计划时段实际已启用备用限速并下载约32757B/s，弹窗备用限速 checkbox 仍为 false；长期打开的 daemonDraft 不同步自动切换。",
+      "fixed": false
+    },
+    {
+      "id": "F3",
+      "kind": "daemon 版本兼容异常",
+      "detail": "4.0.0 uTP 下载限速64时约638338B/s；另一次连续20秒采样维持约639kB/s，honorsSessionLimits=true。TCP对照未完成，不声称关闭uTP可解决；官方4.0.6发布说明有uTP限速改进。",
+      "upstream": "https://github.com/transmission/transmission/releases/tag/4.0.6",
+      "fixed": false
+    },
+    {
+      "id": "F4",
+      "kind": "操作行为边界",
+      "detail": "4.1.4/4.0.6 下载队列1/2已实际限制任务数；关闭限制后此前等待任务未立即传输，显式开始后3任务均收到数据；3.00该后续步骤超时。",
+      "fixed": false
+    }
+  ],
+  "unverified": [
+    "seed-queue 的实际上传任务数上限",
+    "全局/每任务实际连接数量上限及既有任务覆盖语义",
+    "DHT/PEX/LPD 的发现行为",
+    "UPnP/NAT-PMP 路由器映射及外网端口可达性",
+    "随机端口重启行为",
+    "加密策略完整握手矩阵（补测选择器错误，未完成）",
+    "黑名单实际拦截及默认tracker对新任务的实际影响",
+    "时段排除星期、跨午夜和手动备用限速覆盖矩阵",
+    "真实DSM7.1/SynoCommunity4.1.4-32"
+  ],
+  "networkSupplement": {
+    "version": "4.0.0",
+    "status": "partial",
+    "observation": "UI将peer-port保存为51414后，新端口TCP连接成功，旧51413连接失败；随后加密选择器文本假设错误使补测超时，未计整体通过。",
+    "trace": ".lab/settings-effects-network-results/network-4-0-0-real-listening-port-and-encryption-handshake/trace.zip"
+  },
+  "businessCodeChanged": false,
+  "deployed": false,
+  "publicRelease": false,
+  "allTemporaryContainersCleaned": true,
+  "comparison": {
+    "at": "2026-11-16T08:45:09.486Z",
+    "network": "twui-effects-1794818379494",
+    "dedicatedNetwork": true,
+    "discoveryDisabled": true,
+    "allTrackersLocal": true,
+    "uiSnapshot": "settings-contrast f1c811c689cec14d4da149d3a9bf262bbe1a3e4e0df6f0c536db916ca2bfd1c5",
+    "comparisonTasksUnchanged": true,
+    "comparisonContainersUnchanged": true,
+    "comparisonSessionUnchanged": true
+  }
+}

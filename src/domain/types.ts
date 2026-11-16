@@ -126,7 +126,9 @@ export interface Settings {
   torrentLabels: Record<string, string[]>;
   folderDictionary: string[];
 }
+export type SettingsSection = 'ui' | 'folders' | 'labels';
 export interface MigrationReport {
+  sections?: SettingsSection[];
   settings: Settings;
   warnings: string[];
   raw: unknown;

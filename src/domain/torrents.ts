@@ -1,4 +1,5 @@
 import { hasWarning, inFolder, torrentServers, trackerServer } from './navigation';
+import { createNameMatcher } from './name-search';
 import type { Torrent, ColumnSetting, Settings } from './types';
 
 export const BASE_FIELDS = [
@@ -231,14 +232,11 @@ export function selectTorrents(
   },
   settings: Settings,
 ): Torrent[] {
-  const query = options.search.toLocaleLowerCase().trim();
+  const matchesName = createNameMatcher(options.search);
   const result = items.filter(
     (t) =>
       statusMatches(t, options.status) &&
-      (!query ||
-        `${t.name || ''} ${t.hashString || ''} ${t.downloadDir || ''}`
-          .toLocaleLowerCase()
-          .includes(query)) &&
+      matchesName(t.name) &&
       (!options.folder || inFolder(t.downloadDir, options.folder)) &&
       (!options.tracker || torrentServers(t).includes(options.tracker)) &&
       (!options.label || settings.torrentLabels[t.hashString || '']?.includes(options.label)),

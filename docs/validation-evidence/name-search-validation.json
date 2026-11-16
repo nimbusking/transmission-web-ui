@@ -1,0 +1,63 @@
+{
+  "at": "2026-11-15T22:13:18.847Z",
+  "frozenBuild": "name-search-build.json",
+  "unit": {
+    "passed": 16,
+    "files": [
+      "name-search",
+      "domain",
+      "table",
+      "localization"
+    ],
+    "initialFailure": "New navigation test omitted existing Tracker default :80; fixture corrected, production unchanged."
+  },
+  "firstBrowserRun": {
+    "report": ".lab/name-search-report",
+    "total": 39,
+    "passed": 31,
+    "failed": 6,
+    "skipped": 2,
+    "reason": "New tests needed retrying row ID assertions for same-count results and a separate event turn for compositionstart before synthetic text input."
+  },
+  "finalInputRun": {
+    "report": ".lab/name-search-input-final-report",
+    "passed": 6,
+    "failed": 0,
+    "sameProductionBuild": true
+  },
+  "acceptedBrowserScenarios": {
+    "passed": 37,
+    "skipped": 2,
+    "accounting": "31 passing initial cases + 6 corrected input cases; 2 non-Chromium timing cases intentionally skipped, not passed"
+  },
+  "browserCommand": "TWUI_PREVIEW_PORT=4189 TWUI_REPORT_DIR=.lab/name-search-report npm run test:e2e:docker -- --output=.lab/name-search-tests tests/e2e/name-search.spec.ts tests/e2e/workspace.spec.ts tests/e2e/selection.spec.ts tests/e2e/search-contrast.spec.ts tests/e2e/table-parity.spec.ts tests/e2e/toolbar.spec.ts tests/e2e/bulk-refresh.spec.ts tests/e2e/detail-dismiss.spec.ts --grep 'name-only|Chinese composition|search resets|5000 names|5000 tasks:|checked scope|mobile layout|dark search|light input|footer page|only checkbox|More has only|blank'",
+  "finalInputCommand": "TWUI_PREVIEW_PORT=4189 TWUI_REPORT_DIR=.lab/name-search-input-final-report npm run test:e2e:docker -- --output=.lab/name-search-input-final-tests tests/e2e/name-search.spec.ts --grep 'name-only|Chinese composition'",
+  "checks": {
+    "lint": true,
+    "format": true,
+    "typecheck": true,
+    "build": true,
+    "openspecStrict": true,
+    "diff": true,
+    "legacyFiles": 816,
+    "gzipBytes": 359083,
+    "gzipLimitBytes": 819200
+  },
+  "performance": {
+    "model": "name-search-model-performance.json",
+    "browser": "name-search-browser-performance.json"
+  },
+  "rollback": {
+    "existingCandidate": ".lab/brand-subtitle-verified-release/web",
+    "verifiedFiles": 43,
+    "archiveSha256": "945cc465d7b9113d3164e0ae310b4fee7e3bc5cc3a59a150d16e7f751acb5e5d",
+    "newBackupCreated": false
+  },
+  "limits": [
+    "No new real four-daemon command matrix; frontend-only query uses existing task name.",
+    "Controlled composition event test is not certification of each system IME.",
+    "Node model compute P95 excludes DOM/RPC/debounce; Chromium input-to-paint P95 includes 120ms debounce; neither certifies existing task 13.12 or the 1800-second budget.",
+    "DSM real-device validation and section 30 remain pending.",
+    "User visual/search experience review pending."
+  ]
+}

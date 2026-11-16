@@ -1,0 +1,73 @@
+{
+  "at": "2026-11-16",
+  "scope": "保存基线、定时实际状态、4.0.0 uTP风险处理；不是全量设置封板",
+  "frozenBuild": "settings-state-build.json",
+  "businessChanges": [
+    "响应式初始保存基线，保存/导入读回后可靠清除脏状态",
+    "复用既有会话刷新同步未编辑alt-speed-enabled；保留其他/已编辑草稿；实际状态单独显示并标识过期",
+    "4.0.0启用uTP时三页定向提示与仅暂存关闭入口；无自动启停或隐式保存"
+  ],
+  "browser": {
+    "effectivePassed": 69,
+    "uniqueScenariosPerBrowser": 23,
+    "browsers": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "reports": [
+      {
+        "path": ".lab/settings-state-report",
+        "passedRelevant": 54,
+        "total": 66,
+        "failed": 12,
+        "note": "新测试错误地假设错误告警class；下列12项替代这些失败，未改生产资源"
+      },
+      {
+        "path": ".lab/settings-state-retry-report",
+        "passedRelevant": 12,
+        "failed": 0
+      },
+      {
+        "path": ".lab/settings-state-narrow-final-report",
+        "passedRelevant": 3,
+        "failed": 0,
+        "note": "替代初次窄屏测试对中文连接/保存文案的错误假设"
+      }
+    ]
+  },
+  "realRuntime": {
+    "passed": 4,
+    "failed": 0,
+    "durationMinutes": 3.1,
+    "report": ".lab/settings-state-runtime-report",
+    "sourceUtpEnabled": false,
+    "scope": "四版本真实UI连续保存；4.0.0新TCP连接的真实下载限速/关闭；4.1.4真实分钟级定时与控件双向跟随/草稿保留"
+  },
+  "checks": {
+    "lint": true,
+    "typecheck": true,
+    "format": true,
+    "openspecStrict": true,
+    "legacyFiles": 816,
+    "diffCheck": true,
+    "allJsCssGzipBytes": 384944,
+    "budgetBytes": 819200
+  },
+  "fixed": {
+    "F1": true,
+    "F2": true,
+    "F3DaemonCoreFixed": false,
+    "F3UiRiskHandlingImplemented": true,
+    "F3FreshTcpControlVerified": true
+  },
+  "limitations": [
+    "TCP实测的做种端和接收端都关闭uTP，不能推断仅本端关闭会清除所有既有uTP连接",
+    "复用会话刷新，正常自动刷新下最多等待约一轮30秒会话读取；关闭刷新时不承诺实时",
+    "旧审计其他版本失败及其余网络效果/跨午夜等矩阵不由本轮针对性通过覆盖",
+    "真实DSM仍待验"
+  ],
+  "deployment": "settings-state-release.json",
+  "noNewDeploymentBackup": true,
+  "noPublicRelease": true
+}

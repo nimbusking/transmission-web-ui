@@ -1,0 +1,103 @@
+{
+  "at": "2026-11-16T05:04:15.510436+00:00",
+  "cause": {
+    "hitArea": "The full-width standalone label referenced the path input, so label whitespace activated its focus and autocomplete.",
+    "appearance": "Dark input and card used the same surface and a low-contrast default border."
+  },
+  "change": "Only the default-directory label pointer association and local AutoComplete peers.Input dark overrides; aria-labelledby retains accessible name. Light/global inputs and all RPC/storage semantics unchanged.",
+  "browsers": {
+    "effectivePassed": 54,
+    "initialReport": ".lab/settings-path-report",
+    "initialPassed": 48,
+    "initialFailed": 6,
+    "appearanceReplacementReport": ".lab/settings-path-appearance-report",
+    "replacementPassed": 6,
+    "replacementFailed": 0,
+    "sameFrozenBuild": true,
+    "failureReason": "New viewport assertion read Naive Tabs geometry before ResizeObserver finished; replaced with polling until geometry settles. Production code unchanged between reports. Light coverage also asserts equality to ordinary input color token.",
+    "coverage": [
+      "label text and full-width whitespace",
+      "all four outside edges",
+      "inside-border click",
+      "outside dismiss",
+      "mouse suggestion selection",
+      "keyboard focus/ArrowDown/Enter and Tab",
+      "free text and unsaved draft, no daemon write",
+      "four skins in light/dark",
+      "dark normal border >=3:1 vs input and panel, text >=4.5:1",
+      "hover/focus accent and unchanged dimensions",
+      "light same color token as ordinary input",
+      "390px and desktop",
+      "existing categories, daemon draft, migration, labels, classified transfer and diagnostic retry"
+    ]
+  },
+  "checks": {
+    "typecheck": true,
+    "productionBuild": true,
+    "lint": true,
+    "format": true,
+    "openspecStrict": true,
+    "diffWhitespace": true,
+    "legacyIntactFiles": 816,
+    "allJsCssGzipKiB": 374.3,
+    "budgetKiB": 800
+  },
+  "deployment": {
+    "at": "2026-11-16T05:02:20.649Z",
+    "archive": "artifacts/transmission-web-ui-2.0.0.tar.gz",
+    "archiveSha256": "0cf47de03809d841aa1550eeb0b27c331fbd101fbd118e02e135bcb66e23fba9",
+    "manifestEntries": 52,
+    "verifiedWebFiles": 43,
+    "replacedFiles": 3,
+    "frozenBuildMatched": true,
+    "allServedWebHashesMatched": true,
+    "backupCreated": false,
+    "previousHashedAssetsRetained": true,
+    "taskCount": 7,
+    "taskFields": [
+      "id",
+      "hashString",
+      "name",
+      "status",
+      "percentDone",
+      "downloadDir",
+      "totalSize"
+    ],
+    "taskFieldsUnchanged": true,
+    "daemonSettingsUnchanged": true,
+    "containersUnchanged": true,
+    "containerStates": [
+      "/twui-compare-legacy-1 2026-11-15T08:47:55.766362578Z 0",
+      "/twui-compare-modern-1 2026-11-15T08:47:55.763738803Z 0",
+      "/twui-compare-transmission-1 2026-11-15T08:47:55.763101513Z 0"
+    ],
+    "legacyEntryUnchanged": true,
+    "methods": [
+      "session-get",
+      "torrent-get"
+    ],
+    "daemonWrites": 0,
+    "rollback": "Existing verified candidate immediately before the settings-path change; no new backup created"
+  },
+  "live": {
+    "evidence": "settings-path-live.json",
+    "outsideLabelDoesNotOpen": true,
+    "inputClickOpens": true,
+    "outsideCloses": true,
+    "darkInputDifferentFromPanel": true,
+    "taskOrSettingsWrites": 0
+  },
+  "rollback": {
+    "candidate": ".lab/settings-verified-release/web",
+    "build": "artifacts/settings-build.json",
+    "archiveSha256": "43ba14f12e4e6573637523cd231c794f83b8d5efc726df66c8d4e716e53b799e",
+    "existingCandidateVerified": true,
+    "newBackup": false
+  },
+  "limits": [
+    "UI-only correction; no unrelated unit/daemon write/installer/soak reruns.",
+    "Legacy extra settings additions deferred; OpenSpec section30 remains unimplemented.",
+    "DSM7.1/SynoCommunity4.1.4-32 device acceptance pending.",
+    "No commit/push/external publication."
+  ]
+}

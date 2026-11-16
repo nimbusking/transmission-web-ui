@@ -14,6 +14,7 @@ import type {
   MatchJob,
   UiSettings,
   ColumnSetting,
+  SettingsSection,
 } from '../domain/types';
 
 const columnSchema = z.object({
@@ -324,28 +325,42 @@ export class SettingsRepository {
       },
     }));
   }
-  async import(report: MigrationReport): Promise<Settings> {
+  async import(report: MigrationReport, sections?: SettingsSection[]): Promise<Settings> {
+    const apply = (current: Settings) => {
+      if (!sections) return settingsSchema.parse(report.settings);
+      const next = clone(current);
+      if (sections.includes('ui')) next.ui = clone(report.settings.ui);
+      if (sections.includes('folders'))
+        next.folderDictionary = clone(report.settings.folderDictionary);
+      if (sections.includes('labels')) {
+        next.labels = clone(report.settings.labels);
+        next.torrentLabels = clone(report.settings.torrentLabels);
+      }
+      return settingsSchema.parse(next);
+    };
     const at = Date.now(),
       id = `${this.instanceKey}:backup:${at}:${uniqueId()}`;
     if (this.db) {
       const tx = this.db.transaction('data', 'readwrite');
+      const current = await tx.store.get(`${this.instanceKey}:settings`);
+      const next = apply(current ? migrateSettings(current).settings : clone(this.defaults));
       await tx.store.put(
         {
           id,
           raw: clone(report.raw),
-          previous: await tx.store.get(`${this.instanceKey}:settings`),
+          previous: current,
           at,
         },
         id,
       );
-      await tx.store.put(clone(report.settings), `${this.instanceKey}:settings`);
+      await tx.store.put(clone(next), `${this.instanceKey}:settings`);
       await tx.store.put(true, `${this.instanceKey}:migrated`);
       await tx.done;
       this.channel?.postMessage('settings');
-      return report.settings;
+      return next;
     }
     this.memoryBackups.push({ id, at, raw: clone(report.raw), previous: clone(this.memory) });
-    return this.update(() => report.settings);
+    return this.update(apply);
   }
   async backups(): Promise<{ id: string; at: number; raw: unknown; previous?: Settings }[]> {
     if (!this.db) return clone(this.memoryBackups).sort((a, b) => b.at - a.at);

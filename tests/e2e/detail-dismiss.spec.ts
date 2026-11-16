@@ -58,7 +58,7 @@ test('blank click and explicit collapse close only details; normal controls pres
   await expect(page.locator('.detail-header')).toContainText('Task 1');
   await page.getByRole('button', { name: /^Name/ }).click();
   await expect(page.locator('.detail-region')).toBeVisible();
-  await page.getByPlaceholder('Search name, hash or directory').click();
+  await page.getByPlaceholder('Search names, separate keywords with spaces').click();
   await expect(page.locator('.detail-region')).toBeVisible();
   await page.getByRole('button', { name: 'More', exact: true }).click();
   await expect(page.locator('.detail-region')).toBeVisible();

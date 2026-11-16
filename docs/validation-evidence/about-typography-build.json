@@ -1,0 +1,240 @@
+{
+  "at": "2026-11-15T21:14:21.701Z",
+  "files": {
+    "app-config.json": "b7382255cb0866e789ed6798a65c0dbb03fe0119b518a75066dde28a048a54c7",
+    "assets/AboutDialog-COOM6NwZ.js": "a1682b03a6fcf8e6719d40062110e4746dae752622fbdd3e7e4fdcb5d14fcb25",
+    "assets/AboutDialog-DJPI_Q3E.css": "0f5a9223badc68d2e002112480b3daeaf5ecbc425c78e076a356b77a6814d84d",
+    "assets/ActionDialog-DCqtODem.js": "ed4d2d6cbfb579480cdf99cc4bb6826de26fb5d937d65ca611028e904a0b9fe9",
+    "assets/Add-Co_UF57x.js": "81ceea0a372ada6cb3d1b46f94eb7fea4f74fb154c9c83f56446b7f2cf8c99f7",
+    "assets/AddDialog-DmPHwcKz.js": "326fb2155b204a374f5b386ca03172e22f4df0bd79e85dd6c954213d8c265a31",
+    "assets/DetailPane-CbfWmPDl.js": "49923ff50c7f23d4946472bf19d394a44051b9b1d68f78e5fc793b7e7ed870ee",
+    "assets/DetailPane-iViOdSM5.css": "f11cfdc3b93aaf5e0d5e2a5dc35047592ad04ad85b40be30418650a0c3e027cb",
+    "assets/Input-D1DzGQUK.js": "4cbe8726525b93bd925f9650ddfbef8b2c78003b22e14b6efa309274837b6d9d",
+    "assets/InputNumber-B0Au4ZMX.js": "81747d9e8ed5d92174cc86d0f6d0c620bc50e953f732ffcb57aca9a10d0ee56f",
+    "assets/SettingsDialog-KOjFdT2J.js": "0bc11343826037fdb94f351ff3411a455ed4c4ab4ab496f0c3e6573a4b2c1ed0",
+    "assets/Tabs-DMgAkHQn.js": "f0ca7951b4b2382981c91260d4d83c85d1a75a27b78d5d78f4873ac2f7ace064",
+    "assets/WorkflowDialog-Qnai3S_f.js": "a989a91cd3af270896af6c1b58ce2a1d8f431c855ccf947d6266f5bb427d95b2",
+    "assets/_plugin-vue_export-helper-uflIZFu2.js": "c1de7cad052e4b541e210b04bf87a39b0ded33d930f0e2f105a957913eb02769",
+    "assets/app-DCLyjw3f.js": "e53be1407ebcd7b111efaf082f9ae029d7a35cdd863babb8e8ae587c3a005068",
+    "assets/de-BJpA7Nal.js": "5af62e758b530a0ff897d92fd22c7546d36b48640d95c4842c498e35d187ab20",
+    "assets/es-Eab3iivm.js": "af6e8c56f2de9b3193c799a812ede7250cde0939bf244c61a3c81eb2ab6357c9",
+    "assets/files-yLxVvO94.js": "78e8367f853ef1e452847232bac4665925a3293a5d9bedb0aa4bbd85122e0524",
+    "assets/fr-BwZvF2fv.js": "1f176fe2f549ed6c0a08b4bb802e4d5543e5e7bd524a1037b62f5310e51cfe43",
+    "assets/hu-CiptC3EZ.js": "a35afd3b8f3f63e257b95f883725db735c39c11f7415de0121a816c28a8c90e5",
+    "assets/index-BHNZp8lu.js": "823c35f4fb81ea22006d40d34406715581ffc8bf1e895411613d2b61a8992635",
+    "assets/index-C9UuFrDL.css": "5ee57e57a625ac6b4de540dcfa0562481554368e0f0be8773e535b4dc31f307c",
+    "assets/it-BY_4Q5FI.js": "bea39293393f4ada40347068d0b8bc2159b63a5cb38dd8241a95d686fe965474",
+    "assets/ko-mzxJ0y6n.js": "7e718608060f6b5e51ab0615160457b20f893bc588907811e70520c15126b154",
+    "assets/light-1khLT36R.js": "77f0847e1fc5fee35ebbfe603971b73230cc6206d54a63c528948ecd2add33eb",
+    "assets/light-D3scr5D6.js": "28592a72d2409c06c165d486d4d8f7a9b1187476952f3cf68e2278fcc0124cd6",
+    "assets/nl-BZNl4_81.js": "53882a653f4a12881768bf2e8f89305d3ab7e87378f7050cec54ac4c7e7bcecd",
+    "assets/package-OGhFFKvr.js": "5e4fc100cf381744142aedf6fc048396c0ac98e0bb5c8454d06cff500b66d368",
+    "assets/package-ZCluBgja.css": "30f93886a495fb04193d77088af7d36bde52c8adeb5229f0550dffd2ed3471fd",
+    "assets/pl-C62LNtKR.js": "814e9c022cfb5372fe963d33e0b65646fee439425467d7d80d2b4d70a25a1866",
+    "assets/pt-BR-CUVulu4J.js": "768a790a743544d94688cc8c4e79a9721133ca4448406bd975cdff2f4e7d3b7c",
+    "assets/pt-PT-CnVatU1E.js": "4201e811323d3bc14d247feb4def83afb906f4b072f75ddd3d70c49ed388f88b",
+    "assets/refresh-cw-DCYnx0ra.js": "68b0f050a289041fe1cd116005b5b9fc828b8778ab92ac44d8f6618109673e1c",
+    "assets/ro-ZzvsEqEN.js": "844c069d8f5c82b617a434e577d35024c53c72b3c265549ffbcb1b8a90b2fed0",
+    "assets/ru-C13dH4uw.js": "6a0f9e9804b3fc990ecb339af90e461732ff181143826fd5bbd443a75d7085b0",
+    "assets/uk-D5SbkTVi.js": "f690cca79ac97975bfdb01dfe17bb87b710e9a69732abe12093319905f2fee84",
+    "assets/use-message-DETFyXB1.js": "10c43bfefa95f3955a10805e7aad155b50ece70e48c72be47234339daf2c9a21",
+    "assets/zh-TW-Cx1BW17T.js": "1bfc5108056ceeb555f3f6a7c841816538d5316ded7c5d79dc42113f59e1be73",
+    "favicon.ico": "ce79a5a72b4de46812d1c3facd1115fe8b7ce9c70aabff357bc368617f177dac",
+    "favicon.svg": "a5bda34231ed0d1aeb57254c04053bfa6331699bf961682ecd02be4b1cc79a82",
+    "index.html": "ba7fdcf71993c658c3c0563ef1ae3f8a507bf19fa7d0a5ea4be93640271aee68",
+    "index.mobile.html": "6d945f2787af64fb13fb1a900602e96af7b21fc3e4160f8d96543e3cba53d79f",
+    "licenses/lucide.txt": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57"
+  },
+  "size": {
+    "scope": "all JS/CSS chunks (upper bound on initial load)",
+    "gzipBytes": 358994,
+    "limitBytes": 819200,
+    "chunks": [
+      {
+        "file": "AboutDialog-COOM6NwZ.js",
+        "bytes": 3309,
+        "gzipBytes": 1679
+      },
+      {
+        "file": "AboutDialog-DJPI_Q3E.css",
+        "bytes": 1112,
+        "gzipBytes": 468
+      },
+      {
+        "file": "ActionDialog-DCqtODem.js",
+        "bytes": 6339,
+        "gzipBytes": 2270
+      },
+      {
+        "file": "Add-Co_UF57x.js",
+        "bytes": 453,
+        "gzipBytes": 357
+      },
+      {
+        "file": "AddDialog-DmPHwcKz.js",
+        "bytes": 4012,
+        "gzipBytes": 1785
+      },
+      {
+        "file": "DetailPane-CbfWmPDl.js",
+        "bytes": 18667,
+        "gzipBytes": 7154
+      },
+      {
+        "file": "DetailPane-iViOdSM5.css",
+        "bytes": 219,
+        "gzipBytes": 152
+      },
+      {
+        "file": "Input-D1DzGQUK.js",
+        "bytes": 54393,
+        "gzipBytes": 16312
+      },
+      {
+        "file": "InputNumber-B0Au4ZMX.js",
+        "bytes": 10250,
+        "gzipBytes": 3625
+      },
+      {
+        "file": "SettingsDialog-KOjFdT2J.js",
+        "bytes": 48866,
+        "gzipBytes": 15303
+      },
+      {
+        "file": "Tabs-DMgAkHQn.js",
+        "bytes": 34806,
+        "gzipBytes": 10092
+      },
+      {
+        "file": "WorkflowDialog-Qnai3S_f.js",
+        "bytes": 10957,
+        "gzipBytes": 3770
+      },
+      {
+        "file": "_plugin-vue_export-helper-uflIZFu2.js",
+        "bytes": 2715,
+        "gzipBytes": 1381
+      },
+      {
+        "file": "app-DCLyjw3f.js",
+        "bytes": 443433,
+        "gzipBytes": 147825
+      },
+      {
+        "file": "de-BJpA7Nal.js",
+        "bytes": 579,
+        "gzipBytes": 373
+      },
+      {
+        "file": "es-Eab3iivm.js",
+        "bytes": 582,
+        "gzipBytes": 357
+      },
+      {
+        "file": "files-yLxVvO94.js",
+        "bytes": 816,
+        "gzipBytes": 546
+      },
+      {
+        "file": "fr-BwZvF2fv.js",
+        "bytes": 586,
+        "gzipBytes": 380
+      },
+      {
+        "file": "hu-CiptC3EZ.js",
+        "bytes": 589,
+        "gzipBytes": 388
+      },
+      {
+        "file": "index-BHNZp8lu.js",
+        "bytes": 173699,
+        "gzipBytes": 53158
+      },
+      {
+        "file": "index-C9UuFrDL.css",
+        "bytes": 28728,
+        "gzipBytes": 5993
+      },
+      {
+        "file": "it-BY_4Q5FI.js",
+        "bytes": 579,
+        "gzipBytes": 365
+      },
+      {
+        "file": "ko-mzxJ0y6n.js",
+        "bytes": 649,
+        "gzipBytes": 417
+      },
+      {
+        "file": "light-1khLT36R.js",
+        "bytes": 645,
+        "gzipBytes": 356
+      },
+      {
+        "file": "light-D3scr5D6.js",
+        "bytes": 3549,
+        "gzipBytes": 1173
+      },
+      {
+        "file": "nl-BZNl4_81.js",
+        "bytes": 579,
+        "gzipBytes": 370
+      },
+      {
+        "file": "package-OGhFFKvr.js",
+        "bytes": 1108,
+        "gzipBytes": 689
+      },
+      {
+        "file": "package-ZCluBgja.css",
+        "bytes": 598,
+        "gzipBytes": 297
+      },
+      {
+        "file": "pl-C62LNtKR.js",
+        "bytes": 597,
+        "gzipBytes": 397
+      },
+      {
+        "file": "pt-BR-CUVulu4J.js",
+        "bytes": 583,
+        "gzipBytes": 368
+      },
+      {
+        "file": "pt-PT-CnVatU1E.js",
+        "bytes": 574,
+        "gzipBytes": 354
+      },
+      {
+        "file": "refresh-cw-DCYnx0ra.js",
+        "bytes": 141016,
+        "gzipBytes": 40022
+      },
+      {
+        "file": "ro-ZzvsEqEN.js",
+        "bytes": 590,
+        "gzipBytes": 374
+      },
+      {
+        "file": "ru-C13dH4uw.js",
+        "bytes": 709,
+        "gzipBytes": 469
+      },
+      {
+        "file": "uk-D5SbkTVi.js",
+        "bytes": 740,
+        "gzipBytes": 480
+      },
+      {
+        "file": "use-message-DETFyXB1.js",
+        "bytes": 132785,
+        "gzipBytes": 39057
+      },
+      {
+        "file": "zh-TW-Cx1BW17T.js",
+        "bytes": 655,
+        "gzipBytes": 438
+      }
+    ]
+  }
+}

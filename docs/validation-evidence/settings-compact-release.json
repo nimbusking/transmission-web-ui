@@ -1,0 +1,37 @@
+{
+  "at": "2026-11-16T07:31:23.040Z",
+  "archive": "artifacts/transmission-web-ui-2.0.0.tar.gz",
+  "archiveSha256": "bcf6016589ba25c0a71e9a1ecf0cd35034b78f199c7d0ae152002a0ef4f76ac2",
+  "manifestEntries": 52,
+  "verifiedWebFiles": 43,
+  "replacedFiles": 20,
+  "frozenBuildMatched": true,
+  "allServedWebHashesMatched": true,
+  "backupCreated": false,
+  "previousHashedAssetsRetained": true,
+  "taskCount": 7,
+  "taskFields": [
+    "id",
+    "hashString",
+    "name",
+    "status",
+    "percentDone",
+    "downloadDir",
+    "totalSize"
+  ],
+  "taskFieldsUnchanged": true,
+  "daemonSettingsUnchanged": true,
+  "containersUnchanged": true,
+  "containerStates": [
+    "/twui-compare-legacy-1 2026-11-15T08:47:55.766362578Z 0",
+    "/twui-compare-modern-1 2026-11-15T08:47:55.763738803Z 0",
+    "/twui-compare-transmission-1 2026-11-15T08:47:55.763101513Z 0"
+  ],
+  "legacyEntryUnchanged": true,
+  "methods": [
+    "session-get",
+    "torrent-get"
+  ],
+  "daemonWrites": 0,
+  "rollback": "Existing verified candidate immediately before the settings-compact change; no new backup created"
+}

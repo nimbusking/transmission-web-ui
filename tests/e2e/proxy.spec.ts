@@ -11,7 +11,7 @@ for (const path of ['/ui/', '/nas/transmission/web/'])
     await page.goto(`http://127.0.0.1:19098${path}?lang=en#/torrents`);
     await expect(page.locator('.connection')).toContainText('Connected');
     await page.getByRole('button', { name: 'Settings', exact: true }).click();
-    await expect(page.getByText('Appearance', { exact: true })).toBeVisible();
+    await expect(page.getByText('Basic settings', { exact: true })).toBeVisible();
     expect(statuses).toContain(409);
     expect(statuses).toContain(200);
     expect(errors).toEqual([]);

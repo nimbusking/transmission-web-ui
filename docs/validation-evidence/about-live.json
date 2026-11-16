@@ -1,0 +1,26 @@
+{
+  "at": "2026-11-15T21:06:40.473Z",
+  "url": "http://127.0.0.1:19081/transmission/web/?lang=zh-CN",
+  "observedThrough": "CUA real page",
+  "uiVersion": "2.0.0",
+  "transmission": "4.1.4 (a6d907d9ea)",
+  "rpc": 19,
+  "author": "nimbusk",
+  "links": [
+    "项目主页",
+    "使用帮助",
+    "更新记录",
+    "个人博客",
+    "MIT 许可证"
+  ],
+  "staticCurrentLogo": true,
+  "noThanksDonateOrPTLinks": true,
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "preferencesEdited": false,
+  "taskCommandsSent": false,
+  "screenshot": "artifacts/about-live.jpg",
+  "screenshotSha256": "7440d60b67addfb0ea0cbef5c29dcc035cebcf0bd75cc3a56d017f58cadc81e1"
+}

@@ -1,0 +1,36 @@
+{
+  "at": "2026-11-15T21:46:19.968Z",
+  "archive": "artifacts/transmission-web-ui-2.0.0.tar.gz",
+  "archiveSha256": "945cc465d7b9113d3164e0ae310b4fee7e3bc5cc3a59a150d16e7f751acb5e5d",
+  "manifestEntries": 52,
+  "verifiedWebFiles": 43,
+  "replacedFiles": 3,
+  "frozenBuildMatched": true,
+  "allServedWebHashesMatched": true,
+  "backupCreated": false,
+  "previousHashedAssetsRetained": true,
+  "taskCount": 7,
+  "taskFields": [
+    "id",
+    "hashString",
+    "name",
+    "status",
+    "percentDone",
+    "downloadDir",
+    "totalSize"
+  ],
+  "taskFieldsUnchanged": true,
+  "containersUnchanged": true,
+  "containerStates": [
+    "/twui-compare-legacy-1 2026-11-15T08:47:55.766362578Z 0",
+    "/twui-compare-modern-1 2026-11-15T08:47:55.763738803Z 0",
+    "/twui-compare-transmission-1 2026-11-15T08:47:55.763101513Z 0"
+  ],
+  "legacyEntryUnchanged": true,
+  "methods": [
+    "session-get",
+    "torrent-get"
+  ],
+  "daemonWrites": 0,
+  "rollback": "Existing older snapshot; predates rectangular progress, unified toolbar and subsequent interactions; not the exact previous version"
+}

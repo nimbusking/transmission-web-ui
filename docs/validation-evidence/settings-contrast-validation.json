@@ -1,0 +1,125 @@
+{
+  "at": "2026-11-16T08:00:16.824002+00:00",
+  "cause": "D35 only styled AutoComplete peer input, while compact numeric and select controls retained dark defaults with matching card surfaces and transparent/weak borders.",
+  "change": {
+    "scope": "SettingsDialog and its descendant popup controls only",
+    "implementation": "abstract NConfigProvider with inherited theme/locale/namespace and computed GlobalThemeOverrides",
+    "families": [
+      "Input",
+      "InputNumber peer Input",
+      "AutoComplete peer Input",
+      "TimePicker peer Input",
+      "Select peer InternalSelection",
+      "ColorPicker frame and peer Input"
+    ],
+    "enabled": {
+      "background": "current palette subtle",
+      "border": "current palette muted",
+      "text": "current palette text"
+    },
+    "disabled": {
+      "background": "current palette canvas",
+      "borderAndText": "current palette muted"
+    },
+    "hoverFocusActive": "current palette accent and selected outline",
+    "light": "undefined local override inherits existing parent theme",
+    "layoutAndData": "no changes"
+  },
+  "browsers": {
+    "effectivePassed": 72,
+    "businessAndLayoutReport": ".lab/settings-contrast-report",
+    "businessAndLayoutPassed": 63,
+    "newAppearanceReport": ".lab/settings-contrast-verified-appearance-report",
+    "newAppearancePassed": 9,
+    "sameFrozenBuild": true,
+    "intermediateReports": [
+      "Initial 72-run had 65 pass/7 fail; only the 63 existing setting/path/layout/migration scenarios are counted from it.",
+      "Earlier new-appearance retries had test assumptions about outside transparent borders (#0000), color-picker DOM, async IndexedDB checkbox updates, and unfinished outside text-color transitions. They are superseded by the final 9-pass report."
+    ],
+    "coverage": [
+      "actual computed styles for every rendered input family across all seven categories and four skins/light/dark",
+      "default input border >=3:1 vs surface and panel; text/placeholder >=4.5:1",
+      "disabled text, number, time, dropdown retain visible frame and independent disabled palette",
+      "numeric hover/focus, dropdown active, time popup and color-picker internal inputs",
+      "live system dark/light reset without stale overrides",
+      "outside toolbar style unchanged",
+      "390px stable layout and unchanged inline widths",
+      "all existing setting, migration, label, categorized import/export and path regressions"
+    ],
+    "resizeObserver": "Exact browser ResizeObserver undelivered-notification message is recorded separately in test attachments; layout convergence still asserted and every other pageerror fails. Initial WebKit light run emitted this notification."
+  },
+  "checks": {
+    "typecheck": true,
+    "productionBuild": true,
+    "lint": true,
+    "format": true,
+    "openspecStrict": true,
+    "diffWhitespace": true,
+    "legacyIntactFiles": 816,
+    "allJsCssGzipKiB": 375.2,
+    "budgetKiB": 800
+  },
+  "deployment": {
+    "at": "2026-11-16T07:56:06.791Z",
+    "archive": "artifacts/transmission-web-ui-2.0.0.tar.gz",
+    "archiveSha256": "f1c811c689cec14d4da149d3a9bf262bbe1a3e4e0df6f0c536db916ca2bfd1c5",
+    "manifestEntries": 52,
+    "verifiedWebFiles": 43,
+    "replacedFiles": 19,
+    "frozenBuildMatched": true,
+    "allServedWebHashesMatched": true,
+    "backupCreated": false,
+    "previousHashedAssetsRetained": true,
+    "taskCount": 7,
+    "taskFields": [
+      "id",
+      "hashString",
+      "name",
+      "status",
+      "percentDone",
+      "downloadDir",
+      "totalSize"
+    ],
+    "taskFieldsUnchanged": true,
+    "daemonSettingsUnchanged": true,
+    "containersUnchanged": true,
+    "containerStates": [
+      "/twui-compare-legacy-1 2026-11-15T08:47:55.766362578Z 0",
+      "/twui-compare-modern-1 2026-11-15T08:47:55.763738803Z 0",
+      "/twui-compare-transmission-1 2026-11-15T08:47:55.763101513Z 0"
+    ],
+    "legacyEntryUnchanged": true,
+    "methods": [
+      "session-get",
+      "torrent-get"
+    ],
+    "daemonWrites": 0,
+    "rollback": "Existing verified candidate immediately before the settings-contrast change; no new backup created"
+  },
+  "live": {
+    "evidence": "settings-contrast-live.json",
+    "preferences": [
+      "locale",
+      "refreshIntervalMs",
+      "pageSize"
+    ],
+    "allUnfocused": true,
+    "background": "rgb(37, 45, 54)",
+    "border": "rgb(143, 155, 168)",
+    "panel": "rgb(27, 32, 39)",
+    "settingsOrTaskWrites": 0
+  },
+  "rollback": {
+    "candidate": ".lab/settings-compact-verified-release/web",
+    "build": "artifacts/settings-compact-build.json",
+    "archiveSha256": "bcf6016589ba25c0a71e9a1ecf0cd35034b78f199c7d0ae152002a0ef4f76ac2",
+    "existingCandidateVerified": true,
+    "newBackup": false
+  },
+  "limits": [
+    "Theme-only correction; no unrelated unit/real daemon write/installer/soak reruns.",
+    "Legacy extra settings additions deferred; OpenSpec section30 and13.12 remain open.",
+    "DSM7.1/SynoCommunity4.1.4-32 device acceptance pending.",
+    "No commit/push/external publication."
+  ]
+}

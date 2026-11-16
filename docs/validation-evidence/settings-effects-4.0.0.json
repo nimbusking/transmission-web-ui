@@ -1,0 +1,58 @@
+{
+  "version": "4.0.0",
+  "uiWrites": [
+    {
+      "speed-limit-down-enabled": true,
+      "speed-limit-down": 64
+    }
+  ],
+  "results": {
+    "initialDownloadSample": {
+      "configuredLimit": 64,
+      "sample": {
+        "bytes": 3833856,
+        "seconds": 6.006,
+        "bytesPerSecond": 638337.6623376623
+      },
+      "task": {
+        "downloadedEver": 6275072,
+        "errorString": "",
+        "hashString": "2043889d6b090070a59682df5890ce25d8cbbdc6",
+        "honorsSessionLimits": true,
+        "id": 1,
+        "isStalled": false,
+        "peers": [
+          {
+            "address": "172.20.0.3",
+            "clientIsChoked": false,
+            "clientIsInterested": true,
+            "clientName": "Transmission 4.1.4",
+            "flagStr": "TDE",
+            "isDownloadingFrom": true,
+            "isEncrypted": true,
+            "isIncoming": false,
+            "isUTP": true,
+            "isUploadingTo": false,
+            "peerIsChoked": true,
+            "peerIsInterested": false,
+            "port": 51413,
+            "progress": 1,
+            "rateToClient": 638000,
+            "rateToPeer": 0
+          }
+        ],
+        "peersConnected": 1,
+        "percentDone": 0.0935,
+        "rateDownload": 638000,
+        "rateUpload": 0,
+        "seedIdleMode": 0,
+        "seedRatioMode": 0,
+        "status": 4,
+        "uploadedEver": 0
+      }
+    }
+  },
+  "limits": [
+    "DHT/PEX/LPD/uTP/router forwarding and actual connection ceilings are not fully validated by these fixtures."
+  ]
+}

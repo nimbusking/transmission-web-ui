@@ -1,6 +1,9 @@
 # Design
 
 ## Context
+仅名称的多关键词搜索见[name-search.md](name-search.md)，任务第33节；独立纯匹配器按查询编译词组，复用现有筛选/排序/防抖，不新增RPC或存储。
+页头品牌副标题视觉验收补充：用户要求WEB UI稍大，局部从8px改10px，字距/颜色、主标题和Logo保持，验证四布局/深浅和窄屏，沿用本轮无备份19081更新授权。
+关于入口与项目资料见[about-dialog.md](about-dialog.md)，任务第31节；按需加载、静态Logo和已有会话字段，链接集中维护，不新增查询或持久化。
 2026-11-16封板前共用问题修复设计见[shared-compatibility-fixes.md](shared-compatibility-fixes.md)，tasks第30节。**该节当前仅规划、实施未启动**；后续用户明确开始前，不修改业务代码或执行发布。该设计明确身份、完成字节/人数口径、方向独立限速、Tracker冲突及3.00限制，作为本轮后续实施依据；下述已完成设计保留其历史背景，不表示新增修复已存在。
 真正视觉主题与布局三层分离见visual-themes.md，修订规范docs/theme-design.md，任务24节；此前四套保留为布局。
 布局主题和独立明暗增量见theme-layouts.md，完整扩展规范docs/theme-design.md，任务第22节。
@@ -14,6 +17,9 @@
 以 project_outline.md 第 17–21 节为行为证据；old/ 是用户移入的参考代码，不修补、不重新生成其 min 文件。实施目标、取舍已由用户确认。
 
 ## Goals / Non-Goals
+
+2026-11-16设置实际效果问题修正：保存基线改为响应式，既有保存/导入读回后重置草稿与基线；复用会话刷新同步未编辑的alt-speed-enabled，已编辑开关及其他草稿保留，时段页独立显示最近实际模式和过期状态，不新增定时器。对实测异常的4.0.0/uTP，在网络、带宽、时段显示版本提示和仅暂存关闭uTP的入口；不自动改限速值、不强制停启任务、不声称静态前端修复daemon内核。真实TCP对照和4.1.4定时/控件同步分别验证，未覆盖矩阵保持开放。验收后按已有授权无新增备份切换19081冻结快照，保留7任务/设置/容器及现有上一版候选。
+
 **Goals:** 桌面有效功能完整、移动常用操作、5,000 任务、单实例同源、Transmission 3.00/4.0.x/4.1.4、Linux/Docker/群晖、可迁移和回退。
 **Non-Goals:** 多实例聚合、自建认证后端、SSR、旧主题逐像素复刻、旧 bug 兼容、第三方服务自动访问。
 
@@ -71,3 +77,18 @@
 以[shared-compatibility-fixes.md](shared-compatibility-fixes.md)的D1–D9及交叉核验C1–C11、验证场景与G0–G4为完整实施约束。新增修复不重建配置tab、不改用户持久化列key或主题、不变更daemon全局设置；当前停留G0，仅完成规划。选择从点击开始冻结hash/generation，完成量改为当前haveValid+haveUnchecked，人数保留Tracker报告合计并澄清非去重语义；限速与Tracker写入均需预检/最小计划/明确逐项结果及回读，不宣称具备daemon CAS或原子回滚。
 
 用户后续补充：差异过大的非核心子能力允许采用D9版本能力挡板，优先保留核心使用和4.x既有能力；不强制实现3.00混合Tracker修改，不将挡板验收标成完整功能支持。当前仍仅规划。
+
+## D34 设置页按旧版分类恢复
+本轮按用户指定恢复七分类及原顺序，不沿用四分类建议。47项现有daemon字段按旧分类归位，基本设置容纳现有界面偏好及只读配置目录，网络传输容纳现有诊断，时段使用HH:mm和星期位掩码转换。旧版额外设置中的导航显示/隐藏子目录/单任务右键/BT列表等新增偏好按最新指令暂缓，不改变导航和任务选择行为；已有手动服务保留在额外设置。
+导入导出集中放在底部入口，使用format=transmission-web-ui、formatVersion=1、sections信封按ui/folders/labels/server选择；本地存储仍为schemaVersion=2。旧v2、旧v1及独立labels/maps均可预览，未选择分类按事务当时的最新值保留。标签分类含稳定ID定义和hash关联，整体替换需提示；批量删除确认后事务清除指定ID。服务端默认不选，白名单和版本过滤后独立差异确认，不将本地导入与daemon写入混为一体。界面偏好沿用即时保存，服务端草稿明确保存，关闭不暗中提交；端口和黑名单诊断使用已保存参数并明确说明。
+验收只修改独立测试数据；通过后沿用已授权的19081静态快照切换且不新增部署备份，不重启容器，不修改对照任务或daemon参数。保留原有客户端导入原文及前值记录，这是既有迁移行为，不属于部署备份。第30节保持未实施。
+
+## D35 设置路径框命中范围与深色修正
+实页确认默认目录label因flex纵向拉伸占满整行，for关联导致标题右侧空白点击也聚焦NAutoComplete并开菜单；控件本身与面板在深色使用同一surface，普通边框偏弱。仅对该路径去掉label的指针聚焦关联，改用明确aria-labelledby保留名称，输入本体仍用原NAutoComplete焦点/键盘行为。其局部AutoComplete peers.Input覆盖复用当前皮肤的subtle底色、muted边框及accent/selected悬停和焦点；浅色不覆盖，不改全局输入框、目录建议来源、RPC和存储。验收后沿用本轮无部署备份更新19081授权，保留任务/daemon设置及容器。
+
+## D36 设置小参数同行与密度
+按用户截图全量检查，当前通用settings-field与偏好label均纵向堆叠，使短数值占满宽度并增加一行标签高度。本轮保留七分类与所有行为，仅以settings-field--compact为数字/时间/星期/加密模式建立同行布局，并把语言/刷新间隔/每页条数三个现有偏好归为同行。短控件使用相同起始列，数值桌面160px、时间150px、选项210px；宽文本仍纵排并使用完整可用宽度。fieldRows只把相邻、已有FIELD_DEPENDENCIES的boolean与普通number组合（排除时段位掩码），不跨分类或改顺序；组合数值的完整label保留给读屏，开关已有描述可见，限速/分钟单位在数值后缀明确显示。组合控件210px，行最大720px，窄屏缩为130px并允许长标签/星期换行。仅收紧设置字段间距，不改全局字号和其他弹框。
+本轮不补旧版额外设置新增选项，不改RPC/参数边界/保存或迁移/标签数据。按同一冻结构建完成设置、路径框、主题/窄屏及依赖/大值回归后，沿用现有授权无新增部署备份切换19081，保留任务/daemon设置和容器。
+
+## D37 设置输入控件深色统一修正
+用户再次指出同行后的数字与下拉只像文本。前轮D35只覆盖路径NAutoComplete.peers.Input，未覆盖其他控件，D36只改同行布局，默认深色Input/InputNumber/Select仍与Card使用同一surface且弱边框。本轮将设置组件根置于abstract NConfigProvider内，以一个随color-mode-dark及visualProfile变化的settingsAppearance集中定义Input与InputNumber/AutoComplete/TimePicker/Select/ColorPicker对应内部peer。启用底色subtle、边框muted、文字text，禁用底色canvas、文字/边框muted，悬停/焦点/展开沿用accent与selected外圈；不覆盖错误/警告色。移除单独路径覆盖以统一维护并避免以后遗漏。abstract不增加DOM，继承父theme/locale/namespace，弹出选择面板仍在局部主题上下文。浅色返回undefined并继承父主题；设置之外不改，全量同行/宽文本/保存及RPC行为保持。按四皮肤默认/禁用/焦点和各类控件实际computedStyle验收，再按现有无备份授权更新19081。

@@ -1,5 +1,25 @@
 # 已执行验证的证据快照
 
+三个设置问题优化：settings-state-build/validation/release/live.json记录冻结43资源、69有效三浏览器及静态检查、无备份19081切换/52摘要/7任务和参数及容器保持、实页最近常规模式/保存禁用；settings-state-runtime-{3.00,4.0.0,4.0.6,4.1.4}.json为4项真实针对性场景，runtime-environment核对专用临时环境清理与对照完全相同。F1/F2已修复；4.0.0为风险处理及两端关闭uTP的新TCP限速对照，不宣称内核修复或全量封板。旧settings-effects为修正前历史审计。
+
+设置真实效果审计：settings-effects-audit.json汇总主运行1通过/3失败及未覆盖项；settings-effects-{3.00,4.0.0,4.0.6,4.1.4}.json保留实际UI提交及传输/队列/停止/定时字节差；4.0.0-diagnostic为另一轮连续20秒超速采样，alt-upload为4.1.4计划时段上传补充，environment核对对照任务/daemon参数/容器保持。两项前端状态问题尚未修复，不能标记四版完整封板；详见../settings-effects-audit.md。此次没有业务代码、构建或19081更新。
+
+设置统一深色本轮：settings-contrast-build（同一43冻结资源）、settings-contrast-validation（63既有+最终9新增=72有效三浏览器、实际全类型/禁用/焦点/动态深浅与设置外隔离，列明中间测试修正和精确RO通知边界）、settings-contrast-release（52摘要/HTTP、7任务/daemon/容器保持、无部署备份）、settings-contrast-live（未聚焦的语言/刷新/分页实页颜色和尺寸），截图artifacts/settings-contrast-live.jpg。
+
+设置紧凑同行本轮：settings-compact-build（最终43冻结资源）、settings-compact-validation（最终63三浏览器和几何/单位/依赖/大值/主题语言断点范围，不累计初稿报告）、settings-compact-release（52摘要/HTTP及7任务/daemon/容器保持、无部署备份）、settings-compact-live（缓存4的160px同行及带宽7值控件对齐）。实页截图artifacts/settings-compact-basic-live.jpg和settings-compact-bandwidth-live.jpg。
+
+路径框边界/深色本轮：settings-path-build（43冻结资源）、settings-path-validation（54有效三浏览器及6项时序断言替代关系、无关测试未重跑）、settings-path-release（52摘要/HTTP和7任务/daemon/容器不变、无部署备份）、settings-path-live（实页标题不触发/框内打开/外部关闭及深色颜色），截图artifacts/settings-path-live.jpg。
+
+设置旧版分类本轮：settings-build（最终冻结43web）、settings-release（52摘要/HTTP/7任务与daemon设置及容器不变/无部署备份）、settings-validation（19unit/最终69三浏览器与中间候选替代关系）、settings-compatibility（四版隔离真实读回）、settings-live（19081七分类和底部可达的只读界面观察）。截图在artifacts/settings-live.jpg及settings-transfer-live.jpg。旧版额外设置新增偏好暂缓，DSM实机仍待验。
+
+名称模糊搜索：name-search-build/release/validation/live.json记录冻结43web/52摘要、16相关unit/37有效三浏览器/2性能采样跳过、无备份更新19081与7任务/容器不变、实际C/目录hash排除/多词/清空；name-search-model-performance.json为本机Node领域5000筛选+排序P95约54.27ms（无DOM/防抖），name-search-browser-performance.json为Chromium输入到绘制P95约261.40ms（含防抖）。首轮新增6项测试问题与最终替代报告明确分列，不复用历史通过数或声称长测/DSM通过。
+
+页头副标题：brand-subtitle-build/release/validation.json记录8px→10px的冻结构建、6项现有三浏览器布局回归及无备份19081切换、43web/52摘要与任务/容器不变；截图artifacts/brand-subtitle-live.jpg。未把此前关于回归计入本轮通过数。
+
+关于文字修正：about-typography-build/release/validation.json分别记录15px/正常正文色最终构建、无备份19081切换与43web/52摘要、24项本轮三浏览器及实页截图；旧about-*证据仍表示文字修正前一轮，不冒充本次重跑。
+
+关于入口增量（2026-11-16）：about-build.json为冻结43web与350.6KiB资源；about-validation.json记录关于24/主题工具栏状态栏36/最终语言6共66有效场景及首报告历史语言失败与最终替代报告；about-release.json记录完整52项归档摘要/43web实际HTTP摘要、无备份授权直接更新19081、7任务和容器启动/重启计数不变；about-live.json为真实4.1.4/RPC19中文弹窗及截图入口。不把受控版本显示当四版daemon业务重验，DSM和13.12保持待验。
+
 日期：2026-11-15（Asia/Shanghai）。为首轮完整 Git 交付保留的精简 JSON 证据。测试源码和复现命令见 [验证记录](../validation.md)，运行中的双入口见 [本机对照](../local-comparison.md)。这些文件是已执行结果，不是每次提交自动生成的 CI 结论。
 
 - validation-summary.json：49 项 unit、主矩阵 78 项浏览器、额外 3 项新旧 UI 对照、四版 daemon 与归档摘要；保留 DSM 实机待验。

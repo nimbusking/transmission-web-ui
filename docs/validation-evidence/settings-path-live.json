@@ -1,0 +1,16 @@
+{
+  "url": "http://127.0.0.1:19081/transmission/web/?lang=zh-CN",
+  "outsideLabelMenuCount": 0,
+  "insideInputMenuCount": 1,
+  "outsideClosesMenu": true,
+  "settingsOrTaskWrites": 0,
+  "background": "rgb(37, 45, 54)",
+  "border": "rgb(143, 155, 168)",
+  "inputFocused": false,
+  "labelFor": null,
+  "labelledBy": "setting-download-dir-label",
+  "panel": "rgb(27, 32, 39)",
+  "text": "rgb(220, 228, 234)",
+  "value": "/data",
+  "screenshot": "artifacts/settings-path-live.jpg"
+}

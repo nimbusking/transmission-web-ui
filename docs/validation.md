@@ -1,5 +1,109 @@
 # 重构验证记录
 
+## 本轮完整Git交付前复核（2026-11-16）
+
+104项unit（13文件）、OpenSpec strict、old816及git diff检查通过，远程fetch后origin/main与本地提交基线一致。交付包含本轮全部源码、测试、规格、文档和精简JSON证据；构建/归档/实验数据继续按既有.gitignore保留本机，不因此重新构建或替换已运行快照。各轮浏览器、真实daemon与安装/性能/DSM限制仍以各自证据为准，不将Git提交视为补齐未验项目。
+
+## 三个设置问题定向修正（2026-11-16）
+
+- 保存基线改为响应式；普通保存及服务端导入读回后可靠清零/禁用保存按钮，失败保留草稿，下一次仅提交新差异。备用模式复用既有30秒会话读取同步未编辑开关，其他和已编辑草稿保留；时段页显示最近实际模式与不可用状态。4.0.0/uTP三页提示已观察到的限速风险，并提供仅暂存关闭的按钮，不自动停启或隐式保存。未修改后台协议、持久化结构或全局轮询。
+- 同一冻结43资源（settings-state-build.json）有69有效三浏览器场景：`.lab/settings-state-report`初次66运行54通过/12失败；失败为新告警class定位假设错误，最终`.lab/settings-state-retry-report`12通过替代。另`.lab/settings-state-narrow-final-report`3中文深色390px通过，替代初次窄屏测试对既有中文连接/保存文案的错误假设。生产资源未随这些测试修正改变。覆盖失败重试、连续保存/新差异、服务端导入后基线、自动进入/退出/草稿及过期、四版定向风险与仅暂存/无任务命令、现有分类/布局/标签交换及窄屏可达；不累计中间失败为通过。
+- `TWUI_GUARD_COMPARISON=1 node scripts/test-settings-runtime.mjs`在独立临时四版daemon通过4项（3.1分钟），报告`.lab/settings-state-runtime-report`。四版真实UI连续保存后清零/禁用。4.0.0通过新增入口明确保存utp=false，仅该字段提交，再由**两端均关闭uTP的新TCP连接**验证限64约63886B/s、关闭后21923560B/s；不外推为单端关闭会清理既有连接。4.1.4在真实daemon UTC09:05–09:06（北京时间17:05–17:06）等待计划时段，实际128234→30027→125569B/s；页面勾选跟随两次切换，另一个未保存端口草稿51414仍保留且daemon仍51413。各项字节差和UI写入见settings-state-runtime四版JSON；环境已清理且对照守护核对完全相同。
+- lint/typecheck/format、OpenSpec strict、diff检查、old816通过；全部JS/CSS gzip384944B（375.9KiB）满足800KiB预算。只改组件状态与中英文文案，未重复无关unit/安装/性能长测，四版本完整真实设置矩阵、其余网络效果及DSM仍不宣称通过。
+- 同一dist通过`node scripts/release.mjs`打包，SHA256 `b0cf2bcbe963694d4698d17e6c55d204d21399c312de7cb2919bf365cc3932d8`，52归档摘要/43web/HTTP一致。按已有授权无新增部署备份切换19081，旧哈希资源保留，7任务/daemon可写参数/三个容器/旧入口均保持。CUA刷新后只读打开时段页，常规模式、备用未勾选、保存禁用与清晰暗色输入边框可见；截图artifacts/settings-state-live.jpg。回退依据为现存并核验的`.lab/settings-contrast-verified-release/web`及settings-contrast-build.json，不新建备份，不以静态回退撤销用户以后保存的数据。证据settings-state-build/validation/runtime-*/release/live。
+
+## 设置实际生效审计（2026-11-16，未封板）
+
+详见[逐项审计及失败边界](settings-effects-audit.md)、[结构化汇总](validation-evidence/settings-effects-audit.json)。对当前冻结生产资源在独立四版daemon中通过实际UI保存，并测真实传输字节差、队列、停止及分钟级调度；最终主运行1通过/3失败，不复用历史读回测试作为真实效果。4.1.4核心场景完成，计划下载约131→32.8→131kB/s；3.00/4.0.6部分场景完成，4.0.0 uTP限64却持续约639kB/s。保存后脏状态残留、自动时段勾选未更新两项前端状态缺陷尚未修复；其他版本失败及未覆盖网络能力保留，不宣称四版完整通过。业务代码/构建/19081快照未改，专用临时环境已清理，7对照任务/daemon参数/三个容器保持。
+
+## 设置全部输入类控件深色辨识（2026-11-16）
+
+- 遗漏原因：D35只覆盖路径NAutoComplete.peers.Input；D36只改同行布局，普通数字/下拉依然用与卡片相同的暗色表面和默认透明/弱边框。现已在SettingsDialog根用abstract NConfigProvider集中定义Input、InputNumber/AutoComplete/TimePicker内部Input、Select内部InternalSelection，以及ColorPicker框和内部Input。普通输入subtle/边框muted/文字text，禁用canvas/边框与文字muted；焦点/悬停/展开accent+selected外圈，警告/错误色不覆盖。取消重复路径局部覆盖，原路径命中与名称保留；同行尺寸、浅色、设置外、数据及保存行为不变。
+- 最终生产资源来自artifacts/settings-contrast-build.log，冻结43web于settings-contrast-build.json，验证期间未重建。72有效三浏览器：初始 `.lab/settings-contrast-report` 中的63个既有设置/布局/迁移/路径场景通过；9个新增场景最终以 `.lab/settings-contrast-verified-appearance-report` 的9通过、0失败替代全部中间新增场景结果。初始全量72运行是65通过/7失败（63既有+2新增），中间两次外观重试不累计；失败源于新测试对设置外暗色透明边框/#0000解析、颜色选择器DOM、IndexedDB异步偏好状态等待、设置外文字颜色过渡未完成等假设，生产资源未因此修改。
+- 新外观检查对七分类全部可见Input/Number/Select/Time/AutoComplete实际computedStyle断言四皮肤明暗，含标签文本/说明、多行字典与Tracker、已存手动服务和只读目录。启用边框相对输入/面板≥3:1、文字/占位符≥4.5:1；禁用文本/数字/时间/下拉有独立底色和可读值，分页/自动刷新禁用实际验证。数字悬停/聚焦、下拉展开、时间与标签颜色编辑浮层内部输入、打开弹窗时系统明暗切换、设置外工具栏样式不变、390px稳定几何及既有同行宽度通过。截图settings-contrast-preferences-dark.png和dark-390.png已目视核对。
+- 初始WebKit浅色在频繁切页/调整视口时报告 `ResizeObserver loop completed with undelivered notifications.`。新测试仅将这一精确浏览器通知单独附于resize-observer-notifications.json，同时继续断言布局收敛和无溢出；其余pageerror仍使测试失败。实际颜色快照附于最终报告settings-controls-computed.json，未把该通知冒充业务写入或设备验收。
+- typecheck/build/lint/format/OpenSpec strict/diff whitespace/old816通过；全部JS/CSS gzip375.2KiB≤800KiB。纯局部主题修正未重复无关unit、四版真实daemon写入、安装器或压力长测；原真实四版证据仍属前轮。
+- 同一冻结dist打包52摘要/43web，SHA256 `f1c811c689cec14d4da149d3a9bf262bbe1a3e4e0df6f0c536db916ca2bfd1c5`。按现有授权无新增部署备份更新19081，资源先写/HTML最后，保留旧hash；所有归档/HTTP摘要一致，7任务关键字段、daemon可写设置、三个容器启动及重启计数、19080入口保持，仅只读RPC。完整预编译包仍不引入Node/npm/Python/编译器/CDN运行依赖。
+- 19081实页在默认未聚焦状态核对语言、刷新间隔5000、每页200：背景rgb(37,45,54)区别面板rgb(27,32,39)，边框rgb(143,155,168)，控件宽仍210/160/210。未改输入、开关或保存；settings-contrast-live.json及artifacts/settings-contrast-live.jpg记录。
+- 回退可用已有 `.lab/settings-compact-verified-release/web`，43文件已对照artifacts/settings-compact-build.json核验，上轮归档SHA256bcf6016589ba25c0a71e9a1ecf0cd35034b78f199c7d0ae152002a0ef4f76ac2。核验后仍资源先写/HTML最后，不重启容器/不清IndexedDB；静态回退不撤销用户随后确认的数据导入或daemon修改。OpenSpec37完成，额外新增偏好、DSM7.1/SynoCommunity4.1.4-32实机、第30节与13.12/长测保持待办，未提交/推送/对外发布。
+
+## 设置小参数同行与密度（2026-11-16）
+
+- 当前通用字段与三个偏好label原为纵向堆叠，短数字占满全宽。本轮全量覆盖服务端16数字（含时间/星期）与加密、语言/刷新间隔/分页数量三个现有短偏好。7组相邻已有开关/数值依赖组合为一行：下载/做种队列、上下限速、分享率、空闲做种、队列停滞。组合数字label保留供读屏，限速/分钟单位可见，不改变逻辑依赖或数值约束。普通数值160px、时间150px、选项/组合210px，短行最大720px且控件起始位置统一；路径、脚本、URL、字典、多行Tracker和已有标签行维持宽输入/原布局，设置间距16→12px，分类和固定底部操作不变。窄屏数字130px、选项160px，长标签/星期可换行。
+- `artifacts/settings-compact-final-build.log`、settings-compact-build.json冻结43web。最终 `.lab/settings-compact-final-report` 为63通过、0失败、0跳过（三浏览器）；初稿 `.lab/settings-compact-report` 也63通过，后续仅为统一短控件起始列调整并重新冻结/重验，不与最终63累计。覆盖全部字段一次且顺序不变、同行中心线/宽度/起始列几何、单位、已有依赖、大整数1234567与小数0.75最小mock写入、三个偏好、中英文1280/390和七分类、四皮肤明暗/底部可达、路径框外/键盘/对比度、时段/标签/迁移/重置/分类交换/诊断失败重试。
+- 截图 `artifacts/settings-compact-basic-1280.png`、`bandwidth-1280.png`、`bandwidth-390.png`已目视检查；带宽短参数均可在同一屏中按紧凑行阅读，不再全宽输入。必要typecheck/build/lint/format/OpenSpec strict/diff whitespace/old816通过；JS/CSS gzip375.0KiB≤800KiB。布局未改变RPC/存储/依赖/安装器，未重复无关unit、四版真实daemon写入或压力长测；此前四版真实参数回读仍为前轮证据，不冒充本轮执行。
+- 同一验收dist生成完整预编译包52摘要/43web，SHA256 `bcf6016589ba25c0a71e9a1ecf0cd35034b78f199c7d0ae152002a0ef4f76ac2`。沿用用户授权无新增部署备份更新19081，资源先写/HTML后换，保留旧hash文件；归档/HTTP摘要一致，7任务关键字段、daemon可写设置、三个容器启动及重启计数、19080入口保持。Release运行不新增Node/npm/Python/编译器/CDN。
+- 19081只读实页确认缓存4的标签/160px输入同行，带宽7个数值字段均同行，普通数值160px/组合210px，起始x均684且KB/s/分钟可见；未操作开关、编辑输入或保存。截图 `artifacts/settings-compact-basic-live.jpg`、`settings-compact-bandwidth-live.jpg`，记录settings-compact-live.json。
+- 回退来源为已有 `.lab/settings-path-verified-release/web`，其43文件已对照artifacts/settings-path-build.json核验（上轮归档SHA2560cf47de03809d841aa1550eeb0b27c331fbd101fbd118e02e135bcb66e23fba9）；核对后仍按资源先写/HTML最后换，不停容器/不清IndexedDB。静态回退不撤销用户后来已确认的本地导入或daemon修改。OpenSpec36节完成；旧版额外新增项、DSM7.1/SynoCommunity4.1.4-32实机、第30节及13.12/长测保持待办，未提交/推送或对外发布。
+
+## 设置路径框边界与深色修正（2026-11-16）
+
+原因已用19081实页只读复现：默认保存目录label宽916.8px、与输入控件同宽，for使标题右侧空白也聚焦并开下拉；深色输入与卡片同为surface。修正仅对路径标题取消指针焦点关联，以aria-labelledby保留明确名称；NAutoComplete本体的焦点/键盘、原目录建议和手动输入不变。局部peers.Input只在深色使用当前皮肤subtle底色、muted普通边框、accent悬停/焦点及selected外圈，不改浅色或全局输入框。
+
+- 生产构建 `artifacts/settings-path-build.log` 冻结43web于settings-path-build.json，期间未重建。三浏览器有效54项：`.lab/settings-path-report` 48通过/6失败，失败均为新增窄屏断言过早读取ResizeObserver尚未更新的标签页宽度；测试改为轮询稳定几何，并加强浅色与普通输入颜色一致断言后，`.lab/settings-path-appearance-report` 6项通过。两报告同一生产资源，48+6合并，不将失败或历史轮次累计为通过。
+- 新增用例覆盖标题文字与整行空白、输入框上下左右3px边界不触发/不聚焦、边框内2px点击打开、外部关闭、鼠标选项、键盘焦点/方向键/Enter/Tab、自由文本与草稿零写入；四皮肤明暗验证背景/边框/文本/悬停/焦点与390px和桌面。深色普通边框相对背景及面板均≥3:1、文本≥4.5:1，浅色与原普通输入颜色token相同。既有设置分类/字段/失败重试/时段、标签、迁移/重置/备份原文、分类交换及诊断通过；截图settings-path-dark-1280.png/light-390.png已目视检查。
+- typecheck/build/lint/format/OpenSpec strict/diff whitespace/old816通过；JS/CSS gzip374.3KiB≤800KiB。没有新增RPC、设置字段、依赖或安装器改动，故未重复无关unit、四版本真实写入或长测；上一轮42/47/47/47字段及23/24/24/25变化字段真实读回属于上一轮证据，不冒充本次重跑。
+- 同一dist打包52摘要/43web，归档SHA256 `0cf47de03809d841aa1550eeb0b27c331fbd101fbd118e02e135bcb66e23fba9`。沿用用户明确授权直接更新19081，无新增备份、不重启/重建容器，保留旧hash文件、资源先写HTML最后换；归档/HTTP一致，7任务关键字段、daemon可写设置、三个容器启动及重启计数、19080入口保持。实际只替换3个文件，报告settings-path-release.json。
+- 实页只读再验：标题中心空白点击下拉数0，输入本体点击可开且外部关闭；未编辑值/data或点击保存。普通深色底色rgb(37,45,54)区别面板rgb(27,32,39)，边框rgb(143,155,168)，文本rgb(220,228,234)。截图artifacts/settings-path-live.jpg，记录settings-path-live.json。
+- 回退使用既有 `.lab/settings-verified-release/web`，其43文件对照artifacts/settings-build.json已核验（上轮归档SHA25643ba14f12e4e6573637523cd231c794f83b8d5efc726df66c8d4e716e53b799e）；仍按资源先写/HTML后换，不停容器或清IndexedDB。静态回退不撤销后来已确认的本地导入或daemon修改。OpenSpec35节完成，旧版额外新增偏好、DSM7.1/SynoCommunity4.1.4-32实机、第30节与13.12/长测限制保持，未提交推送/对外发布。
+
+## 设置旧版分类与标签/分类交换（2026-11-16）
+
+- 按用户指定使用旧版七分类，保留全部47项现有服务端字段及已有界面偏好/手动服务；旧版额外设置中的新增偏好按最新指令暂缓。关闭不提交daemon草稿；正文滚动、固定分类栏和底部操作，390px底部按钮完整可见。时段使用HH:mm与星期，控件依赖和数值单位明确；端口和黑名单测试使用已保存的服务端参数，不隐式保存草稿。
+- 标签：独立导入旧labels/maps与新稳定ID格式、重命名/说明/颜色、确认多选删除、导出和重载，保留其他标签的ID与hash关联。配置：四分类导出/预览导入，未选择分类取事务当时最新值；服务端默认不勾选，过滤白名单/版本后另行差异确认。损坏JSON或格式使旧预览失效；预览不保存，本地导入仍保留原文/前值记录，和用户取消的部署备份不同。
+- 最终候选 `artifacts/settings-final-build.log`、`settings-build.json` 冻结43文件。相关unit19项通过。三浏览器最终 `.lab/settings-acceptance-report` 为69通过、0失败、0跳过，包含设置/迁移/工具栏/批量刷新，四皮肤×深浅及1280/390px、分类与字段覆盖、依赖/时段最小写入、失败重试、标签及分类交换、跨页/回退原文/重置。初轮 `.lab/settings-report` 的12项失败是只读目录无障碍名称重复，修正后通过；后续两个69项通过报告对应布局收尾前候选，不与最终69累计。最终截图 `artifacts/settings-light-1280.png`、`settings-dark-390.png` 已目视检查。
+- `npm run test:settings` 使用四个新建无网络、无数据卷临时daemon并清理，3.00/4.0.0/4.0.6/4.1.4返回42/47/47/47项支持字段，分别实际改变23/24/24/25项并全部回读一致；未改变字段不记为写入通过。覆盖跨午夜/星期/小数分享率等，不是吞吐或DSM验收，未使用对照任务。证据 `settings-compatibility.json`。
+- lint/typecheck/format/OpenSpec strict/diff whitespace/old816通过；全部JS/CSS gzip374.1KiB，预算800KiB。安装器未改，未重复无关安装矩阵或性能长测；完整预编译Release仍无需Node/npm/Python/编译器/CDN。
+- 同一冻结dist打包52项摘要/43web；SHA256 `43ba14f12e4e6573637523cd231c794f83b8d5efc726df66c8d4e716e53b799e`。按已授权方式直接更新19081，无新增备份、不重启容器，保留旧hash资源，资源先写/HTML最后替换；所有HTTP摘要与归档一致，7任务关键字段、可写daemon设置、容器启动/重启计数、19080入口均保持。实页仅查看七分类/时段/标签/分类交换，无任务或设置写入；截图 `artifacts/settings-live.jpg`、`settings-transfer-live.jpg`，证据 `settings-release.json` 与 `settings-live.json`。
+- 回退来源为现存 `.lab/name-search-verified-release/web`（上轮归档SHA256 `7f5f4df2e8be38435748fdc10fbfaaad5c236a61c1b8a19c6d1c79b4d039edca`），其43文件对照 `artifacts/name-search-build.json` 已核验；核对后同样资源先写/HTML后换，刷新即可，不停容器、不清IndexedDB。存储仍v2，旧构建可读取；静态回退不撤销用户后来确认的本地导入或daemon修改。新分类文件不承诺可由旧UI导入，旧v1文件需保留。
+- OpenSpec34节完成；旧版额外设置新增项暂缓，DSM7.1/SynoCommunity4.1.4-32实机、第30节共享兼容修复、13.12/长测边界不变。未提交/推送或对外发布，用户视觉验收待反馈。
+
+## 2026-11-16 仅名称的多关键词模糊搜索
+
+- 已实现：domain/name-search.ts编译NFKC/toLowerCase/Unicode空白分词/去重后的AND条件，仅接收任务名称；每词是字面子串、顺序不限，空查询直接放行、缺失名称不匹配非空查询。无hash/路径文本命中，无评分/正则/纠错；原数据/排序/导航交集、120ms防抖、第一页/勾选清理/详情保持不变，文件详情过滤不改。中英文提示改“搜索名称，空格分隔关键词”及对应英文，现有测试定位同步更新。
+- 相关unit16项（name-search5、domain5、table5、localization1）通过；新增规则、全半角/大小写/空白/重复词/字面标点/空名称、hash/路径排除和完整导航交集/排序均覆盖。首轮新增导航测试遗漏Tracker默认端口，改为既有tracker.local:80身份后通过，无生产修改或规则放宽。
+- 冻结生产构建的有效三浏览器场景37项通过、2项按计划跳过非Chromium短时性能采样。首报告`.lab/name-search-report`共39项：31通过、6失败、2跳过；6失败来自新测试在同数量结果切换时未等待原始ID更新，以及将compositionstart和首个文字输入塞在同一JS调用导致组件先更新时覆盖了合成文字。改为重试等待ID集合、分开真实事件阶段并断言组合文字值，再在`.lab/name-search-input-final-report`只复验这6项，全部通过；同一dist未重建。有效计数31+6，不把首报告整体标为通过、跳过不算通过。
+- 浏览器范围：仅名称/部分匹配/多词任意顺序/NFKC/字面标点/清空/快速编辑、受控中文组合事件和移动中文明暗；分页回首/勾选清空/详情保持、状态+目录+服务器与搜索交集、现有选择/右键/移动操作、全局批量不受筛选影响、搜索四皮肤明暗/几何、空白关闭保护与5000虚拟列表。受控事件不冒充真实系统输入法逐款验收，mock命令不冒充四版daemon操作实测。
+- 5000必要短测：`node scripts/test-name-search.mjs`将生产领域模型编译到独立.lab目录，5轮预热后120个筛选+名称排序样本P95=54.27ms<200ms；这是本机Node模型计算，排除DOM/RPC/防抖。Chromium在5000受控任务下输入到计数更新后两帧，20样本P95=261.40ms<1000ms局部响应检查，包含120ms防抖；虚拟DOM仍<100行。分别见name-search-model-performance.json及name-search-browser-performance.json，不以两项短测替代13.12、真实规模或1800秒长测，不将261ms与排除防抖的200ms预算混用。
+- lint/format/typecheck/生产构建/strict OpenSpec/diff/old816通过，全部JS/CSS gzip350.7KiB<800。已验证dist直接打包，没有测试后隐式重建；完整归档SHA-256`7f5f4df2e8be38435748fdc10fbfaaad5c236a61c1b8a19c6d1c79b4d039edca`，52项摘要/43web与冻结构建及HTTP返回一致，开发领域短测脚本/运行时不进入Release。
+- 用户确认方案后，按本轮无备份直接更新19081授权资源先行/入口最后、保留旧hash及运行配置。前后7任务id/hash/名称/状态/进度/目录/大小完全一致，三个对照容器StartedAt/RestartCount及旧端入口不变。只读session-get/torrent-get，无任务/daemon设置写入、容器生命周期动作或浏览器偏好修改。实页C只命中C；comparison和A的hash前缀0项；中文 多文件命中D；最后清空恢复7项。截图artifacts/name-search-live.jpg，证据name-search-build/release/validation/live及两份performance.json已复制validation-evidence。
+
+回退：实施前已核验现存`.lab/brand-subtitle-verified-release/web`43文件与品牌副标题候选摘要一致，该候选归档标识945cc465…是本轮精确前一版资源。可资源先行/入口最后恢复这些既有资源，并将deployment记录恢复相应归档标识；不清存储或改daemon，不新建备份。更老before-table-progress等快照会撤销多轮优化，不作为本次首选。安装方式/四版RPC均不改，DSM7.1/SynoCommunity4.1.4-32、13.12及第30节修复保持待验/待实施；用户视觉与搜索体验验收待反馈，未提交/推送/对外发布。
+
+复现：先生产构建，再用独立端口运行`tests/e2e/name-search.spec.ts`及相关workspace/selection/search-contrast/table-parity/toolbar/bulk-refresh/detail-dismiss选定用例；原首轮命令与有效报告选择在name-search-validation.json。模型短测独立`node scripts/test-name-search.mjs`，不改dist；浏览器测试和归档使用同一冻结构建。
+
+## 2026-11-16 页头WEB UI副标题放大
+
+仅src/style.css的.brand small字号8px→10px，字距3px/颜色及主标题/Logo保持。现有themes.spec中four real layouts深浅用例在Chromium/Firefox/WebKit共6项通过（`.lab/brand-subtitle-report`），覆盖四布局、桌面/1024/800/390px、强制桌面、入口/导航/状态栏无溢出；未为单行CSS新增镜像测试，未重跑无关unit/四版daemon/安装矩阵或压力。生产构建含类型检查、格式检查、strict OpenSpec、diff、old816、350.6KiB预算通过。
+
+已验证dist直接打包，SHA-256`945cc465d7b9113d3164e0ae310b4fee7e3bc5cc3a59a150d16e7f751acb5e5d`，52项归档摘要/43web与冻结构建及HTTP实际返回一致。沿用本轮验收后无备份更新19081授权，资源先行/入口最后并保留旧hash；7任务关键字段、三个对照容器StartedAt/RestartCount及旧端入口不变，无任务/daemon写入或容器生命周期动作。实页刷新核对放大后的WEB UI，截图artifacts/brand-subtitle-live.jpg；证据brand-subtitle-build/release/validation.json。无本轮精确前一版新备份，既有较早快照回退限制保持；用户视觉验收、DSM/13.12待验不变，未提交/推送/对外发布。
+
+复现：先构建，然后`TWUI_PREVIEW_PORT=4189 TWUI_REPORT_DIR=.lab/brand-subtitle-report npm run test:e2e:docker -- --output=.lab/brand-subtitle-tests tests/e2e/themes.spec.ts --grep 'four real layouts'`。
+
+## 2026-11-16 关于文字字号与颜色修正
+
+用户反馈简介淡灰、字号小且不统一，定位为AboutDialog中的muted文字色、13px继承正文与12px版本/许可及按钮字号混用。仅局部主体设15px/1.65行高，简介/字段/许可恢复正常text色，版本标记保留accent，标题仍24px；按钮覆盖自身字号为继承值，不改全局皮肤或文字内容。
+
+最终生产构建24项三浏览器about回归全部通过，报告`.lab/about-typography-report`，日志artifacts/about-typography-browsers.log。现有四布局×四皮肤×深浅/1280和390px用例新增实际computedStyle断言：简介、标签、值、许可同为15px且正常正文色，版本和四按钮均15px，缓存说明亦15px；保持链接/关闭/焦点/勾选和详情/版本显示/零额外请求及强制桌面。另人工查看Cupertino浅色候选截图，19081真实中文深色实页也已核对。不把既有66项或unit结果作为本次重跑数，未重复四版daemon业务、安装器或压力长测。
+
+lint/format/typecheck/生产构建/strict OpenSpec/diff/old816通过，全部JS/CSS gzip350.6KiB。已验证dist直接打包无再次构建，完整归档SHA-256`7d37762bb3472e79dd5bbc526474c4a77c72b1391ab960e2db58bdfb284cecc7`；52项摘要/43web与冻结构建及HTTP返回一致。沿用本轮无备份直接更新授权，资源先行/入口最后，旧hash保留；前后7任务关键字段、三个对照容器StartedAt/RestartCount及旧端入口不变，无daemon/任务写入、偏好修改或容器生命周期操作。截图artifacts/about-typography-live.jpg，结构化证据about-typography-build/release/validation.json。回退仍为较早快照或独立构建验收旧源码，不存在本次精确上一版新备份。用户视觉验收待反馈，DSM/13.12/第30节原边界保持，未提交/推送/对外发布。
+
+复现：先生产构建，再执行`TWUI_PREVIEW_PORT=4189 TWUI_REPORT_DIR=.lab/about-typography-report npm run test:e2e:docker -- --output=.lab/about-typography-tests tests/e2e/about.spec.ts`；测试时冻结dist。
+
+## 2026-11-16 关于入口与项目资料
+
+- 已实现：主题右侧Info入口、独立按需AboutDialog，静态当前Logo、package.json的2.0.0及现有session的Transmission/RPC，缺失版本与缓存提示，作者nimbusk；居中主页/帮助/更新记录/个人博客四按钮及MIT许可文字链接。src/project.ts集中维护当前仓库与文件链接/https://nimbusk.cc，外链只点击打开新标签，noopener noreferrer。无旧PT助手、捐赠、感谢行；无新RPC/设置schema/第三方自动查询。
+- 最终冻结构建的有效三浏览器场景共66项：about24、themes12、toolbar15、statusbar9、最终localization6。`.lab/about-final-report`首次66项中63通过/3失败，失败均为历史语言用例点击已移除的“跟随系统→深色”设置；将该用例改走现行左下明暗入口、补16语言关于文案回退后，同一dist在`.lab/about-localization-final-report`最终6项通过。有效计数排除首报告全部6个语言场景，采用其余60+最终6，不将首报告整体标为通过或重复累计通过数。
+- about.spec覆盖3.00/RPC16、4.0.0/17、4.0.6/17、4.1.4/19受控版本显示、未连接/刷新失败缓存、链接href/target/rel、静态Logo、零新增请求/外部请求、关闭/遮罩/Esc/焦点返回及勾选/详情保持，四皮肤×四布局×深浅的桌面/390px、强制桌面与中文。首轮发现可访问名称缺失（15项定位失败）及截图桌面宽度未约束，补显式aria-label和全局660px浮层宽度后重新构建，最终上述场景通过；旧报告`.lab/about-focused-report`不当作通过证据。其他已通过用例未无故重复执行。
+- 相关文案完整性unit1项通过；lint/format/typecheck/生产构建/OpenSpec strict/diff/old816通过，全部JS/CSS gzip350.6KiB<800KiB。构建日志含既有Zod PURE注释移除提示，构建成功。只涉及已有会话展示，未重跑四版真实daemon业务、安装器矩阵或30分钟压力；DSM实机与13.12原限制保持，第30节共用兼容性修复未实施。
+- 由已验证dist直接调用release.mjs打包，未隐式重建。归档SHA-256 `1640252e88efb811c63bf85ed60c09c260ec90469b970be9586f04e69fe49106`，52项归档摘要/43web与冻结构建及HTTP实际返回逐项一致，包含AboutDialog JS/CSS及完整本地依赖，无CDN或新增目标运行时。沙箱第一次禁止tar子进程，获执行权限后原脚本成功；失败不计打包完成。
+- 用户本轮明确授权验收后直接切换19081且无需备份，已资源先行、index.html最后逐文件原子更新，保留旧hash与运行配置，不新增备份。只读session-get/torrent-get核对前后7任务的id/hash/名称/状态/进度/目录/大小完全一致；三个twui-compare容器StartedAt/RestartCount均不变，旧端入口摘要与双方health正常。无任务/daemon设置写入、无对照容器生命周期动作。
+- 19081真实页面显示右上布局/主题/关于，弹窗作者nimbusk、2.0.0、4.1.4 (a6d907d9ea)/RPC19，四链接和当前Logo正常、无感谢行。截图artifacts/about-live.jpg；未改变19081明暗/布局/勾选/详情偏好。结构化证据about-build/release/validation/live.json见validation-evidence。用户视觉验收待反馈；未提交、推送或对外发布。
+
+回退：本轮按要求无精确上一版备份。既有before-table-progress等较早快照仅能核验后恢复对应资源/deployment.json，会撤销多轮优化，不能称精确上一版；或从本轮前源码构建候选、独立验收后再切换。静态回退不清数据库、不改任务或daemon；已有Release安装回退机制不变。
+
+复现：`TWUI_PREVIEW_PORT=4189 TWUI_REPORT_DIR=.lab/about-final-report npm run test:e2e:docker -- --output=.lab/about-final-tests tests/e2e/about.spec.ts tests/e2e/themes.spec.ts tests/e2e/toolbar.spec.ts tests/e2e/localization.spec.ts tests/e2e/statusbar.spec.ts`。历史语言修正后单独复验：`TWUI_PREVIEW_PORT=4189 TWUI_REPORT_DIR=.lab/about-localization-final-report npm run test:e2e:docker -- --output=.lab/about-localization-final-tests tests/e2e/localization.spec.ts`。两报告对应同一冻结生产构建；复现时先构建再测试，不在运行中重建dist。
+
 ## 2026-11-16 Transmission 3.00 封板前行为评估
 
 按用户最新要求，只评估3.00在当前UI的实际显示/保存/操作表现，不讨论接口覆盖率。结论及复现条件见[3.00 UI评估](transmission-3-ui-review-2026-11-16.md)。本轮唯一离线3.00自建32KB样例确认选择性下载下completeSize公式高估；存续限速字段100可读回，弹框固定默认值问题属于前端语义。另6项受控诊断复现边界，A05为RPC17分支不计3.00实测。92unit、已启动的162项三浏览器受控回归通过不能抵消新发现；37dist摘要未变，无业务修复/部署/对照写入/压力长测。证据ui3-native-audit.json、ui3-audit-diagnostics.json、ui3-review-summary.json。任务配置已移除，不把其历史seedIdleLimit=0问题当作当前tab阻断。

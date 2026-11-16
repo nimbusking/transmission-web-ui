@@ -42,7 +42,8 @@
     "compare:check": "node scripts/check-comparison.mjs",
     "test:compare": "sh scripts/test-browsers-docker.sh --config=playwright.compare.config.ts",
     "format": "prettier --write src tests scripts/*.mjs *.{ts,js,json}",
-    "format:check": "prettier --check src tests scripts/*.mjs *.{ts,js,json}"
+    "format:check": "prettier --check src tests scripts/*.mjs *.{ts,js,json}",
+    "test:settings": "node scripts/test-settings.mjs"
   },
   "dependencies": {
     "@lucide/vue": "^1.73.0",

@@ -175,7 +175,7 @@ test('footer page size, jump, offsets, persistence, empty and mobile bounds', as
   await page.getByText('5000 / page', { exact: true }).click();
   await expect(page.locator('.list-footer')).toContainText('1–205 of 205');
   expect(await page.locator('[data-torrent-id]').count()).toBeLessThan(100);
-  await page.getByPlaceholder('Search name, hash or directory').fill('no matches');
+  await page.getByPlaceholder('Search names, separate keywords with spaces').fill('no matches');
   await expect(page.locator('.list-footer')).toContainText('0–0 of 0');
   await page.setViewportSize({ width: 390, height: 844 });
   await expect

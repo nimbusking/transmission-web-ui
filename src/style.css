@@ -64,7 +64,7 @@ button:disabled {
 }
 .brand small {
   display: block;
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 3px;
   color: var(--muted);
   margin-top: 0;
@@ -502,6 +502,9 @@ button:disabled {
 }
 .medium-dialog {
   width: 620px;
+}
+.about-dialog {
+  width: 660px;
 }
 /* Only column settings use a short fade; retain other dialog transitions. */
 .column-settings-dialog.n-modal.fade-in-scale-up-transition-enter-active,
@@ -960,5 +963,173 @@ button:disabled {
 @media (max-width: 767px) {
   .workspace:not(.force-desktop) .file-list-footer {
     padding-bottom: 44px;
+  }
+}
+
+.settings-dialog {
+  width: 980px;
+}
+.settings-dialog .n-tabs-tab {
+  font-size: 14px;
+}
+.settings-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.settings-field > label {
+  font-size: 14px;
+  color: var(--text);
+}
+.settings-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.settings-inline small {
+  flex-basis: 100%;
+  font-size: 13px;
+}
+.settings-subsection {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.settings-subsection h3 {
+  margin: 0;
+}
+.settings-subsection p {
+  margin: 0;
+}
+.settings-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.settings-footer > .n-button:last-child {
+  margin-left: auto;
+}
+.settings-weekdays {
+  margin: 0;
+}
+.settings-label-row > .n-input {
+  min-width: 0;
+}
+.settings-transfer h3 {
+  margin: 22px 0 10px;
+}
+@media (max-width: 600px) {
+  .settings-label-row {
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+  }
+  .settings-label-row > .n-input {
+    flex: 1 1 calc(100% - 42px);
+  }
+}
+
+.settings-dialog.n-card,
+.settings-transfer.n-card {
+  overflow: hidden;
+}
+.settings-dialog > .n-card-content,
+.settings-transfer > .n-card-content {
+  min-height: 0;
+  overflow-y: auto;
+}
+.settings-dialog > .n-card-header,
+.settings-dialog > .n-card__footer {
+  flex-shrink: 0;
+}
+.settings-dialog .n-tabs-nav {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface);
+}
+
+/* Short values stay beside their labels; long text keeps the full form width. */
+.settings-field--compact,
+.settings-subsection > .settings-preference-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 210px;
+  align-items: center;
+  gap: 8px 16px;
+  max-width: 720px;
+}
+.settings-field--weekdays {
+  grid-template-columns: minmax(0, 494px) minmax(0, 1fr);
+  max-width: none;
+}
+.settings-field--compact > :is(.n-input-number, .n-select, .n-time-picker),
+.settings-preference-row > :is(.n-input-number, .n-select) {
+  width: 100%;
+  min-width: 0;
+}
+.settings-field--compact > .n-input-number,
+.settings-preference-row > .n-input-number {
+  width: 160px;
+  max-width: 100%;
+}
+.settings-field--compact > .n-time-picker {
+  width: 150px;
+  max-width: 100%;
+}
+.settings-row--paired > .settings-field--compact > .n-input-number {
+  width: 100%;
+}
+.settings-field--compact > .settings-inline {
+  grid-column: 1 / -1;
+}
+.settings-row--paired {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 210px;
+  align-items: center;
+  gap: 8px 16px;
+  max-width: 720px;
+}
+.settings-row--paired > .settings-field--compact {
+  display: block;
+  position: relative;
+}
+.settings-row--paired > .settings-field--compact > label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.settings-field > .n-checkbox {
+  align-self: flex-start;
+  max-width: 100%;
+}
+.settings-unit {
+  white-space: nowrap;
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .settings-field--compact,
+  .settings-subsection > .settings-preference-row,
+  .settings-row--paired {
+    grid-template-columns: minmax(0, 1fr) 130px;
+    column-gap: 12px;
+  }
+  .settings-field--choice,
+  .settings-subsection > .settings-preference-row--choice {
+    grid-template-columns: minmax(0, 1fr) 160px;
+  }
+  .settings-field--weekdays {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

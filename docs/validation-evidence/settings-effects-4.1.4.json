@@ -1,0 +1,210 @@
+{
+  "version": "4.1.4",
+  "uiWrites": [
+    {
+      "speed-limit-down-enabled": true,
+      "speed-limit-down": 64
+    },
+    {
+      "speed-limit-down-enabled": false
+    },
+    {
+      "speed-limit-up-enabled": true,
+      "speed-limit-up": 64
+    },
+    {
+      "speed-limit-up-enabled": false
+    },
+    {
+      "queue-stalled-enabled": false,
+      "speed-limit-down-enabled": true,
+      "speed-limit-down": 128
+    },
+    {
+      "download-queue-enabled": true,
+      "download-queue-size": 1
+    },
+    {
+      "download-queue-size": 2
+    },
+    {
+      "download-queue-enabled": false
+    },
+    {
+      "seedRatioLimited": true,
+      "speed-limit-up-enabled": true,
+      "seedRatioLimit": 0.01,
+      "speed-limit-up": 128
+    },
+    {
+      "idle-seeding-limit-enabled": true,
+      "queue-stalled-enabled": true,
+      "seedRatioLimited": false,
+      "idle-seeding-limit": 1,
+      "queue-stalled-minutes": 1
+    },
+    {
+      "download-queue-enabled": true,
+      "download-queue-size": 1
+    },
+    {
+      "download-queue-enabled": false
+    },
+    {
+      "idle-seeding-limit-enabled": false
+    },
+    {
+      "alt-speed-time-enabled": true,
+      "alt-speed-down": 32,
+      "alt-speed-up": 32,
+      "alt-speed-time-begin": 524,
+      "alt-speed-time-end": 525,
+      "alt-speed-time-day": 2
+    }
+  ],
+  "results": {
+    "initialDownloadSample": {
+      "configuredLimit": 64,
+      "sample": {
+        "bytes": 393216,
+        "seconds": 6.005,
+        "bytesPerSecond": 65481.43213988343
+      },
+      "task": {
+        "downloadedEver": 688128,
+        "errorString": "",
+        "hashString": "ae79cce9ab331d23a7e6c03bde4f8b124805cc02",
+        "honorsSessionLimits": true,
+        "id": 1,
+        "isStalled": false,
+        "peers": [
+          {
+            "address": "172.20.0.3",
+            "bytes_to_client": 688128,
+            "bytes_to_peer": 0,
+            "clientIsChoked": false,
+            "clientIsInterested": true,
+            "clientName": "Transmission 4.1.4",
+            "flagStr": "TDE",
+            "isDownloadingFrom": true,
+            "isEncrypted": true,
+            "isIncoming": false,
+            "isUTP": true,
+            "isUploadingTo": false,
+            "peerIsChoked": true,
+            "peerIsInterested": false,
+            "peer_id": "LVRSNDE0MC15MDI2YXR6NnAyZmc=",
+            "port": 51413,
+            "progress": 1,
+            "rateToClient": 65536,
+            "rateToPeer": 0
+          }
+        ],
+        "peersConnected": 1,
+        "percentDone": 0.01025390625,
+        "rateDownload": 65536,
+        "rateUpload": 0,
+        "seedIdleMode": 0,
+        "seedRatioMode": 0,
+        "status": 4,
+        "uploadedEver": 0
+      }
+    },
+    "actualDownloadLimit": {
+      "limitKBps": 64,
+      "limited": {
+        "bytes": 393216,
+        "seconds": 6.005,
+        "bytesPerSecond": 65481.43213988343
+      },
+      "disabled": {
+        "bytes": 11599872,
+        "seconds": 3.001,
+        "bytesPerSecond": 3865335.554815062
+      }
+    },
+    "actualUploadLimit": {
+      "limitKBps": 64,
+      "limited": {
+        "bytes": 383739,
+        "seconds": 6.002,
+        "bytesPerSecond": 63935.18827057648
+      },
+      "disabled": {
+        "bytes": 20157852,
+        "seconds": 3.001,
+        "bytesPerSecond": 6717044.985004999
+      }
+    },
+    "downloadQueueOne": {
+      "active": 1,
+      "waiting": 2,
+      "transferring": 1
+    },
+    "downloadQueueTwo": {
+      "active": 2,
+      "waiting": 1,
+      "transferring": 2
+    },
+    "actualDownloadQueue": {
+      "one": {
+        "active": 1,
+        "waiting": 2,
+        "transferring": 1
+      },
+      "two": {
+        "active": 2,
+        "waiting": 1,
+        "transferring": 2
+      },
+      "disabledBeforeExplicitStart": {
+        "active": 2,
+        "waiting": 0,
+        "transferring": 2
+      },
+      "disabledAfterExplicitStart": {
+        "active": 3,
+        "waiting": 0,
+        "transferring": 3
+      }
+    },
+    "actualRatioStop": {
+      "limit": 0.01,
+      "uploadedBytes": 1343058,
+      "status": 0,
+      "mode": 0
+    },
+    "actualIdleAndStalledQueue": {
+      "idleStatus": 0,
+      "idleUploaded": 0,
+      "stalledStillRunning": 4,
+      "liveDownloaded": 49152,
+      "elapsedSeconds": 71.358
+    },
+    "actualScheduledBandwidth": {
+      "daemonTimezone": "UTC",
+      "begin": "08:44",
+      "end": "08:45",
+      "normal": {
+        "bytes": 655360,
+        "seconds": 5.003,
+        "bytesPerSecond": 130993.40395762543
+      },
+      "alternate": {
+        "bytes": 196608,
+        "seconds": 6.002,
+        "bytesPerSecond": 32757.080973008997
+      },
+      "restored": {
+        "bytes": 786432,
+        "seconds": 6.003,
+        "bytesPerSecond": 131006.49675162419
+      },
+      "uiCheckboxDuringAutomaticWindow": false
+    }
+  },
+  "limits": [
+    "DHT/PEX/LPD/uTP/router forwarding and actual connection ceilings are not fully validated by these fixtures."
+  ],
+  "complete": true
+}

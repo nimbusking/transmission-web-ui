@@ -1,0 +1,110 @@
+{
+  "version": "4.1.4",
+  "scenario": "Real upload while UI-configured schedule switches independently",
+  "samples": [
+    {
+      "at": "2026-11-16T08:44:08.396Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 0,
+      "bytesPerSecond": 0,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:44:13.401Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 0,
+      "bytesPerSecond": 0,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:44:18.407Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 111863,
+      "bytesPerSecond": 22345.785057930483,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:44:23.410Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 159744,
+      "bytesPerSecond": 31929.642214671196,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:44:28.413Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 159531,
+      "bytesPerSecond": 31887.067759344394,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:44:33.415Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 159812,
+      "bytesPerSecond": 31949.620151939227,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:44:38.419Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 159803,
+      "bytesPerSecond": 31935.051958433258,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:44:43.422Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 159923,
+      "bytesPerSecond": 31965.420747551467,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:44:48.427Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 159889,
+      "bytesPerSecond": 31945.854145854148,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:44:53.433Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 159803,
+      "bytesPerSecond": 31922.293248102276,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:44:58.436Z",
+      "altBefore": true,
+      "altAfter": true,
+      "bytes": 159812,
+      "bytesPerSecond": 31943.23405956426,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:45:03.441Z",
+      "altBefore": true,
+      "altAfter": false,
+      "bytes": 494679,
+      "bytesPerSecond": 98836.96303696303,
+      "status": 6
+    },
+    {
+      "at": "2026-11-16T08:45:08.444Z",
+      "altBefore": false,
+      "altAfter": false,
+      "bytes": 639502,
+      "bytesPerSecond": 127823.70577653407,
+      "status": 6
+    }
+  ]
+}

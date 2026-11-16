@@ -1,0 +1,29 @@
+{
+  "url": "http://127.0.0.1:19081/transmission/web/?lang=zh-CN",
+  "checkedReadOnly": true,
+  "settingsOrTaskWrites": 0,
+  "controls": [
+    {
+      "background": "rgb(37, 45, 54)",
+      "border": "rgb(143, 155, 168)",
+      "focused": false,
+      "preference": "locale",
+      "width": 210
+    },
+    {
+      "background": "rgb(37, 45, 54)",
+      "border": "rgb(143, 155, 168)",
+      "focused": false,
+      "preference": "refreshIntervalMs",
+      "width": 160
+    },
+    {
+      "background": "rgb(37, 45, 54)",
+      "border": "rgb(143, 155, 168)",
+      "focused": false,
+      "preference": "pageSize",
+      "width": 210
+    }
+  ],
+  "screenshot": "artifacts/settings-contrast-live.jpg"
+}

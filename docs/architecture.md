@@ -1,5 +1,23 @@
 # 新框架架构与维护入口
 
+设置实际状态修正（2026-11-16）：SettingsDialog.initialDaemon改为响应式保存基线，保存/服务端导入成功读回后清除对应差异；失败草稿不丢失。watch仅订阅既有app.session及busy，未编辑alt-speed-enabled随最近会话读取更新，已编辑开关和其他字段草稿保留；时段页单独显示最近daemon模式，连接过期时显示不可用，不添加独立轮询或隐式写入。4.0.0启用或准备启用uTP时，在网络/带宽/时段显示实际超速风险和仅暂存关闭入口，仍需原保存按钮提交，不自动启停任务。scripts/test-settings-runtime.mjs与tests/runtime/settings.spec.ts属于开发验证，使用独立临时四版daemon、私有自有数据和本地TCP peer，不加入Release运行依赖。
+
+设置输入深色统一修正（2026-11-16）：SettingsDialog根使用abstract NConfigProvider，不添加DOM并继承父theme/locale/namespace；settingsAppearance按已有dark注入和visualProfile集中定义Input及InputNumber/AutoComplete/TimePicker/Select/ColorPicker的实际内部peer。启用用subtle底色、muted边框和text文字；禁用用canvas底色、muted边框/文字；悬停/聚焦/展开沿用accent与selected，不覆盖错误警告色。浅色返回undefined并完整继承父主题，设置外不改。原D35单独pathInputAppearance已移除，路径标题命中/名称修正继续保留，同行布局/数值/数据/保存方式均不变。此次统一覆盖取代此前“仅路径深色修正”的范围，避免新增控件再次遗漏。
+
+设置短参数同行（2026-11-16）：SettingsDialog的fieldRows只合并相邻且已有启用依赖的boolean/普通number，排除时段值；字段身份/顺序/能力过滤保持。全部数字（含时段/星期）和加密使用局部compact行，数值160px、时间150px、短选项210px；同行组合数值210px以容纳KB/s/分钟后缀。行最大720px，短控件起始列统一，星期保留宽控制组。已有三个界面偏好（语言/刷新间隔/每页条数）同样同行；路径/脚本/URL/多行区域仍宽布局。组合内原数值label仅视觉隐藏、关联名称保留；不改值、RPC、存储和既有保存模式。600px以下短控件缩到130px、选项160px，标签/星期可换行，固定分类栏与底部操作继续保留。
+
+默认目录控件边界修正（2026-11-16）：SettingsDialog仅对download-dir取消整行label的for指针关联，使用inputProps.aria-labelledby保留名称；默认NAutoComplete负责本体焦点、选择及键盘，不增加外部点击触发。pathInputAppearance订阅已有color-mode-dark注入与当前visualProfile，仅在深色用局部AutoComplete.peers.Input覆盖底色/边框/焦点，不更改全局Provider或浅色、目录建议来源、RPC与存储。
+
+设置页（2026-11-16）：SettingsDialog按旧版七分类组织，domain/settings-layout提供全部47个session字段的唯一归类、启用依赖及HH:mm/星期转换；只展示当前session存在且版本允许的字段。基本设置保留现有即时保存的界面偏好，服务端仍为显式保存的共享草稿，只提交变化字段；关闭不提交。时区采用daemon本地时区。长表单正文滚动，分类栏和底部操作保持可达。端口/黑名单使用当前已保存配置，控件提示先保存修改。旧版额外设置新增选项按用户最新指令暂缓，导航/目录筛选/右键范围未改；已有手动服务保留。
+
+配置交换由services/settings-transfer独立解析format=transmission-web-ui/formatVersion=1的分类信封，ui/folders/labels/server可独立选择；持久化仍schemaVersion=2。兼容v2全量、旧v1及labels/maps；服务端默认不选，继续白名单/版本过滤和独立差异确认。本地导入在同一IndexedDB事务内保留原始输入和前值，仅替换选中分类，未选择分类取事务时最新值，跨页面通知沿用。标签定义和hash关联作为一个原子分类整体替换，批量删除只清理选中稳定ID；界面重置仅更新ui。脚本test:settings只属于开发验收，使用四个一次性无网络/无数据卷daemon，不加入Release运行依赖。
+
+名称搜索补充（2026-11-16）：domain/name-search.ts的createNameMatcher在一次selectTorrents调用中将查询做NFKC/toLowerCase、Unicode空白分词及去重，非空查询只标准化并检查t.name，全部词必须为字面子串且顺序不限；空查询直接接受，不改原始名称、不搜索hash/downloadDir、不评分或纠错。保留原导航交集和排序、Workspace的120ms防抖及分页/勾选清理，不新增RPC或持久化字段。主列表中英文提示同步说明名称和空格分词；文件详情过滤不变。scripts/test-name-search.mjs仅将生产领域模型编译至独立.lab目录做开发短测，不改dist或进入Release。
+
+关于字体验收补充：主体在about-content局部设置15px/1.65和正常text色，简介/字段/许可继承，版本标记保留accent、标题24px；按钮通过局部deep选择器继承主体字号，避免Naive独立字号混用，不调整全局字体或palette。
+
+关于入口补充（2026-11-16）：Workspace在主题右侧提供Info按钮与临时open状态，AboutDialog通过defineAsyncComponent首次打开才加载，Naive浮层沿用当前namespace/皮肤与焦点返回，并提供显式可访问名称。Logo复用BrandMark静态版；UI版本读取package.json，Transmission/RPC直接读取store.session，连接未就绪/过期时明确缓存，缺失时显示未连接/未知，不新增RPC或设置字段。src/project.ts集中维护当前仓库/文档/博客/许可证链接，只有用户点击才导航新标签；许可证/外链采用noopener noreferrer。660px宽度在全局dialog样式中约束以覆盖Teleport根节点，内容样式局部化，窄屏复用图标入口和可换行居中按钮。
+
 外观三层：LayoutPicker管理既有layoutTheme布局，ThemePicker管理visualTheme皮肤（Modern/Metro/Material/Cupertino），ColorModeToggle管理theme明暗。旧v2缺失/未知皮肤仅补modern，其他设置不变。domain/visual-themes.ts集中palette和Naive类型化覆盖，App同步根变量并向浮层提供skin-ID-mode namespace；卸载恢复变量。visual-themes.css只改变视觉，themes.css只处理布局；矩形进度、行度量和业务状态保持。扩展规则见[主题设计规范](theme-design.md)。
 
 列设置响应补充：ColumnSettingsDialog独立于Workspace模板，首次show才挂载NModal（先隐藏挂载一个nextTick，确保首次也使用淡入），之后display-directive=show复用23行控件。关闭后控件驻留但退出焦点陷阱/可访问树，其他弹窗保留原行为。卡片和同容器遮罩仅120ms透明度过渡，无大幅缩放；prefers-reduced-motion下0ms。列保存仍通过app.updateUi按字段更新，开关不请求RPC或保存设置；用驻留DOM/内存换重复打开避免重建，不改变初始进入页面的控件开销。
@@ -131,4 +149,4 @@ DetailPane文件页用domain/torrent-files合并原始index/files/fileStats（wa
 文件表下方独立footer放计数/分页与刷新/下载/跳过/优先级/模板/路径正则，控制区不随虚拟表格滚走；移动留44px避让左下明暗入口。局部双类选择器约束输入/选择器宽，防Naive运行时100%样式撑满。三个模板只是筛选，现有文件RPC元数据仍整批读取；不新增后端、定时器或分页RPC，关闭详情释放逻辑保持。
 
 ## 任务配置入口移除（2026-11-16）
-按用户追加条件取消任务配置改造，DetailSection与详情加载路由仅保留general/files/trackers/peers；DetailPane不再维护通用任务参数草稿/提交表单。文件/Tracker重命名和其他对话框自身草稿仍独立保留，公共config-grid由SettingsDialog全局设置继续使用，不能随任务tab一并删除。取消前设计为历史依据，不是当前API；隔离3.00输入边界失败不等于所有参数或四个版本不受支持，具体证据见validation.md。
+按用户追加条件取消任务配置改造，DetailSection与详情加载路由仅保留general/files/trackers/peers；DetailPane不再维护通用任务参数草稿/提交表单。文件/Tracker重命名和其他对话框自身草稿仍独立保留，取消任务tab时保留全局设置；第34节已将SettingsDialog迁至专属设置表单布局，不恢复任务配置入口。取消前设计为历史依据，不是当前API；隔离3.00输入边界失败不等于所有参数或四个版本不受支持，具体证据见validation.md。

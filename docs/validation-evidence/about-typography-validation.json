@@ -1,0 +1,41 @@
+{
+  "at": "2026-11-15T21:16:25.466Z",
+  "report": ".lab/about-typography-report",
+  "browserTests": {
+    "passed": 24,
+    "failed": 0,
+    "browsers": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ]
+  },
+  "scope": "About typography only: 15px body/badge/buttons/license, normal body text color for description and facts, title retained at 24px; actual computed style across skins, modes, layouts and widths.",
+  "checks": {
+    "lint": true,
+    "format": true,
+    "typecheck": true,
+    "productionBuild": true,
+    "openspecStrict": true,
+    "legacyFiles": 816,
+    "gzipBytes": 358994,
+    "gzipLimitBytes": 819200
+  },
+  "sameBuildPackaged": true,
+  "realPage": {
+    "url": "http://127.0.0.1:19081/transmission/web/?lang=zh-CN",
+    "observedThrough": "CUA",
+    "transmission": "4.1.4 (a6d907d9ea)",
+    "rpc": 19,
+    "language": "zh-CN",
+    "mode": "dark",
+    "preferencesEdited": false,
+    "screenshot": "artifacts/about-typography-live.jpg",
+    "screenshotSha256": "1ddf59f3f36f97ab81a455688db9a332474dc8685923616b2692d86bca09a240"
+  },
+  "limitations": [
+    "No new unit/installer/real four-daemon matrix or performance run for this CSS-only correction.",
+    "User visual review pending.",
+    "DSM real-device validation, task 13.12 and section 30 remain open."
+  ]
+}

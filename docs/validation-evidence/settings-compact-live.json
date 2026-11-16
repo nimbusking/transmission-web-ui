@@ -1,0 +1,73 @@
+{
+  "url": "http://127.0.0.1:19081/transmission/web/?lang=zh-CN",
+  "basic": {
+    "inputWidth": 160,
+    "label": "磁盘缓存大小（MB）",
+    "sameRow": true,
+    "value": "4"
+  },
+  "bandwidth": [
+    {
+      "key": "speed-limit-down",
+      "left": 684,
+      "sameRow": true,
+      "unit": "KB/s",
+      "value": "100",
+      "width": 210
+    },
+    {
+      "key": "speed-limit-up",
+      "left": 684,
+      "sameRow": true,
+      "unit": "KB/s",
+      "value": "100",
+      "width": 210
+    },
+    {
+      "key": "peer-limit-global",
+      "left": 684,
+      "sameRow": true,
+      "unit": null,
+      "value": "200",
+      "width": 160
+    },
+    {
+      "key": "peer-limit-per-torrent",
+      "left": 684,
+      "sameRow": true,
+      "unit": null,
+      "value": "50",
+      "width": 160
+    },
+    {
+      "key": "seedRatioLimit",
+      "left": 684,
+      "sameRow": true,
+      "unit": null,
+      "value": "2",
+      "width": 210
+    },
+    {
+      "key": "idle-seeding-limit",
+      "left": 684,
+      "sameRow": true,
+      "unit": "分钟",
+      "value": "30",
+      "width": 210
+    },
+    {
+      "key": "queue-stalled-minutes",
+      "left": 684,
+      "sameRow": true,
+      "unit": "分钟",
+      "value": "30",
+      "width": 210
+    }
+  ],
+  "controlStartsAligned": true,
+  "settingsOrTaskWrites": 0,
+  "screenshots": [
+    "artifacts/settings-compact-basic-live.jpg",
+    "artifacts/settings-compact-bandwidth-live.jpg"
+  ]
+}

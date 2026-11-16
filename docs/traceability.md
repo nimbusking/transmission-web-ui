@@ -1,5 +1,21 @@
 # OpenSpec 与实现追踪
 
+设置真实效果审计F1/F2/F3→SettingsDialog响应式initialDaemon、既有会话watch同步未编辑备用模式、独立实际状态/过期提示及4.0.0/uTP定向风险和仅暂存关闭→OpenSpec settings-migration保存/实际模式与uTP风险需求、tasks39→69有效三浏览器与独立真实四版本4场景；4.0.0新TCP限速及4.1.4分钟级实际传输/勾选跟随/草稿保留已测，settings-state系列证据与19081只读实页截图。4.0.0内核问题与38.5其他矩阵仍开放，不覆盖先前审计的历史失败。
+
+设置深色数字/下拉缺少边框的再次反馈→D35仅路径覆盖遗漏及Naive暗色组合默认透明/弱边框确认→SettingsDialog.settingsAppearance与abstract局部NConfigProvider统一Input/数字/下拉/时间/标签peer→OpenSpec settings-migration统一深色需求、D37/tasks37→9项最终新增外观（三浏览器四皮肤/所有类型/default/disabled/focus/popup/动态深浅/设置外隔离）+63相关设置布局迁移路径，合计72有效同一构建。settings-contrast-build/release/validation/live证据及未聚焦偏好实页截图。
+
+设置页小参数臃肿反馈→全量审视服务端16数字/加密及三个现有短偏好、已启用依赖组合→SettingsDialog.fieldRows与compactField/compactUnit、style.css局部同行/统一起始列/窄屏→OpenSpec settings-migration同行需求、D36/tasks36→settings-parity新增几何/单位/依赖/大值/中英文断点测试，连同既有设置、路径边界/对比度和迁移回归。长路径/URL/脚本/多行内容维持宽度，旧版额外设置新增项仍暂缓。
+
+路径输入框截图反馈→19081实页label整行空白命中/深色同底色复现→SettingsDialog路径aria-labelledby与局部AutoComplete peers.Input深色覆盖→OpenSpec settings-migration边界/对比度需求、D35/tasks35→settings-path新12有效场景及相关42场景（54合计）、实页框外0/框内打开/框外关闭与普通深色值；settings-path-build/release/validation/live证据。不新增RPC或持久化。
+
+旧版分类与标签/分类交换（2026-11-16，旧版额外设置新增选项暂缓）→ SettingsDialog、domain/settings-layout、services/settings-transfer、SettingsRepository分类事务与store.removeLabels → OpenSpec settings-migration新增分类/交换需求、design D34、tasks34 → settings-transfer unit和settings-parity/settings/migration及相关工具栏三浏览器、test:settings四版隔离真实读回。用户指定旧分类优先；保持现有界面偏好和高级手动服务，导航/右键行为不变。最终构建、结果、部署与DSM边界以validation.md及settings证据为准。
+
+仅名称多关键词搜索→ domain/name-search.ts及selectTorrents、中英文提示→ torrent-browser查询和列布局中的名称AND模糊/实时清空场景、OpenSpec33节→16相关unit及37有效三浏览器（2性能采样跳过）、5000领域与浏览器短测、19081C/目录hash排除/多词/清空实页，name-search证据。保留原导航/排序/分页/勾选/详情，文件详情过滤不改；不把短测或mock当13.12/四版daemon/DSM实机结案。
+
+关于文字验收修正→ AboutDialog局部15px/正常正文色及about.spec实际computedStyle断言→ localization-theme关于可读性场景/OpenSpec31.5→24项三浏览器本轮通过，19081已更新/7任务与容器不变，证据about-typography-build/release/validation；此前66项不当本次重跑。
+
+关于入口（2026-11-16）→ Workspace按需AboutDialog、BrandMark静态版、project.ts集中链接和中英文文案 → responsive-interface关于可达/关闭/状态保持、localization-theme项目身份 → about三浏览器24、既有主题/工具栏/状态栏36、最终语言6共66有效场景及文案unit1；四版版本显示为受控数据，不冒充真实daemon业务重验。OpenSpec31节；about-build/release/validation/live证据，19081已按本轮明确无备份授权更新，7任务/容器状态不变。实际报告替代关系和回退限制见validation.md，第30节/DSM/13.12未结案。
+
 依据：`project_outline.md` 第 17–21 节；规格为 `openspec/changes/rebuild-transmission-web-ui/`。最新执行结果见 [validation.md](validation.md)，系统边界见 [architecture.md](architecture.md)。本机通过不替代 DSM 实机验收。
 
 | 能力规格 | 实现入口 | 已执行验证 | 保留边界 |

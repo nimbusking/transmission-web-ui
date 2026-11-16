@@ -52,12 +52,18 @@ test('all 16 locales load safely and missing new text falls back to English', as
     await expect(
       page.getByRole('button', { name: messages.settings || en.settings, exact: true }),
     ).toBeVisible();
+    await page.getByRole('button', { name: messages.about || en.about, exact: true }).click();
+    await expect(page.locator('.about-description')).toHaveText(
+      messages.aboutDescription || en.aboutDescription,
+    );
+    await page.keyboard.press('Escape');
   }
   expect(errors).toEqual([]);
 });
 test('late language chunk cannot override a newer choice; dark preference survives reload', async ({
   page,
 }) => {
+  await page.emulateMedia({ colorScheme: 'light' });
   await connect(page);
   await page.route('**/de-*.js', async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -75,8 +81,8 @@ test('late language chunk cannot override a newer choice; dark preference surviv
   await page.mouse.wheel(0, -500);
   await page.getByText('简体中文', { exact: true }).click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('全部任务');
-  await page.getByText('跟随系统', { exact: true }).click();
-  await page.getByText('深色', { exact: true }).click();
+  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: '切换到深色模式', exact: true }).click();
   await expect(page.locator('.application')).toHaveClass(/dark/);
   await page.waitForTimeout(2200);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('全部任务');

@@ -1,0 +1,101 @@
+{
+  "at": "2026-11-15T22:56:05.247755+00:00",
+  "scope": "legacy settings categories, existing interface preferences, labels, categorized import/export; legacy extra settings additions deferred by user",
+  "unit": {
+    "tests": 19,
+    "passed": 19,
+    "log": "artifacts/settings-final-unit.log"
+  },
+  "browsers": {
+    "report": ".lab/settings-acceptance-report",
+    "output": ".lab/settings-acceptance-tests",
+    "log": "artifacts/settings-acceptance-browsers.log",
+    "passed": 69,
+    "failed": 0,
+    "skipped": 0,
+    "engines": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "coverage": [
+      "seven categories and all supported field placement",
+      "minimal daemon changes and retry after failure",
+      "HH:mm and weekday mask roundtrip",
+      "dependent controls",
+      "legacy migration, source backups and UI reset",
+      "label-only legacy import, rename, bulk deletion, stable assignments, export, reload",
+      "selected local categories and cross-tab notification",
+      "separate daemon diff confirmation",
+      "corrupt JSON/format invalidates previous preview",
+      "manual services and diagnostic retry",
+      "four skins, light/dark, desktop/390px and fully visible footer",
+      "existing toolbar, selection and refresh behavior"
+    ],
+    "supersedes": [
+      ".lab/settings-report (51 pass, 12 failed due to duplicate readonly accessible name, subsequently corrected)",
+      ".lab/settings-final-report and .lab/settings-verified-report (69 pass each, prior layout builds; not counted in final total)"
+    ]
+  },
+  "checks": {
+    "typecheck": true,
+    "lint": true,
+    "format": true,
+    "openspecStrict": true,
+    "legacyFilesIntact": 816,
+    "diffWhitespace": true,
+    "allJsCssGzipKiB": 374.1,
+    "gzipBudgetKiB": 800
+  },
+  "compatibility": {
+    "command": "npm run test:settings",
+    "evidence": "settings-compatibility.json",
+    "temporaryNetworkNoneContainers": true,
+    "versions": [
+      "3.00",
+      "4.0.0",
+      "4.0.6",
+      "4.1.4"
+    ],
+    "supportedFieldCounts": [
+      42,
+      47,
+      47,
+      47
+    ],
+    "changedFieldCounts": [
+      23,
+      24,
+      24,
+      25
+    ],
+    "allChangedFieldsReadBackMatched": true,
+    "allTemporaryContainersRemoved": true,
+    "note": "Unchanged fields were read, not counted as successful writes. This is parameter save/readback, not throughput testing or DSM device acceptance."
+  },
+  "deployment": {
+    "archiveSha256": "43ba14f12e4e6573637523cd231c794f83b8d5efc726df66c8d4e716e53b799e",
+    "backupCreated": false,
+    "resources": 43,
+    "manifestEntries": 52,
+    "taskCount": 7,
+    "taskFieldsUnchanged": true,
+    "daemonSettingsUnchanged": true,
+    "containersUnchanged": true,
+    "legacyEntryUnchanged": true,
+    "realUiCheckedReadOnly": true
+  },
+  "rollback": {
+    "candidate": ".lab/name-search-verified-release/web",
+    "candidateBuild": "artifacts/name-search-build.json",
+    "archiveSha256": "7f5f4df2e8be38435748fdc10fbfaaad5c236a61c1b8a19c6d1c79b4d039edca",
+    "note": "Existing immediately preceding verified candidate; no new backup created. Replace assets first and HTML last after verifying candidate digests; do not restart containers or clear browser data. Static rollback does not undo subsequently confirmed daemon changes or imported local data."
+  },
+  "limits": [
+    "Legacy extra settings additions deferred; existing manual services retained.",
+    "DSM 7.1 / SynoCommunity 4.1.4-32 real-device acceptance pending.",
+    "OpenSpec section 30 remains unimplemented; 13.12 performance/soak acceptance unchanged.",
+    "No new installer or full deployment matrix rerun; installer code unchanged, complete static release manifests verified.",
+    "No commit, push or external release publication."
+  ]
+}

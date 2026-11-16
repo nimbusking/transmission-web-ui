@@ -1,0 +1,39 @@
+{
+  "at": "2026-11-15T22:13:18.847Z",
+  "url": "http://127.0.0.1:19081/transmission/web/?lang=zh-CN",
+  "observedThrough": "CUA real page",
+  "placeholder": "搜索名称，空格分隔关键词",
+  "cases": [
+    {
+      "query": "C",
+      "count": 1,
+      "names": [
+        "对照-C-部分数据"
+      ]
+    },
+    {
+      "query": "comparison",
+      "count": 0
+    },
+    {
+      "query": "41d7458a15f6",
+      "count": 0
+    },
+    {
+      "query": "中文 多文件",
+      "count": 1,
+      "names": [
+        "对照-D-多文件与中文"
+      ]
+    },
+    {
+      "query": "",
+      "count": 7
+    }
+  ],
+  "finalQueryCleared": true,
+  "preferencesEdited": false,
+  "taskCommandsSent": false,
+  "screenshot": "artifacts/name-search-live.jpg",
+  "screenshotSha256": "70e7a14cb2991102971fcae88ea97b3bccae4c426f93e7acdbc508d8b1139a15"
+}

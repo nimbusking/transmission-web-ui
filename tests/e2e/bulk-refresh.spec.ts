@@ -70,7 +70,7 @@ test('More has only three bulk actions; global scope ignores search and freezes 
   await trackerItem.click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await page.keyboard.press('Escape');
-  await page.getByPlaceholder('Search name, hash or directory').fill('Bulk 1');
+  await page.getByPlaceholder('Search names, separate keywords with spaces').fill('Bulk 1');
   await expect(page.locator('[data-torrent-id="2"]')).toHaveCount(0);
   rows.push(row(3));
   await pick(page, 'Pause all');

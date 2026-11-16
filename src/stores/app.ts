@@ -9,6 +9,7 @@ import type {
   TorrentTarget,
   DetailSection,
   UiSettings,
+  SettingsSection,
   ItemResult,
   BatchResult,
   MatchJob,
@@ -594,22 +595,25 @@ export const useAppStore = defineStore('application', () => {
       return value;
     });
   }
-  async function removeLabel(id: string) {
+  async function removeLabels(ids: string[]) {
     settings.value = await repository.value!.update((value) => {
-      value.labels = value.labels.filter((label) => label.id !== id);
+      value.labels = value.labels.filter((label) => !ids.includes(label.id));
       for (const hash of Object.keys(value.torrentLabels))
-        value.torrentLabels[hash] = value.torrentLabels[hash].filter((label) => label !== id);
+        value.torrentLabels[hash] = value.torrentLabels[hash].filter(
+          (label) => !ids.includes(label),
+        );
       return value;
     });
   }
+  const removeLabel = (id: string) => removeLabels([id]);
   async function saveFolders(folders: string[] | string) {
     settings.value = await repository.value!.update((value) => ({
       ...value,
       folderDictionary: normalizeFolders(folders),
     }));
   }
-  async function importSettings(report: MigrationReport) {
-    settings.value = await repository.value!.import(report);
+  async function importSettings(report: MigrationReport, sections?: SettingsSection[]) {
+    settings.value = await repository.value!.import(report, sections);
     await setLanguage(settings.value.ui.locale);
     schedule();
   }
@@ -684,6 +688,7 @@ export const useAppStore = defineStore('application', () => {
     assignLabels,
     saveLabel,
     removeLabel,
+    removeLabels,
     saveFolders,
     importSettings,
     legacySettings,

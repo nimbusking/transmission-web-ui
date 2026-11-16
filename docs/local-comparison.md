@@ -1,6 +1,56 @@
 # 本机新旧 UI 功能对照
 
-## 当前快照：任务配置tab已移除
+## 当前快照：设置保存与真实模式同步（2026-11-16）
+
+19081已更新本轮候选（2.0.0，SHA256 `b0cf2bcbe963694d4698d17e6c55d204d21399c312de7cb2919bf365cc3932d8`）。刷新设置：保存成功后清除未保存提示；时段页显示最近实际模式，自动切换随既有会话刷新更新未编辑开关并保留其他草稿；4.0.0启用uTP时出现定向风险与仅暂存关闭按钮。当前对照daemon是4.1.4，因此不显示4.0.0提示。69有效三浏览器及4真实针对性场景通过，F3内核风险和其他未覆盖矩阵保持；完整结果见validation.md最新条目。无新增备份/容器重启/对照写入，7任务/daemon设置/三容器保持；43web/52摘要/HTTP一致，实页截图settings-state-live.jpg。回退使用已存在且核验的settings-contrast候选，不调用compare:up/down/reset。以下快照条目均为历史。
+
+## 当前快照：设置输入深色统一辨识（2026-11-16）
+
+19081已切换为统一深色输入修正（2.0.0，SHA256 `f1c811c689cec14d4da149d3a9bf262bbe1a3e4e0df6f0c536db916ca2bfd1c5`）。刷新后查看设置：文本、数字、语言/每页下拉、时间及标签输入在默认状态均有独立底色与清晰边框，禁用状态仍可辨认，保留同行布局和当前皮肤焦点色；浅色与设置外不变。按授权无新增部署备份，不重启/重建环境；43web/52摘要及HTTP一致，7任务/daemon设置/容器保持。实页截图artifacts/settings-contrast-live.jpg，回退来源为已存在并核验的 `.lab/settings-compact-verified-release/web`。下方“紧凑同行”等为历史上一轮。
+
+## 当前快照：设置小参数同行（2026-11-16）
+
+19081已更新为紧凑设置布局（2.0.0，SHA256 `bcf6016589ba25c0a71e9a1ecf0cd35034b78f199c7d0ae152002a0ef4f76ac2`）。刷新后打开设置：缓存、端口、队列/连接数量、限速/分享率/分钟数、时间/短选项及三个现有偏好均标签/控件同行，相关启用开关和数值并排；路径/脚本/URL和多行内容保留宽度，七分类及既有保存行为保持。按授权无新增部署备份、不重启/重建环境；43web/52摘要及HTTP一致，7任务、daemon可写设置和三个容器状态不变。回退使用现存且核验的 `.lab/settings-path-verified-release/web`，不要执行compare:up/down/reset；下方路径框等轮次为历史上一版。
+
+## 当前快照：路径框边界与深色修正（2026-11-16）
+
+19081已更新为本轮路径框修正（2.0.0，SHA256 `0cf47de03809d841aa1550eeb0b27c331fbd101fbd118e02e135bcb66e23fba9`）。刷新后打开设置的基本设置：默认保存目录标题右侧空白不会再弹下拉，深色路径框有独立底色和清晰边框，普通输入/选择建议/键盘仍可用。按已有授权无新增部署备份，未重启/重建对照环境；43web/52摘要及HTTP一致，7任务、daemon可写设置和三个容器保持。回退使用现存且核验的 `.lab/settings-verified-release/web`；前节settings分类候选为历史上一版，不是当前快照。
+
+## 当前快照：设置旧版分类（2026-11-16）
+
+19081已更新为本轮设置候选（2.0.0，SHA256 `43ba14f12e4e6573637523cd231c794f83b8d5efc726df66c8d4e716e53b799e`），按用户明确授权直接切换且未新增备份。界面按旧版七分类组织，旧版额外设置新增选项暂缓；基本设置保留界面偏好，用户标签支持批量删除与独立交换，底部“导入与导出”可选择四类数据，服务端独立差异确认。强制刷新19081后打开设置即可查看。
+
+43个web文件/52归档摘要与HTTP一致。切换与实页验收仅有只读RPC，7任务/daemon可写设置、三个容器启动及重启计数、19080旧入口保持不变；没有重建、重启、重置样例或清理卷。回退使用已存在且重新校验的 `.lab/name-search-verified-release/web`，不新增备份；不要使用compare:up/down/reset进行快照切换。静态回退不撤销用户后来已确认保存或导入的数据。详见validation.md及settings-release/validation证据。
+
+## 当前快照：仅名称多关键词搜索
+
+刷新`http://127.0.0.1:19081/transmission/web/?lang=zh-CN`：搜索提示为“搜索名称，空格分隔关键词”，仅匹配任务名称；支持部分名称、全半角/忽略大小写及空格多词全部命中、顺序不限。当前样例C只剩C，comparison或仅hash内容不匹配，中文 多文件只剩D，清空恢复7项。输入自动筛选，无需Enter；其他导航条件仍取交集，保留现有排序。
+
+16相关unit、37有效三浏览器场景通过，2项非Chromium性能采样按计划跳过；5000模型及界面短测口径见validation.md，不替代13.12或长测。归档SHA-256`7f5f4df2e8be38435748fdc10fbfaaad5c236a61c1b8a19c6d1c79b4d039edca`，52摘要/43web与HTTP返回一致。按授权无备份直接更新，7任务/三个容器启动及重启计数、旧版入口不变；无daemon写入或容器生命周期动作，实页截图artifacts/name-search-live.jpg。
+
+现存`.lab/brand-subtitle-verified-release/web`43文件已核验，可恢复到本轮前品牌副标题快照（945cc465…），不新建备份、不清存储/任务，deployment记录需同步恢复；更老before-table-progress会撤销多轮改动。用户体验验收、DSM/13.12及第30节原边界保持，未提交/推送/对外发布。以下为历史记录。
+
+## 此前快照：页头WEB UI副标题放大
+
+刷新`http://127.0.0.1:19081/transmission/web/?lang=zh-CN`即可查看左上WEB UI的10px副标题（此前8px）；其他品牌样式保持。6项三浏览器四布局/深浅/宽窄屏回归通过，43web/52摘要及HTTP一致。归档SHA-256`945cc465d7b9113d3164e0ae310b4fee7e3bc5cc3a59a150d16e7f751acb5e5d`，实页截图artifacts/brand-subtitle-live.jpg。
+
+沿用本轮无备份直接更新授权，7任务和容器启动/重启计数保持，无daemon/任务写入或生命周期动作；较早快照回退、DSM/13.12原限制保持，用户视觉验收待反馈。以下为历史记录。
+
+## 此前快照：关于文字放大与颜色统一
+
+刷新`http://127.0.0.1:19081/transmission/web/?lang=zh-CN`后打开关于：简介、版本/字段/作者、按钮及许可证统一15px主体字号，简介/字段/许可使用正常正文色；标题和版本强调色保留。仅局部字体调整，不改变全局偏好。24项三浏览器关于回归及静态检查通过，详细范围见validation.md。
+
+按本轮无备份直接更新授权完成；完整包SHA-256`7d37762bb3472e79dd5bbc526474c4a77c72b1391ab960e2db58bdfb284cecc7`，52摘要/43web与HTTP返回相符。7任务关键字段、容器StartedAt/RestartCount和旧版入口保持，实页截图artifacts/about-typography-live.jpg。无新备份/daemon写入/容器动作，较早快照回退限制及DSM待验不变，用户视觉验收待反馈。以下为历史记录。
+
+## 此前快照：新增关于入口
+
+2026-11-16已按本轮明确授权验收后直接更新19081，无需备份。刷新`http://127.0.0.1:19081/transmission/web/?lang=zh-CN`，右上主题右侧点“关于”：当前静态Logo、UI2.0.0、Transmission4.1.4/RPC19、作者nimbusk、居中主页/帮助/更新记录/个人博客及MIT许可，无旧感谢/捐赠/PT助手。窄屏为Info图标，悬停/辅助技术名称仍为关于。链接先指向当前仓库文件与https://nimbusk.cc，正式发布后再调整。
+
+完整归档SHA-256`1640252e88efb811c63bf85ed60c09c260ec90469b970be9586f04e69fe49106`，52项摘要/43web与冻结构建和HTTP实际返回一致。关于24+相关最终42三浏览器有效场景通过，报告选择及历史用例修正见validation.md。实页截图artifacts/about-live.jpg，证据about-build/release/validation/live.json。资源先行/入口最后、旧hash保留；7任务关键字段未变，三个对照容器StartedAt/RestartCount未变，旧端入口保持。无daemon/任务写入或偏好编辑，未重启/停止/重建容器。
+
+本轮未新增备份，既有较早before-table-progress等快照回退会撤销多轮优化，不是精确上一版；核验后恢复对应资源/部署记录，或另行构建验收本轮前源码。不要清数据库或修改任务。未提交/推送/对外发布，DSM及13.12原待验限制不变，用户视觉验收待反馈。以下为历史记录。
+
+## 此前快照：任务配置tab已移除
 
 刷新`http://localhost:19081/transmission/web/?lang=zh-CN`：任务详情仅保留概览/文件/服务器/Peer，任务配置tab、通用表单和专用配置读取/保存入口已移除；其他任务操作及全局设置页保留。按用户追加条件，3.00隔离实测发现空闲时限0返回成功却保留17后取消本轮改造；不据此声称全部配置不支持或四版均不兼容，候选新表单未发布。
 
@@ -246,7 +296,7 @@ npm run compare:check
 
 `compare:reset` 只按样例 manifest 的 hash 移除对应任务，再重建已知样例路径；不会删除其他任务或移动到其他目录的文件。它不是整个 daemon 配置回退，也不重置两个浏览器入口的本地数据。
 
-新代码重新构建 dist 不会悄悄改变当前比较快照。需要切换到新候选时先 `npm run release`，再 `npm run compare:up`，刷新新版页面。旧版始终读取 old/src。当前快照摘要见 `.lab/comparison/deployment.json` 或任一端口的 `/comparison/info.json`。
+新代码重新构建 dist 不会悄悄改变当前比较快照。切换需明确授权，使用已验收的冻结dist执行 `node scripts/release.mjs` 打包，核对归档与静态资源摘要后仅更新 `.lab/comparison/modern-web`，资源先就位、HTML最后替换，然后刷新新版页面。不要用 `compare:up` 更新快照，它可能重建容器。旧版始终读取 old/src。当前快照摘要见 `.lab/comparison/deployment.json` 或任一端口的 `/comparison/info.json`。
 
 容器配置：lab/compare.compose.yaml；独立 Compose 项目 twui-compare。普通实验环境 twui-lab 可单独停止，不影响这两个入口。两 UI 静态代理是本机验证工具，不进入 NAS Release。对照后端配置和数据保存在 Docker 卷，重启保留通过 UI 保存的 daemon 设置。
 
