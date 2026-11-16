@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, provide, ref, watchEffect } from 'vue';
+import { computed, onMounted, onUnmounted, provide, ref, watch, watchEffect } from 'vue';
 import {
   darkTheme,
   NConfigProvider,
@@ -13,6 +13,7 @@ import {
 } from 'naive-ui';
 import { useI18n } from 'vue-i18n';
 import { useAppStore } from './stores/app';
+import LoginPage from './components/LoginPage.vue';
 import { loadConfig } from './services/config';
 import { errorMessage } from './domain/torrents';
 import {
@@ -24,6 +25,15 @@ import {
 const app = useAppStore(),
   { locale } = useI18n(),
   systemDark = ref(false);
+const initializing = ref(true);
+const loginEntry = ref(new URLSearchParams(location.search).get('login') === '1');
+const hasConnected = ref(false);
+watch(
+  () => app.ready,
+  (ready) => {
+    if (ready) hasConnected.value = true;
+  },
+);
 const media = window.matchMedia('(prefers-color-scheme: dark)');
 function updateTheme() {
   systemDark.value = media.matches;
@@ -54,9 +64,11 @@ onMounted(async () => {
   updateTheme();
   media.addEventListener('change', updateTheme);
   try {
-    await app.initialize(await loadConfig());
+    await app.initialize(await loadConfig(), false);
   } catch (e) {
     app.error = errorMessage(e);
+  } finally {
+    initializing.value = false;
   }
 });
 onUnmounted(() => {
@@ -80,7 +92,12 @@ onUnmounted(() => {
     <NGlobalStyle /><NMessageProvider
       ><NDialogProvider
         ><div :class="['application', { dark }]" :data-visual-theme="skin">
-          <RouterView /></div></NDialogProvider
+          <LoginPage
+            v-if="loginEntry || !hasConnected || app.authenticationRequired"
+            :initializing="initializing"
+            @authenticated="loginEntry = false"
+          />
+          <RouterView v-else /></div></NDialogProvider
     ></NMessageProvider>
   </NConfigProvider>
 </template>

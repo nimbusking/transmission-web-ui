@@ -90,3 +90,15 @@ it('default fetch transport preserves browser receiver semantics', async () => {
     globalThis.fetch = original;
   }
 });
+
+it('uses explicit credentials without browser HTTP-auth state and clears them for re-login', async () => {
+  const transport = vi.fn().mockImplementation(async () => ok());
+  const client = new RpcClient('/rpc', transport);
+  client.authenticate('user', 'secret');
+  await client.session();
+  expect(transport.mock.calls[0][1].credentials).toBe('omit');
+  expect(transport.mock.calls[0][1].headers.Authorization).toBe(`Basic ${btoa('user:secret')}`);
+  client.clearAuthentication();
+  await client.session();
+  expect(transport.mock.calls[1][1].headers.Authorization).toBeUndefined();
+});

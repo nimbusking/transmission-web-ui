@@ -55,7 +55,9 @@ export class RpcClient {
         if (this.authorization) headers.Authorization = this.authorization;
         const response = await this.transport(this.url, {
           method: 'POST',
-          credentials: 'same-origin',
+          // Explicit Authorization is managed by the login page; do not use the
+          // browser's HTTP-auth cache or trigger its native challenge dialog.
+          credentials: 'omit',
           cache: 'no-store',
           headers,
           body: JSON.stringify({ method, arguments: args, tag }),

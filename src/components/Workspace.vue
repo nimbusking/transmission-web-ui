@@ -77,10 +77,7 @@ const searchAppearance = computed(() => {
 });
 const currentLayout = computed(() => layoutTheme(app.settings.ui.layoutTheme));
 watch(currentLayout, () => (navOpen.value = false));
-const user = ref(''),
-  password = ref(''),
-  showAuth = ref(false),
-  showResults = ref(false);
+const showResults = ref(false);
 const context = ref<{ x: number; y: number; targets: TorrentTarget[] } | null>(null);
 let debounce: ReturnType<typeof setTimeout> | undefined;
 watch(search, (v) => {
@@ -373,7 +370,9 @@ function collapseOnListBlank(event: MouseEvent) {
       <NAlert v-if="app.error" type="warning" :bordered="false" class="connection-alert"
         ><span>{{ app.error }} · {{ t('stale') }}</span
         ><NButton size="tiny" @click="app.connect()">{{ t('retry') }}</NButton
-        ><NButton size="tiny" @click="showAuth = true">{{ t('authenticate') }}</NButton></NAlert
+        ><NButton size="tiny" @click="app.requestAuthentication()">{{
+          t('authenticate')
+        }}</NButton></NAlert
       >
       <NAlert v-if="!app.storageAvailable" type="warning" :bordered="false">{{
         t('storageUnavailable')
@@ -428,18 +427,27 @@ function collapseOnListBlank(event: MouseEvent) {
               @click="app.select(row.id)"
             >
               <NCheckbox
+                class="mobile-transfer-check"
+                :aria-label="row.name"
                 :checked="app.checkedIds.includes(row.id)"
                 :disabled="!row.hashString"
                 @click.stop
                 @update:checked="(checked) => app.toggleChecked(row.id, checked)"
               />
-              <div>
-                <strong>{{ row.name }}</strong><NProgress
-                  :percentage="(progressFraction(row.percentDone) ?? 0) * 100"
-                  :aria-label="progressText(row.percentDone)"
-                  :show-indicator="false"
-                  :height="3"
-                /><small
+              <div class="mobile-transfer-content">
+                <strong>{{ row.name }}</strong>
+                <div class="mobile-transfer-progress">
+                  <NProgress
+                    :percentage="(progressFraction(row.percentDone) ?? 0) * 100"
+                    :aria-label="progressText(row.percentDone)"
+                    :show-indicator="false"
+                    :height="3"
+                  />
+                  <span class="mobile-transfer-percentage">{{
+                    progressText(row.percentDone)
+                  }}</span>
+                </div>
+                <small
                   >{{ t(STATUS_NAMES[row.status ?? -1] || 'unknown') }} ·
                   {{ formatBytes(row.totalSize || 0).replace('iB', 'B') }} · ↓
                   {{ formatBytes(row.rateDownload || 0, true) }}</small
@@ -558,27 +566,6 @@ function collapseOnListBlank(event: MouseEvent) {
     />
     <ColumnSettingsDialog v-model:show="columns" />
     <AboutDialog v-if="about" @close="about = false" />
-    <NModal
-      v-model:show="showAuth"
-      preset="card"
-      :title="t('authenticate')"
-      class="dialog small-dialog"
-      ><p>{{ t('authHint') }}</p>
-      <NInput v-model:value="user" :placeholder="t('username')" autocomplete="username" /><NInput
-        v-model:value="password"
-        type="password"
-        :placeholder="t('password')"
-        autocomplete="current-password"
-      /><NButton
-        type="primary"
-        @click="
-          app.connect(user, password);
-          password = '';
-          showAuth = false;
-        "
-        >{{ t('confirm') }}</NButton
-      ></NModal
-    >
     <NModal
       v-model:show="showResults"
       preset="card"

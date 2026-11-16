@@ -426,22 +426,29 @@
     display: none;
   }
   .workspace:not(.force-desktop) .sidebar-bottom {
-    justify-self: start;
-    width: 36px;
-    margin: 0 0 12px 12px;
+    display: none;
+    position: fixed;
+    left: 12px;
+    bottom: calc(var(--statusbar-height) + 12px);
+    width: 44px;
+    margin: 0;
     padding: 0;
+  }
+  .workspace:not(.force-desktop) .sidebar-bottom .color-mode-toggle {
+    width: 44px;
+    height: 44px;
   }
   .workspace:not(.force-desktop) .sidebar-caption {
     display: none;
   }
   .workspace:not(.force-desktop).nav-open .sidebar-bottom {
-    width: 206px;
+    display: flex;
   }
   .workspace:not(.force-desktop).nav-open .sidebar-caption {
     display: flex;
   }
   .workspace:not(.force-desktop) .list-footer {
-    padding-left: 58px;
+    padding-left: 12px;
   }
   .appearance-trigger.n-button {
     width: 36px;

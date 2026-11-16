@@ -437,6 +437,7 @@ async function external(kind: 'trackers' | 'release') {
                 >
                 <template v-else>
                   <label
+                    v-if="!['alt-speed-time-begin', 'alt-speed-time-end'].includes(field.key)"
                     :id="'setting-' + field.key + '-label'"
                     :for="field.key === 'download-dir' ? undefined : 'setting-' + field.key"
                     >{{
@@ -460,22 +461,28 @@ async function external(kind: 'trackers' | 'release') {
                     :options="directoryOptions"
                     :disabled="busy"
                   />
-                  <NTimePicker
+                  <label
                     v-else-if="
                       field.key === 'alt-speed-time-begin' || field.key === 'alt-speed-time-end'
                     "
-                    :formatted-value="minutesToTime(daemonDraft[field.key])"
-                    format="HH:mm"
-                    value-format="HH:mm"
-                    :input-props="{ id: 'setting-' + field.key }"
-                    :disabled="disabled(field.key)"
-                    :clearable="false"
-                    @update:formatted-value="
-                      (value) => {
-                        if (value) daemonDraft[field.key] = timeToMinutes(value);
-                      }
-                    "
-                  />
+                    class="settings-time-control"
+                  >
+                    <span>{{
+                      t(field.key === 'alt-speed-time-begin' ? 'scheduleStart' : 'scheduleEnd')
+                    }}</span>
+                    <NTimePicker
+                      :formatted-value="minutesToTime(daemonDraft[field.key])"
+                      format="HH:mm"
+                      value-format="HH:mm"
+                      :disabled="disabled(field.key)"
+                      :clearable="false"
+                      @update:formatted-value="
+                        (value) => {
+                          if (value) daemonDraft[field.key] = timeToMinutes(value);
+                        }
+                      "
+                    />
+                  </label>
                   <div
                     v-else-if="field.key === 'alt-speed-time-day'"
                     class="button-row settings-weekdays"
@@ -852,7 +859,7 @@ async function external(kind: 'trackers' | 'release') {
         v-model:show="serverConfirm"
         preset="card"
         :title="t('serverDiff')"
-        class="dialog large-dialog"
+        class="dialog large-dialog settings-confirm"
         ><p>{{ t('importServerHint') }}</p>
         <table class="diff-table">
           <thead>
@@ -864,9 +871,9 @@ async function external(kind: 'trackers' | 'release') {
           </thead>
           <tbody>
             <tr v-for="item in importDiff" :key="item.key">
-              <td>{{ fieldLabel(item.key) }}</td>
-              <td>{{ String(item.before) }}</td>
-              <td>{{ String(item.after) }}</td>
+              <td :data-label="t('name')">{{ fieldLabel(item.key) }}</td>
+              <td :data-label="t('oldValue')">{{ String(item.before) }}</td>
+              <td :data-label="t('newValue')">{{ String(item.after) }}</td>
             </tr>
           </tbody>
         </table>
@@ -880,7 +887,7 @@ async function external(kind: 'trackers' | 'release') {
         v-model:show="deleteConfirm"
         preset="card"
         :title="t('deleteSelectedLabels')"
-        class="dialog small-dialog"
+        class="dialog small-dialog settings-confirm"
         ><p>{{ t('deleteLabelsConfirm', { count: selectedLabels.length }) }}</p>
         <NAlert v-if="error" type="error">{{ error }}</NAlert><template #footer
           ><NButton type="error" :loading="busy" @click="removeLabels">{{

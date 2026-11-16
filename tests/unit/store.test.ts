@@ -889,3 +889,21 @@ it('capabilities are recomputed per connection and a temporary failure never per
   await app.connect();
   expect(app.trackerCapability).toEqual({ generation: old + 1, state: 'full' });
 });
+
+it('returns to login on expired authentication and only resumes after successful credentials', async () => {
+  intercept = () => Promise.resolve(new Response('', { status: 401 }));
+  await expect(app.refresh(true)).rejects.toMatchObject({ kind: 'auth' });
+  expect(app.authenticationRequired).toBe(true);
+  expect(app.ready).toBe(false);
+  const count = calls.length;
+  await app.refresh();
+  expect(calls).toHaveLength(count);
+  await app.connect('user', 'wrong');
+  expect(app.authenticationRequired).toBe(true);
+  expect(app.ready).toBe(false);
+  intercept = undefined;
+  await app.connect('user', 'correct');
+  expect(app.authenticationRequired).toBe(false);
+  expect(app.ready).toBe(true);
+  expect(app.error).toBe('');
+});

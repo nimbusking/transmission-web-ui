@@ -87,6 +87,8 @@ async function fixture(page: Page) {
     });
   });
   await page.goto('/?lang=en');
+  await page.getByLabel('Username', { exact: true }).fill('test');
+  await page.getByRole('button', { name: 'Enter workspace', exact: true }).click();
   await expect(page.locator('.connection')).toContainText('Connected');
   return { writes, errors, resizeNotifications };
 }

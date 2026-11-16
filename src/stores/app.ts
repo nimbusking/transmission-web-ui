@@ -74,6 +74,8 @@ export const useAppStore = defineStore('application', () => {
     ready = ref(false),
     connecting = ref(false),
     refreshing = ref(false);
+  const authenticationRequired = ref(false);
+  const authenticationFailed = ref(false);
   const error = ref(''),
     stale = ref(false),
     lastUpdated = ref(0),
@@ -193,8 +195,9 @@ export const useAppStore = defineStore('application', () => {
     validateTargets([target]);
     return { ...target };
   }
-  async function initialize(runtime: RuntimeConfig) {
+  async function initialize(runtime: RuntimeConfig, autoConnect = true) {
     disposed = false;
+    authenticationRequired.value = !autoConnect;
     config.value = runtime;
     rpc = new RpcClient(runtime.rpcUrl);
     const endpoint = new URL(runtime.rpcUrl),
@@ -225,7 +228,7 @@ export const useAppStore = defineStore('application', () => {
       matchJob.value = previous;
     }
     document.addEventListener('visibilitychange', visibilityChanged);
-    await connect();
+    if (autoConnect) await connect();
   }
   function stopTimer() {
     if (timer) clearTimeout(timer);
@@ -233,7 +236,7 @@ export const useAppStore = defineStore('application', () => {
   }
   function schedule() {
     stopTimer();
-    if (disposed || !settings.value.ui.autoRefresh) return;
+    if (disposed || authenticationRequired.value || !settings.value.ui.autoRefresh) return;
     const delay = document.hidden ? 30000 : Math.max(2000, settings.value.ui.refreshIntervalMs);
     timer = setTimeout(async () => {
       try {
@@ -249,6 +252,12 @@ export const useAppStore = defineStore('application', () => {
     if (!disposed && settings.value.ui.autoRefresh && !document.hidden && ready.value)
       void refresh(true).catch(() => {});
     schedule();
+  }
+  function requestAuthentication() {
+    authenticationRequired.value = true;
+    ready.value = false;
+    stopTimer();
+    rpc.clearAuthentication();
   }
   async function connect(username?: string, password?: string) {
     stopTimer();
@@ -266,6 +275,7 @@ export const useAppStore = defineStore('application', () => {
     ready.value = false;
     connecting.value = true;
     error.value = '';
+    authenticationFailed.value = false;
     selectedId.value = null;
     clearChecked();
     selectedTarget.value = undefined;
@@ -279,10 +289,15 @@ export const useAppStore = defineStore('application', () => {
       lastSession = Date.now();
       lastSnapshot = 0;
       await refresh(true);
-      if (epoch === generation.value) ready.value = true;
+      if (epoch === generation.value) {
+        ready.value = true;
+        authenticationRequired.value = false;
+      }
     } catch (e) {
       if (epoch === generation.value) {
         error.value = errorMessage(e);
+        authenticationFailed.value = e instanceof RpcError && e.kind === 'auth';
+        if (authenticationFailed.value) requestAuthentication();
         stale.value = true;
       }
     } finally {
@@ -299,7 +314,7 @@ export const useAppStore = defineStore('application', () => {
     await refresh(true);
   }
   function refresh(full = false): Promise<void> {
-    if (disposed) return Promise.resolve();
+    if (disposed || (authenticationRequired.value && !connecting.value)) return Promise.resolve();
     if (refreshTask) {
       pendingFull ||= full;
       return refreshTask;
@@ -386,6 +401,8 @@ export const useAppStore = defineStore('application', () => {
       } catch (e) {
         if (epoch === generation.value) {
           error.value = errorMessage(e);
+          authenticationFailed.value = e instanceof RpcError && e.kind === 'auth';
+          if (authenticationFailed.value) requestAuthentication();
           stale.value = true;
         }
         throw e;
@@ -839,6 +856,9 @@ export const useAppStore = defineStore('application', () => {
     generation,
     ready,
     connecting,
+    authenticationRequired,
+    authenticationFailed,
+    requestAuthentication,
     refreshing,
     error,
     stale,
