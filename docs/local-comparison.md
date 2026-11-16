@@ -1,5 +1,8 @@
 # 本机新旧 UI 功能对照
 
+> 本发行版已移除 `old/`。以下对照记录中的 `old/src` 是历史路径，不随发行版提供。复现时从历史版本另行准备 Web 资源，在运行 `npm run compare:up` 前设置 `export TWUI_LEGACY_WEB_ROOT=/absolute/path/to/legacy/src`；该目录须包含 `index.html`，仅以只读方式挂载。常规构建与发行不需要历史资源。
+
+
 ## 当前发布：共用兼容性封板候选（2026-11-16）
 
 用户明确授权后，19081已更新为共用兼容性封板候选，SHA256 `83900acada1ae2aebe642cd80c0bfde69f539e3e995fdc0dac041e95e8ab89aa`。44个静态文件HTTP摘要一致；实际页面连接和七分类设置只读检查通过。未新增备份、重建或重启容器、修改任务；19080入口、7任务、daemon设置、三个容器保持。现存回退候选`.lab/settings-state-verified-release`的43个web文件发布前已逐个匹配当前运行资产。详见[实施与发布记录](shared-compatibility-implementation-2026-11-16.md)。下方各发布条目均为历史。

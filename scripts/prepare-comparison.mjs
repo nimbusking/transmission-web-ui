@@ -1,6 +1,10 @@
 import { createHash } from 'node:crypto';
-import { readFile, writeFile, cp, mkdir, rm } from 'node:fs/promises';
+import { readFile, writeFile, cp, mkdir, rm, access } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
+const legacySource = process.env.TWUI_LEGACY_WEB_ROOT;
+if (!legacySource?.startsWith('/'))
+  throw new Error('Set TWUI_LEGACY_WEB_ROOT to an absolute path containing historical Web assets');
+await access(`${legacySource}/index.html`);
 const root = '.lab/comparison',
   archive = 'artifacts/transmission-web-ui-2.0.0.tar.gz';
 const bytes = await readFile(archive),
@@ -37,7 +41,7 @@ const deployment = {
   legacy: 'http://127.0.0.1:19080/transmission/web/',
   modern: 'http://127.0.0.1:19081/transmission/web/',
   sharedBackend: true,
-  legacySource: 'old/src (read-only)',
+  legacySource,
   legacyConfiguration: 'all tasks, Chinese default, local automatic-update stub',
   modernSource: 'verified precompiled release snapshot (independent of subsequent dist rebuilds)',
 };

@@ -25,7 +25,7 @@ services:
     environment: {UI_ROOT: /web, UI_VARIANT: legacy, TR_UPSTREAM: "http://transmission:9091"}
     ports: ["127.0.0.1:19080:8080"]
     volumes:
-      - "../old/src:/web:ro,z"
+      - "${TWUI_LEGACY_WEB_ROOT:?Set an absolute path to historical Web assets}:/web:ro,z"
       - "../.lab/comparison:/comparison:ro,z"
       - "./compare-proxy.py:/compare-proxy.py:ro,z"
     depends_on:

@@ -78,7 +78,7 @@ class Handler(SimpleHTTPRequestHandler):
         if not path.path.startswith(prefix): self.send_error(404); return
         if VARIANT == 'legacy' and path.path == prefix + 'tr-web-control/config.js':
             data = (ROOT/'tr-web-control/config.js').read_bytes()
-            # Existing application configuration only; old/ remains byte-for-byte unchanged.
+            # Existing application configuration only; external historical assets remain unchanged.
             data += b'\nsystem.config.defaultSelectNode="torrent-all";\nsystem.config.defaultLang="zh-CN";\nsystem.checkUpdateScript="/comparison/update.json";\n'
             self.content(data, 'text/javascript; charset=utf-8'); return
         self.path = '/' + path.path[len(prefix):] + ('?' + path.query if path.query else '')

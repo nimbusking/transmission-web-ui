@@ -35,7 +35,7 @@ transmission-web-ui/
 
 本项目的 `lab/` 镜像用于本机验证，不是用户安装 UI 必须替换的 Transmission 镜像。用户现有镜像需尊重 `TRANSMISSION_WEB_HOME`，并允许服务用户读取整个父目录。
 
-DSM 7.1 使用 Docker 套件界面；较新 DSM 使用 Container Manager。无需为 UI 安装额外 Compose。套件版的服务账户、ACL 和接入方式由来源/版本决定。已为 SynoCommunity 4.1.4-32 提供 synocommunity.sh，在真实进程/权限核对后使用 XDG 查找目录接入，无需修改供应方启动脚本或写入不存在的环境文件。已知用户环境为 DSM 7.1、型号原文 DS928；完整型号仍待核对，Transmission 套件已确认为 SynoCommunity 4.1.4-32。具体预检见 [群晖说明](synology.md)。
+DSM 7.1 使用 Docker 套件界面；较新 DSM 使用 Container Manager。无需为 UI 安装额外 Compose。套件版的服务账户、ACL 和接入方式由来源/版本决定。已为 SynoCommunity 4.1.4-32 提供 synocommunity.sh，在真实进程/权限核对后使用 XDG 查找目录接入，无需修改供应方启动脚本或写入不存在的环境文件。当前本机群晖已部署，安装记录为 DS923+、DSM 7.4.1、SynoCommunity Transmission 4.1.4-32。具体预检见 [群晖说明](synology.md)。
 
 ## 升级与回退
 

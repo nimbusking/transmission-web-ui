@@ -10,11 +10,11 @@
 | DSM Container Manager / Docker | 持久化父目录挂载、相对软链、容器服务用户权限、重启/重建与回滚 | 本机真实 daemon 容器 + DSM 操作验证 |
 | CPU 架构 | 发布的 HTML/JS/CSS 不含本机二进制 | 静态包检查；Transmission 本身必须支持 NAS 架构 |
 
-用户已提供目标 DSM 版本为 **7.1**，型号原文为 **DS928**。型号按原始输入记录，套件已确认为 **SynoCommunity 4.1.4-32**。完整型号标识（是否带后缀）、CPU 架构、DSM build/Update 仍待核对，不据此推断其他型号或架构。实机验收状态仍为待验证。
+## 当前部署与阅读入口
 
-DSM 7.1 的容器部署说明以 **Docker 套件**界面为基线；DSM 7.2 及以上才使用 Container Manager 名称和相应界面。不能要求 DSM 7.1 用户使用 Container Manager 的“项目”入口或额外安装 Compose。安装器仍只部署预编译资源；已有 Docker 容器通过卷挂载与环境变量接入。[来源：Synology 容器备份说明](https://kb.synology.com/en-me/DSM/tutorial/How_do_I_back_up_Docker_containers)
+本机群晖已完成部署。已有安装记录对应 **DS923+、DSM 7.4.1、SynoCommunity Transmission 4.1.4-32**。安装与日常操作请先阅读 [README 安装手册](../README.md#installation)和[使用手册](../README.md#usage)；单文件安装器包含备份、接入、登录入口管理与恢复，见[一体化安装器](integrated-installer.md)。
 
-目标验收分为 DSM 7.1 套件版 Transmission、DSM 7.1 Docker 套件容器版两条路径，同时保留较新 DSM 的 Container Manager 文档。
+下面保留套件与容器的底层接入说明，供手动部署和维护参考。较旧 DSM 可使用 Docker 套件入口，较新 DSM 使用 Container Manager；按实际安装的管理工具添加卷与环境变量即可。
 
 ## 套件版适配
 
@@ -22,7 +22,7 @@ DSM 7.1 的容器部署说明以 **Docker 套件**界面为基线；DSM 7.2 及�
 
 ### SynoCommunity 4.1.4-32 的接入机制
 
-本次用户提供的版本为 **4.1.4-32**，不是此前已验证的 4.0.x。已增加固定源码 `a6d907d9ea2313143af714d7830feb6c1b60b84c` 的 4.1.4 实验镜像，保留 3.00、4.0.0、4.0.6。4.1.4 旧协议实测 RPC 版本 19，原有界面和命令兼容；其上游新增 JSON-RPC 2.0，但仍支持旧协议。本版使用经过四版验证的旧协议，不声称支持未来移除它的版本。[Transmission 4.1.4 RPC 说明](https://github.com/transmission/transmission/blob/4.1.4/docs/rpc-spec.md)
+当前套件版本为 **4.1.4-32**。已增加固定源码 `a6d907d9ea2313143af714d7830feb6c1b60b84c` 的 4.1.4 实验镜像，保留 3.00、4.0.0、4.0.6。4.1.4 旧协议实测 RPC 版本 19，原有界面和命令兼容；其上游新增 JSON-RPC 2.0，但仍支持旧协议。本版使用经过四版验证的旧协议，不声称支持未来移除它的版本。[Transmission 4.1.4 RPC 说明](https://github.com/transmission/transmission/blob/4.1.4/docs/rpc-spec.md)
 
 SynoCommunity 的启动命令没有通用自定义 Web 环境文件入口，不能把任意 `.env` 文件写入套件就当作生效。本次核对的上游提交为 `5e012dab21d616c9f5a41dabab755caf73b660aa`，测试固定脚本和摘要记录在 `lab/synocommunity-sources.json`。[套件服务定义](https://github.com/SynoCommunity/spksrc/blob/5e012dab21d616c9f5a41dabab755caf73b660aa/spk/transmission/src/service-setup.sh)、[通用启停脚本](https://github.com/SynoCommunity/spksrc/blob/5e012dab21d616c9f5a41dabab755caf73b660aa/mk/spksrc.service/start-stop-status)
 
@@ -32,7 +32,7 @@ Transmission 4.1.4 的 Linux 资源查找支持 XDG：无 CLUTCH_HOME / TRANSMIS
 
 ### 在 NAS 上执行
 
-以下由 NAS 管理员在实际设备执行；本轮没有连接或修改 NAS。把已校验归档及脚本放到 sc-transmission 可读取、父目录可遍历的位置。包内包含 install.sh、synocommunity.sh 和 synology-check.sh，后两者需保持同一目录；不要放在其他账户不可遍历的私有 home 中。
+以下为 NAS 管理员手动接入步骤；使用一体化安装器时无需重复执行。把已校验归档及脚本放到 sc-transmission 可读取、父目录可遍历的位置。包内包含 install.sh、synocommunity.sh 和 synology-check.sh，后两者需保持同一目录；不要放在其他账户不可遍历的私有 home 中。
 
 首先执行只读检测。优先使用实际服务账户，这也避免将 root 的环境误当 daemon 环境：
 
@@ -109,4 +109,4 @@ sh synology-check.sh --mode package --web-home '<实际安装目录>/current'
 
 已通过：只读身份检测；PID 拒绝；实际服务账户和资源可读检查；已有 XDG UI 拒绝；首次/重复接入；运行中 UI 升级与回退；未解绑卸载拒绝；新容器重装上游脚本后持久化数据卷保持接入；不支持版本、Web 环境覆盖、临时 XDG 目录和外部链接修改拒绝；解绑重启后恢复原 UI，RPC 继续可用。供应方脚本与原资源摘要前后相同。原始记录为 `artifacts/synocommunity-results.json`。
 
-这是机制与本机模拟验证，不是 NAS 实机认证。下一步需在用户 DSM 7.1 上保存只读检测结果，并验证实际 ACL、套件停止/启动、NAS 重启和套件升级后保留；型号仍按原文 DS928 记录，不推断其他型号。
+以上记录属于隔离环境中的机制验证；当前本机群晖部署信息见本文开头，安装记录见[一体化安装器](integrated-installer.md)。

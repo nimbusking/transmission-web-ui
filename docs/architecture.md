@@ -26,7 +26,7 @@
 
 分块展示补充：PieceMap独占概览底部整行，ResizeObserver按内容宽度计算约18px方格/4px间距，高清Canvas最多512格。domain/pieces一次解码聚合，保留每格原始范围、实际大小与字节完成率，按totalSize截断最后一块；未知大小显示未知。指针命中排除间隙/末行空白，单个Naive UI提示层展示大小×两位小数百分比与块范围。宽度/数据变化、滚动、离开和卸载清理提示；卸载释放观察/监听，复用原详情轮询，无新增请求或逐块DOM。
 
-本文件描述已实现的结构；需求依据是 `project_outline.md` 第 17–21 节和 `openspec/changes/rebuild-transmission-web-ui/`。旧实现只保留在 `old/` 作为行为参考，816 文件摘要由 `check:legacy` 校验。新框架不继承旧 jQuery/EasyUI 的对象与事件生命周期。
+本文件描述已实现的结构；需求依据是 `project_outline.md` 第 17–21 节和 `openspec/changes/rebuild-transmission-web-ui/`。本发行版已移除旧实现及其摘要校验流程，历史源码可通过 Git 历史查看。新框架不继承旧 jQuery/EasyUI 的对象与事件生命周期。
 
 ## 模块边界
 
