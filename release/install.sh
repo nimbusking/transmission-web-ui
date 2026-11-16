@@ -26,7 +26,7 @@ esac
 for utility in tar sha256sum awk sed grep sort uniq find chmod mkdir mktemp rm cp mv ln readlink cat rmdir; do
   command -v "$utility" >/dev/null 2>&1 || fail "Required system utility missing: $utility"
 done
-cleanup() { [ -z "$links" ] || rm -rf "$links"; [ -z "$stage" ] || rm -rf "$stage"; [ -z "$work" ] || rm -rf "$work"; if [ "$locked" = 1 ]; then rmdir "$prefix/.install-lock" 2>/dev/null || :; fi; }
+cleanup() { [ -z "$links" ] || rm -rf "$links"; [ -z "$stage" ] || rm -rf "$stage"; [ -z "$work" ] || rm -rf "$work"; if [ "$locked" = 1 ]; then rm -f "$prefix/.install-lock/pid" "$prefix/.install-lock/start"; rmdir "$prefix/.install-lock" 2>/dev/null || :; fi; }
 trap cleanup EXIT
 trap 'exit 130' INT TERM HUP
 work=$(mktemp -d "${TMPDIR:-/tmp}/twui-install.XXXXXXXX")
@@ -46,8 +46,19 @@ else
   mkdir -p "$prefix"
   printf 'transmission-web-ui-v1\n' > "$prefix/.twui-managed"
 fi
-mkdir "$prefix/.install-lock" 2>/dev/null || fail 'Another installer is active; inspect .install-lock before retrying'
+if ! mkdir "$prefix/.install-lock" 2>/dev/null; then
+  [ -f "$prefix/.install-lock/pid" ] && [ -f "$prefix/.install-lock/start" ] || fail 'Another installer is active; inspect .install-lock before retrying'
+  lock_pid=$(cat "$prefix/.install-lock/pid")
+  case "$lock_pid" in ''|*[!0-9]*) fail 'Invalid installer lock PID';; esac
+  lock_start=$(awk '{sub(/^.*\) /, ""); print $20}' "/proc/$lock_pid/stat" 2>/dev/null || :)
+  [ -z "$lock_start" ] || [ "$lock_start" != "$(cat "$prefix/.install-lock/start")" ] || fail 'Another installer is active'
+  rm "$prefix/.install-lock/pid" "$prefix/.install-lock/start"
+  rmdir "$prefix/.install-lock" || fail 'Unknown files in installer lock; preserving them'
+  mkdir "$prefix/.install-lock" || fail 'Cannot acquire installer lock'
+fi
 locked=1
+printf '%s\n' "$$" > "$prefix/.install-lock/pid"
+awk '{sub(/^.*\) /, ""); print $20}' /proc/$$/stat > "$prefix/.install-lock/start"
 [ ! -L "$prefix/releases" ] || fail 'Releases directory must not be a symlink'
 mkdir -p "$prefix/releases"
 valid_version() { printf '%s\n' "$1" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?$'; }
@@ -70,7 +81,9 @@ switch_to() {
   ln -s "releases/$selected/web" "$links/current"; mv -f "$links/current" "$prefix/"
   printf '%s\n' "Active release: $selected" "Set TRANSMISSION_WEB_HOME=$prefix/current in the existing service configuration."
 }
-if [ "$action" = rollback ]; then valid_version "$rollback" || fail 'Invalid rollback version'; switch_to "$rollback"; exit 0; fi
+if [ "$action" = rollback ]; then valid_version "$rollback" || fail 'Invalid rollback version'; [ -d "$prefix/releases/$rollback" ] && [ ! -L "$prefix/releases/$rollback" ] || fail 'Release not installed'
+  (cd "$prefix/releases/$rollback" && sha256sum -c SHA256SUMS >/dev/null) || fail 'Stored release is damaged; refusing rollback'
+  switch_to "$rollback"; exit 0; fi
 if [ "$action" = uninstall ]; then
   [ ! -e "$prefix/.synocommunity-xdg" ] && [ ! -L "$prefix/.synocommunity-xdg" ] || fail 'Detach the registered SynoCommunity XDG link before uninstalling'
   for directory in "$prefix"/releases/*; do
@@ -91,11 +104,13 @@ if [ -n "$url" ]; then
   else fail 'Online installation needs curl or wget; use --archive for offline installation'; fi
 fi
 [ -n "$archive" ] && [ -f "$archive" ] || fail 'Provide a readable release archive'
-tar -tzf "$archive" > "$work/entries" || fail 'Cannot list archive'
+tar -tzf "$archive" > "$work/raw-entries" || fail 'Cannot list archive'
+# A single conventional ./ prefix and the root directory entry are harmless.
+sed 's:^\./::; /^$/d' "$work/raw-entries" > "$work/entries"
 [ -s "$work/entries" ] || fail 'Empty archive'
 awk '
   /[^A-Za-z0-9_.\/-]/ || /^\// || /(^|\/)\.\.?($|\/)/ { exit 1 }
-  !/^(web(\/.*)?|docs(\/((deployment|migration|synology)\.md)?)?|LICENSE|VERSION|manifest.json|SHA256SUMS|install.sh|synology-check.sh|synocommunity.sh)$/ { exit 1 }
+  !/^(web(\/.*)?|docs(\/[A-Za-z0-9_.\/-]*)?|LICENSE|VERSION|manifest.json|SHA256SUMS|install.sh|install-tr-control.sh|install-transmission-web-ui.sh|synology-check.sh|synocommunity.sh)$/ { exit 1 }
 ' "$work/entries" || fail 'Unsafe or unexpected archive path'
 sed 's:/$::' "$work/entries" | sort | uniq -d > "$work/duplicates"
 [ ! -s "$work/duplicates" ] || fail 'Duplicate archive path'

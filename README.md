@@ -28,6 +28,8 @@ TWUI_PROXY=1 npm run test:e2e:docker -- --workers=3
 
 ## 预编译安装包
 
+面向用户的一体化入口是发布附件 **install-transmission-web-ui.sh**，内置完整离线包：下载到NAS后执行 `sudo sh install-transmission-web-ui.sh`，按提示完成检测、备份、接入和验证，失败自动恢复。无需分别执行辅助脚本，详见[一体化安装器](docs/integrated-installer.md)。正式附件由打包命令生成；源码目录内同名文件是开发入口，不自带UI包。以下独立安装器用法保留给高级/手动部署。
+
 `npm run release` 生成 `artifacts/transmission-web-ui-2.0.0.tar.gz`、`.sha256` 和独立 `install.sh`。包内含完整静态资源、内部摘要清单、许可证、安装/迁移/群晖说明、只读预检和 SynoCommunity 接入脚本，排除 old/ 与开发运行时。
 
 目标已有 Transmission，安装/运行无需 Node.js、npm、Python 或 CDN。将候选包和摘要复制到目标主机：

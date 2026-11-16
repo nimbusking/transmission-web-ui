@@ -1,0 +1,150 @@
+{
+  "at": "2026-11-16T12:03:18.425941+00:00",
+  "version": "2.0.0-installer.3",
+  "uiVersion": "2.0.0",
+  "artifacts": {
+    "install-transmission-web-ui.sh": {
+      "bytes": 642397,
+      "sha256": "5bac0fd8d344935c9338ec1618bc03f1d887fa3cee1fe0159cd9ee6c50f464bd"
+    },
+    "transmission-web-ui.tar.gz": {
+      "bytes": 428303,
+      "sha256": "bf39721281a747212a6a01521df80a5bcac4568ba2abcf7a6b6a0edfbce2dd9e"
+    },
+    "transmission-web-ui-2.0.0-installer.3.tar.gz": {
+      "bytes": 428303,
+      "sha256": "bf39721281a747212a6a01521df80a5bcac4568ba2abcf7a6b6a0edfbce2dd9e"
+    }
+  },
+  "frozenWeb": ".lab/shared-compatibility-verified-release/web",
+  "webFilesUnchanged": 44,
+  "docker": {
+    "at": "2026-11-16T12:02:59.889Z",
+    "results": [
+      {
+        "case": "unpersisted-layer-refused-without-stop",
+        "passed": true
+      },
+      {
+        "case": "unmounted-download-directory-refused",
+        "passed": true
+      },
+      {
+        "case": "sigkill-after-stop-recovery",
+        "output": "已识别并清理中断进程留下的安装锁。\n将恢复备份 /mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/.twui-backups-ui/20261116-120159.56sc7pib。会恢复原Web接入并启动原服务；不回滚下载任务或daemon设置。\n正在恢复安装前状态……\n已恢复原界面及服务接入，备份保留：/mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/.twui-backups-ui/20261116-120159.56sc7pib"
+      },
+      {
+        "case": "docker-install",
+        "output": "环境：docker；Web地址：http://127.0.0.1:42871/transmission/web/；安装目录：/mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/ui\n原Web页面和RPC只读检查通过。\n正在校验单文件安装器内置的离线发布包……\n版本2.0.0-installer.3已安装，内容一致，将核验后重新接入。\n正在备份完整旧Web资源和接入信息（不是只备份首页）……\n备份已验证：/mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/.twui-backups-ui/20261116-120203.QBI7yEJN\n准备安装2.0.0-installer.3。会短暂停止/启动当前Transmission服务以接入新界面。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。\n安装完成：http://127.0.0.1:42871/transmission/web/\n完整资源及RPC只读验证通过。恢复入口：sudo sh install-transmission-web-ui.sh --restore /mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/.twui-backups-ui/20261116-120203.QBI7yEJN\n备份和原容器/旧资源已保留；请勿在确认实际使用前删除。浏览器标签/偏好仍保留在原浏览器中；界面恢复不会撤销任务操作。"
+      },
+      {
+        "case": "changed-old-asset-keeps-current-service",
+        "passed": true
+      },
+      {
+        "case": "same-version-reinstall",
+        "output": "环境：docker；Web地址：http://127.0.0.1:42871/transmission/web/；安装目录：/mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/ui\n原Web页面和RPC只读检查通过。\n正在校验单文件安装器内置的离线发布包……\n版本2.0.0-installer.3已安装，内容一致，将核验后重新接入。\n正在备份完整旧Web资源和接入信息（不是只备份首页）……\n备份已验证：/mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/.twui-backups-ui/20261116-120207.q4UdR5ZI\n准备安装2.0.0-installer.3。会短暂停止/启动当前Transmission服务以接入新界面。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。\n安装完成：http://127.0.0.1:42871/transmission/web/\n完整资源及RPC只读验证通过。恢复入口：sudo sh install-transmission-web-ui.sh --restore /mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/.twui-backups-ui/20261116-120207.q4UdR5ZI\n备份和原容器/旧资源已保留；请勿在确认实际使用前删除。浏览器标签/偏好仍保留在原浏览器中；界面恢复不会撤销任务操作。"
+      },
+      {
+        "case": "explicit-restore-original",
+        "output": "已识别并清理中断进程留下的安装锁。\n将恢复备份 /mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/.twui-backups-ui/20261116-120203.QBI7yEJN。会恢复原Web接入并启动原服务；不回滚下载任务或daemon设置。\n正在恢复安装前状态……\n已恢复原界面及服务接入，备份保留：/mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/.twui-backups-ui/20261116-120203.QBI7yEJN"
+      },
+      {
+        "case": "failed-web-validation-auto-rollback",
+        "output": "环境：docker；Web地址：http://127.0.0.1:33859/transmission/web/；安装目录：/mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/ui-fail\n原Web页面和RPC只读检查通过。\n正在备份完整旧Web资源和接入信息（不是只备份首页）……\n备份已验证：/mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/.twui-backups-ui-fail/20261116-120211.6edcOawm\n准备安装2.0.0-installer.3。会短暂停止/启动当前Transmission服务以接入新界面。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。\n正在恢复安装前状态……\n已恢复原界面及服务接入，备份保留：/mnt/data/dev/github/transmission-web-ui/.lab/twui-installer-1794830517476/.twui-backups-ui-fail/20261116-120211.6edcOawm\n",
+        "stderr": "错误：新界面或RPC验证失败；开始自动回滚。\n"
+      },
+      {
+        "case": "missing-original-keeps-current-service",
+        "passed": true
+      }
+    ]
+  },
+  "packageSimulation": {
+    "at": "2026-11-16T12:02:11.182Z",
+    "scope": "Linux simulation using real 4.1.4, actual service account and pinned upstream lifecycle; synopkg CLI is a fixture, not DSM certification",
+    "results": [
+      {
+        "case": "package-existing-custom-ui-install",
+        "output": "Package: SynoCommunity Transmission 4.1.4-32\nDSM metadata absent: this is a Linux simulation, not DSM certification.\nf625a76774aa51294baab9687ca995792cc67fcd55545aefbf8c90677e490ec0  /var/packages/transmission/scripts/service-setup\n029477bc5300a99e59a5224128d99846ef0c2bf9f828bc16a6bfd9cbea07d31f  /var/packages/transmission/scripts/start-stop-status\nService user: sc-transmission (UID 12345)\nEffective XDG data home: /var/packages/transmission/var/.local/share\nCandidate link: /var/packages/transmission/var/.local/share/transmission/public_html\nRead-only inspection completed. No configuration or filesystem entries were changed.\n环境：package；Web地址：http://127.0.0.1:9091/transmission/web/；安装目录：/var/packages/transmission/var/transmission-web-ui\n原Web页面和RPC只读检查通过。\n正在校验单文件安装器内置的离线发布包……\n正在备份完整旧Web资源和接入信息（不是只备份首页）……\n备份已验证：/var/packages/transmission/var/.twui-backups-transmission-web-ui/20261116-120201.G5UjWCez\n准备安装2.0.0-installer.3。会短暂停止/启动当前Transmission服务以接入新界面。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。\n安装完成：http://127.0.0.1:9091/transmission/web/\n完整资源及RPC只读验证通过。恢复入口：sudo sh install-transmission-web-ui.sh --restore /var/packages/transmission/var/.twui-backups-transmission-web-ui/20261116-120201.G5UjWCez\n备份和原容器/旧资源已保留；请勿在确认实际使用前删除。浏览器标签/偏好仍保留在原浏览器中；界面恢复不会撤销任务操作。"
+      },
+      {
+        "case": "package-restore-custom-ui",
+        "output": "将恢复备份 /var/packages/transmission/var/.twui-backups-transmission-web-ui/20261116-120201.G5UjWCez。会恢复原Web接入并启动原服务；不回滚下载任务或daemon设置。\n正在恢复安装前状态……\n已恢复原界面及服务接入，备份保留：/var/packages/transmission/var/.twui-backups-transmission-web-ui/20261116-120201.G5UjWCez"
+      },
+      {
+        "case": "package-restart-failure-auto-rollback",
+        "output": "Package: SynoCommunity Transmission 4.1.4-32\nDSM metadata absent: this is a Linux simulation, not DSM certification.\nf625a76774aa51294baab9687ca995792cc67fcd55545aefbf8c90677e490ec0  /var/packages/transmission/scripts/service-setup\n029477bc5300a99e59a5224128d99846ef0c2bf9f828bc16a6bfd9cbea07d31f  /var/packages/transmission/scripts/start-stop-status\nService user: sc-transmission (UID 12345)\nEffective XDG data home: /var/packages/transmission/var/.local/share\nCandidate link: /var/packages/transmission/var/.local/share/transmission/public_html\nRead-only inspection completed. No configuration or filesystem entries were changed.\n环境：package；Web地址：http://127.0.0.1:9091/transmission/web/；安装目录：/var/packages/transmission/var/transmission-web-ui\n原Web页面和RPC只读检查通过。\n正在校验单文件安装器内置的离线发布包……\n版本2.0.0-installer.3已安装，内容一致，将核验后重新接入。\n正在备份完整旧Web资源和接入信息（不是只备份首页）……\n备份已验证：/var/packages/transmission/var/.twui-backups-transmission-web-ui/20261116-120206.ZieGj9uU\n准备安装2.0.0-installer.3。会短暂停止/启动当前Transmission服务以接入新界面。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。\n正在恢复安装前状态……\n已恢复原界面及服务接入，备份保留：/var/packages/transmission/var/.twui-backups-transmission-web-ui/20261116-120206.ZieGj9uU\n",
+        "stderr": "错误：套件重启失败。\n"
+      },
+      {
+        "case": "authenticated-preflight-hidden-special-character-password",
+        "output": "Package: SynoCommunity Transmission 4.1.4-32\r\nDSM metadata absent: this is a Linux simulation, not DSM certification.\r\nf625a76774aa51294baab9687ca995792cc67fcd55545aefbf8c90677e490ec0  /var/packages/transmission/scripts/service-setup\r\n029477bc5300a99e59a5224128d99846ef0c2bf9f828bc16a6bfd9cbea07d31f  /var/packages/transmission/scripts/start-stop-status\r\nService user: sc-transmission (UID 12345)\r\nEffective XDG data home: /var/packages/transmission/var/.local/share\r\nCandidate link: /var/packages/transmission/var/.local/share/transmission/public_html\r\nRead-only inspection completed. No configuration or filesystem entries were changed.\r\nTransmission用户名：installer-test\r\nTransmission密码（不回显）：\r\n环境：package；Web地址：http://127.0.0.1:9091/transmission/web/；安装目录：/var/packages/transmission/var/transmission-web-ui\r\n原Web页面和RPC只读检查通过。\r\n只读预检完成；未安装、未重启。\r\n\n"
+      }
+    ]
+  },
+  "checks": [
+    "Real Docker task identity/status and download sentinel preserved",
+    "Real Docker Config/HostConfig, anonymous volumes preserved",
+    "Same-version reattach retains current container",
+    "Explicit restore plus dead-process lock recovery",
+    "Ignored Web override triggers verified auto rollback",
+    "Existing custom XDG UI preserved and restored",
+    "Package restart failure triggers verified auto rollback",
+    "BusyBox 1.35.0 (Debian static) shell and core installer failure scenarios",
+    "Exact previous frozen archive now installs with corrected core",
+    "ESLint and targeted Prettier",
+    "OpenSpec strict",
+    "old/ 816 files intact",
+    "Real SIGKILL immediately after original container stop, followed by explicit restore",
+    "Unpersisted directory and unknown writable layer rejected before stop",
+    "Externally changed old asset or missing original container leaves current service running",
+    "Real daemon authentication with hidden quote/backslash password",
+    "Strict Unicode JSON parser and stale core process lock recovery",
+    "Renamed installer.3 final artifact passes all 9 Docker and 4 package simulation cases; legacy/new script names both accepted"
+  ],
+  "actualDSMValidated": false,
+  "nasModified": false,
+  "comparisonModified": false,
+  "githubReleasePublished": false,
+  "automaticInstallationBoundaries": [
+    "SynoCommunity 4.1.4-32",
+    "local standalone Docker",
+    "Compose/Swarm, static container IP, random host port, AutoRemove, remote/shared network and unknown package guarded before activation",
+    "All daemon/task directories must be persistent; unknown writable layer files refused"
+  ],
+  "supersedes": {
+    "version": "2.0.0-installer.2",
+    "artifacts": {
+      "install-tr-control.sh": {
+        "bytes": 642190,
+        "sha256": "1ef05c099b4b8363e49f65d8957d693253269631f34b41d1270362056de3a8f4"
+      },
+      "transmission-web-ui.tar.gz": {
+        "bytes": 428214,
+        "sha256": "6bc887f7d3a63c11d906bf5de607a60a47a951898e471d79c98363469aeb5515"
+      },
+      "transmission-web-ui-2.0.0-installer.2.tar.gz": {
+        "bytes": 428214,
+        "sha256": "6bc887f7d3a63c11d906bf5de607a60a47a951898e471d79c98363469aeb5515"
+      }
+    },
+    "supersedes": {
+      "version": "2.0.0-installer.1",
+      "artifacts": {
+        "install-tr-control.sh": {
+          "bytes": 627517,
+          "sha256": "c2c8dc6451a55ae462f4066946763ad73c0f420298bf26232c1371e26cf5c532"
+        },
+        "transmission-web-ui.tar.gz": {
+          "bytes": 424880,
+          "sha256": "e1841719dea54cf56504047fb3b72beaff2dee97104b1ab9720223dba3f5d36e"
+        },
+        "transmission-web-ui-2.0.0-installer.1.tar.gz": {
+          "bytes": 424880,
+          "sha256": "e1841719dea54cf56504047fb3b72beaff2dee97104b1ab9720223dba3f5d36e"
+        }
+      }
+    }
+  }
+}

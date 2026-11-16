@@ -50,6 +50,11 @@ TWUI_PREFIX=/ sh "$installer" --prefix "$work/explicit" --check < /dev/null
 mkdir "$prefix/.install-lock"
 reject --prefix "$prefix" --archive "$work/2.0.0.tar.gz"
 rmdir "$prefix/.install-lock"
+mkdir "$prefix/.install-lock"
+printf '99999999\n' > "$prefix/.install-lock/pid"
+printf '0\n' > "$prefix/.install-lock/start"
+sh "$installer" --prefix "$prefix" --archive "$work/1.0.0.tar.gz"
+[ ! -d "$prefix/.install-lock" ]
 # A renamed archive does not change its internal VERSION semantics.
 cp "$work/1.0.0.tar.gz" "$work/v1.0.0-renamed.tar.gz"
 sh "$installer" --prefix "$work/version-prefix" --archive "$work/v1.0.0-renamed.tar.gz" < /dev/null
@@ -65,3 +70,19 @@ mkdir "$work/version-prefix/releases/unmanaged"
 reject --prefix "$work/version-prefix" --uninstall
 [ -r "$work/version-prefix/current/index.html" ]
 printf 'Installer failure-injection scenarios passed\n'
+# Release wrappers may use ./ entries and include checksummed review documents.
+mkdir -p "$work/source-normalized/web" "$work/source-normalized/docs/evidence"
+printf 'normalized\n' > "$work/source-normalized/web/index.html"
+printf '3.0.0\n' > "$work/source-normalized/VERSION"
+printf '{}\n' > "$work/source-normalized/docs/evidence/check.json"
+printf '#!/bin/sh\nexit 0\n' > "$work/source-normalized/install-tr-control.sh"
+cp "$work/source-normalized/install-tr-control.sh" "$work/source-normalized/install-transmission-web-ui.sh"
+(cd "$work/source-normalized" && find . -type f ! -name SHA256SUMS | sed 's:^./::' | sort | xargs sha256sum > SHA256SUMS && tar -czf "$work/normalized.tar.gz" .)
+sh "$installer" --prefix "$work/normalized-prefix" --archive "$work/normalized.tar.gz" >/dev/null
+[ -r "$work/normalized-prefix/current/index.html" ]
+# Canonical path aliases cannot bypass duplicate-entry rejection.
+(cd "$work/source-normalized" && tar -czf "$work/alias.tar.gz" VERSION SHA256SUMS web ./web)
+reject --prefix "$work/normalized-prefix" --archive "$work/alias.tar.gz"
+printf 'tampered\n' >> "$work/normalized-prefix/releases/3.0.0/web/index.html"
+reject --prefix "$work/normalized-prefix" --rollback 3.0.0
+printf 'Normalized release, alias rejection and stored-release verification passed\n'
