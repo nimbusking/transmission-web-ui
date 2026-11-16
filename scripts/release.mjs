@@ -46,7 +46,11 @@ await writeFile(
       name: 'transmission-web-ui',
       version,
       uiVersion,
-      installer: { entry: 'install-transmission-web-ui.sh', format: 1 },
+      installer: {
+        entry: 'install-transmission-web-ui.sh',
+        format: 1,
+        dsmLoginEntry: { frontendPort: 9091, rpcPort: 9093, managedUpgradeAndRestore: true },
+      },
       format: 1,
       webRoot: 'web',
       transmission: ['3.00', '4.0.x', '4.1.4'],

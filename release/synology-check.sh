@@ -16,6 +16,9 @@ if [ "$probe" = 1 ]; then
   [ -n "$user" ] || fail 'Specify the real --service-user'
   actual=$(id -un)
   [ "$actual" = "$user" ] || fail "Run this probe as $user (currently $actual)"
+  # BusyBox find may resolve cwd even for an absolute traversal. The invoking
+  # administrator's home can be inaccessible after switching service accounts.
+  cd / || fail 'Cannot enter a service-readable working directory'
   files=$(mktemp "${TMPDIR:-/tmp}/twui-read-probe.XXXXXXXX")
   trap 'rm -f "$files"' EXIT
   find -L "$web/" -type f > "$files" || fail 'Cannot traverse the Web root as the service account'

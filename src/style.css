@@ -986,6 +986,7 @@ button:disabled {
 
 .settings-dialog {
   width: 980px;
+  height: min(760px, calc(100dvh - 48px));
 }
 .settings-dialog .n-tabs-tab {
   font-size: 14px;

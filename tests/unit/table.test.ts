@@ -61,7 +61,7 @@ it('upgrades only the exact former factory layout and retains a reversible backu
   expect(custom.ui.columnsBackup).toBeUndefined();
 });
 it('formats table values without false dates, zero peers or secret URLs', () => {
-  expect(tableBytes(1024)).toBe('1.00 KiB');
+  expect(tableBytes(1024)).toBe('1.00 KB');
   expect(tableBytes(0, true)).toBe('0.00 B/s');
   expect(tableBytes(undefined)).toBe('—');
   expect(tableDate(0)).toBe('—');

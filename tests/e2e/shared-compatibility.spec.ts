@@ -87,10 +87,10 @@ test('held bytes and reports agree between table and overview; download-only lim
   page,
 }) => {
   const { row, writes } = await mock(page);
-  await expect(page.locator('[data-torrent-id="1"]')).toContainText('16.00 KiB');
+  await expect(page.locator('[data-torrent-id="1"]')).toContainText('16.00 KB');
   await expect(page.locator('[data-torrent-id="1"]')).toContainText('20 (0)');
   await page.locator('.torrent-name').click();
-  await expect(page.locator('.overview-grid')).toContainText('16.0 KiB');
+  await expect(page.locator('.overview-grid')).toContainText('16.0 KB');
   await expect(page.locator('.overview-grid')).toContainText('— (2)');
   await page.getByRole('checkbox', { name: 'Compatibility fixture', exact: true }).check();
   await page

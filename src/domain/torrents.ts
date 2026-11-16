@@ -348,7 +348,7 @@ export function trackerHost(url: string): string {
 }
 export function formatBytes(value: number, rate = false): string {
   if (!Number.isFinite(value) || value < 0) return '—';
-  const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
   let n = value,
     index = 0;
   while (n >= 1024 && index < units.length - 1) {
@@ -358,7 +358,7 @@ export function formatBytes(value: number, rate = false): string {
   return `${n.toFixed(index ? 1 : 0)} ${units[index]}${rate ? '/s' : ''}`;
 }
 export function formatRatio(value: number): string {
-  return value === -2 ? '∞' : value < 0 || !Number.isFinite(value) ? '—' : value.toFixed(2);
+  return value === -2 ? '∞' : value < 0 || !Number.isFinite(value) ? '—' : value.toFixed(6);
 }
 export function formatDuration(value: number): string {
   if (!Number.isFinite(value) || value < 0) return '—';

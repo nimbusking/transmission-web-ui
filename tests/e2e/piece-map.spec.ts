@@ -98,7 +98,7 @@ test('full-width larger squares expose accurate hover values and clear gaps, scr
   ] as const) {
     const point = await cellPoint(page, index);
     await page.mouse.move(point.x, point.y);
-    await expect(tooltip).toContainText(`128.0 KiB × ${percentage}`);
+    await expect(tooltip).toContainText(`128.0 KB × ${percentage}`);
     await expect(tooltip).toContainText(`Pieces ${range}`);
     await expect(page.locator('.detail-header')).toContainText('Piece preview');
   }
@@ -117,7 +117,7 @@ test('full-width larger squares expose accurate hover values and clear gaps, scr
   await expect.poll(async () => (await canvas.boundingBox())!.width).toBeLessThan(initial.width);
   const resized = await cellPoint(page, 200);
   await page.mouse.move(resized.x, resized.y);
-  await expect(tooltip).toContainText('128.0 KiB × 50.00%');
+  await expect(tooltip).toContainText('128.0 KB × 50.00%');
   const box = (await page.locator('.detail-content').boundingBox())!;
   await page.mouse.move(box.x + box.width - 30, box.y + 30);
   await page.mouse.wheel(0, -1200);
@@ -151,7 +151,7 @@ test('short final piece uses real byte length on narrow screens and does not str
   expect(first.left + first.width).toBeLessThanOrEqual(390);
   const last = await cellPoint(page, 2);
   await page.mouse.move(last.x, last.y);
-  await expect(tooltip).toContainText('4.0 KiB × 100.00%');
+  await expect(tooltip).toContainText('4.0 KB × 100.00%');
   await expect(tooltip).toContainText('Pieces 3–3');
   const empty = await cellPoint(page, 3);
   await page.mouse.move(empty.x, empty.y);
@@ -165,6 +165,6 @@ test('last aggregate cell accounts for a shorter completed tail piece', async ({
   await fixture(page, 513, 512 * 16384 + 4096, bits);
   const last = await cellPoint(page, 511);
   await page.mouse.move(last.x, last.y);
-  await expect(page.locator('.piece-cell-tooltip')).toContainText('20.0 KiB × 20.00%');
+  await expect(page.locator('.piece-cell-tooltip')).toContainText('20.0 KB × 20.00%');
   await expect(page.locator('.piece-cell-tooltip')).toContainText('Pieces 512–513');
 });

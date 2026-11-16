@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   navigationGroups,
+  torrentSizeTotal,
   torrentServers,
   inFolder,
   hasWarning,
@@ -11,9 +12,34 @@ const torrent = (id: number, path: string, urls: string[]): Torrent => ({
   id,
   downloadDir: path,
   totalSize: 10,
+  haveValid: 8,
+  haveUnchecked: 2,
   trackers: urls.map((announce, id) => ({ announce, id, tier: 0 })),
 });
 describe('navigation grouping', () => {
+  it('sums full torrent sizes regardless of held bytes or historical downloads at every directory level', () => {
+    const rows = [
+      {
+        ...torrent(1, '/data/a', []),
+        totalSize: 1000,
+        haveValid: 30,
+        haveUnchecked: 10,
+        downloadedEver: 9000,
+      },
+      { ...torrent(2, '/data/b', []), totalSize: 2000, haveValid: 5, haveUnchecked: 0 },
+    ];
+    expect(torrentSizeTotal(rows)).toBe(3000);
+    const groups = navigationGroups(rows);
+    expect(groups.folders[0].size).toBe(3000);
+    expect(groups.folders[0].children![0].size).toBe(3000);
+    expect(groups.folders[0].children![0].children!.map((n) => n.size)).toEqual([1000, 2000]);
+    expect(torrentSizeTotal([])).toBe(0);
+    expect(torrentSizeTotal([{ ...rows[0], totalSize: undefined }])).toBeUndefined();
+    expect(torrentSizeTotal([{ ...rows[0], totalSize: -1 }])).toBeUndefined();
+    expect(
+      navigationGroups([{ ...rows[0], totalSize: undefined }]).folders[0].size,
+    ).toBeUndefined();
+  });
   it('deduplicates servers without exposing URL secrets and distinguishes ports', () => {
     const a = torrent(1, '/data/a', [
       'http://Tracker.example/announce?passkey=secret',

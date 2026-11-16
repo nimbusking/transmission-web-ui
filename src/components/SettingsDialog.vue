@@ -20,7 +20,7 @@ import {
 import { useI18n } from 'vue-i18n';
 import { useAppStore } from '../stores/app';
 import { languages } from '../i18n';
-import { visualProfile, visualTheme } from '../domain/visual-themes';
+import { formControlOverrides, visualProfile, visualTheme } from '../domain/visual-themes';
 import { defaultSettings, errorMessage, formatBytes, uniqueId } from '../domain/torrents';
 import type { Label, SettingsSection } from '../domain/types';
 import { SESSION_FIELDS, validateSessionPatch } from '../services/session-fields';
@@ -45,58 +45,17 @@ const emit = defineEmits<{ close: [] }>(),
   app = useAppStore(),
   { t, locale } = useI18n(),
   message = useMessage();
+const dialogHeading = ref<HTMLElement>();
+watch(dialogHeading, (element) => element?.focus({ preventScroll: true }), { flush: 'post' });
 const dark = inject(
   'color-mode-dark',
   computed(() => app.settings.ui.theme === 'dark'),
 );
-const settingsAppearance = computed<GlobalThemeOverrides | undefined>(() => {
-  if (!dark.value) return undefined;
-  const p = visualProfile(visualTheme(app.settings.ui.visualTheme), true).palette;
-  const input = {
-    color: p.subtle,
-    colorHover: p.subtle,
-    colorFocus: p.subtle,
-    colorDisabled: p.canvas,
-    textColor: p.text,
-    textColorDisabled: p.muted,
-    placeholderColor: p.muted,
-    placeholderColorDisabled: p.muted,
-    suffixTextColor: p.muted,
-    border: `1px solid ${p.muted}`,
-    borderDisabled: `1px solid ${p.muted}`,
-    borderHover: `1px solid ${p.accent}`,
-    borderFocus: `1px solid ${p.accent}`,
-    boxShadowFocus: `0 0 0 2px ${p.selected}`,
-  };
-  return {
-    Input: input,
-    InputNumber: { peers: { Input: input }, iconColorDisabled: p.muted },
-    AutoComplete: { peers: { Input: input } },
-    TimePicker: { peers: { Input: input } },
-    Select: {
-      peers: {
-        InternalSelection: {
-          color: p.subtle,
-          colorActive: p.subtle,
-          colorDisabled: p.canvas,
-          textColor: p.text,
-          textColorDisabled: p.muted,
-          placeholderColor: p.muted,
-          placeholderColorDisabled: p.muted,
-          border: `1px solid ${p.muted}`,
-          borderHover: `1px solid ${p.accent}`,
-          borderFocus: `1px solid ${p.accent}`,
-          borderActive: `1px solid ${p.accent}`,
-          boxShadowFocus: `0 0 0 2px ${p.selected}`,
-          boxShadowActive: `0 0 0 2px ${p.selected}`,
-          arrowColor: p.muted,
-          arrowColorDisabled: p.muted,
-        },
-      },
-    },
-    ColorPicker: { border: `1px solid ${p.muted}`, peers: { Input: input } },
-  };
-});
+const settingsAppearance = computed<GlobalThemeOverrides | undefined>(() =>
+  dark.value
+    ? formControlOverrides(visualProfile(visualTheme(app.settings.ui.visualTheme), true))
+    : undefined,
+);
 const busy = ref(false),
   error = ref(''),
   tab = ref('basic'),
@@ -375,8 +334,9 @@ async function external(kind: 'trackers' | 'release') {
   <NConfigProvider abstract :theme-overrides="settingsAppearance">
     <NModal
       :show="true"
+      :auto-focus="false"
+      @after-enter="dialogHeading?.focus({ preventScroll: true })"
       preset="card"
-      :title="t('settings')"
       class="dialog large-dialog settings-dialog"
       @update:show="
         (show) => {
@@ -385,6 +345,11 @@ async function external(kind: 'trackers' | 'release') {
       "
       @close="emit('close')"
     >
+      <template #header
+        ><span ref="dialogHeading" class="settings-dialog-heading" tabindex="-1">{{
+          t('settings')
+        }}</span></template
+      >
       <NAlert v-if="error" type="error" closable @close="error = ''">{{ error }}</NAlert>
       <NAlert
         v-if="utpLimitRisk && ['network', 'bandwidth', 'schedule'].includes(tab)"
@@ -898,3 +863,8 @@ async function external(kind: 'trackers' | 'release') {
     </NModal>
   </NConfigProvider>
 </template>
+<style scoped>
+.settings-dialog-heading:focus {
+  outline: none;
+}
+</style>

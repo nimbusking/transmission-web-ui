@@ -21,7 +21,13 @@ import {
 } from '@lucide/vue';
 import { useAppStore } from '../stores/app';
 import { formatBytes, statusMatches } from '../domain/torrents';
-import { navigationGroups, durationText, inFolder, type NavNode } from '../domain/navigation';
+import {
+  torrentSizeTotal,
+  navigationGroups,
+  durationText,
+  inFolder,
+  type NavNode,
+} from '../domain/navigation';
 const props = defineProps<{
   status: string;
   folder: string | null;
@@ -62,10 +68,7 @@ const icons: Record<string, typeof Folder> = {
 const groups = computed(() => navigationGroups(app.torrents));
 const roots = computed<NavNode[]>(() => {
   const status = ['downloading', 'paused', 'seeding', 'checking', 'active', 'error', 'warning'];
-  const total = app.torrents.reduce(
-    (sum, x) => sum + (Number.isFinite(x.totalSize) ? x.totalSize! : 0),
-    0,
-  );
+  const total = torrentSizeTotal(app.torrents);
   const stats = (scope: 'cumulative-stats' | 'current-stats') => ({
     key: 'stats:' + scope,
     name: t(scope === 'current-stats' ? 'currentSession' : 'cumulative'),
@@ -282,11 +285,14 @@ async function keydown(e: KeyboardEvent, n: NavNode, depth: number) {
           <component :is="icons[node.kind] || Folder" :size="16" aria-hidden="true" /><span
             class="tree-name"
             >{{ node.name === '@unknown' ? t('unknownFolder') : node.name }}</span
-          ><span v-if="node.count !== undefined" class="tree-number">{{ node.count }}</span>
+          ><span v-if="node.count !== undefined" class="tree-number">[{{ node.count }}]</span>
         </component>
-        <span v-if="node.size !== undefined || node.kind === 'metric'" class="tree-size">{{
-          node.kind === 'metric' ? node.value : formatBytes(node.size!)
-        }}</span>
+        <span
+          v-if="'size' in node || node.kind === 'metric'"
+          class="tree-size"
+          :title="node.kind === 'metric' ? undefined : t('torrentSizeTotalHint')"
+          >{{ node.kind === 'metric' ? node.value : `[${formatBytes(node.size ?? NaN)}]` }}</span
+        >
       </div>
     </div>
   </div>

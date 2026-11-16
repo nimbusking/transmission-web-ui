@@ -160,6 +160,7 @@ export const en = {
   trackerUrlOnly:
     'This connection supports URL replacement. Groups are read-only. Add, remove or replace URLs separately; mixed edits are restricted.',
   completeSize: 'Completed size',
+  torrentSizeTotalHint: 'Combined full torrent size, including data not yet downloaded.',
   heldBytesHint:
     'Data currently held, including unchecked and skipped-file data; not disk allocation.',
   trackerReportsHint:
@@ -604,6 +605,7 @@ export const zh: Record<keyof typeof en, string> = {
   trackerEditor: '编辑Tracker',
   trackerUrlOnly: '当前连接支持URL替换；分组只读；新增、删除、URL替换须分别保存，混合编辑受限。',
   completeSize: '已完成',
+  torrentSizeTotalHint: '完整种子大小合计，包含尚未下载的数据。',
   heldBytesHint: '当前持有的数据，含待校验及跳过文件中已有的数据；不是磁盘占用。',
   trackerReportsHint: 'Tracker 报告合计，可能重复统计，非去重人数；活动连接独立统计。',
   seederCount: "种子{'|'}活跃",
@@ -708,7 +710,7 @@ export const zh: Record<keyof typeof en, string> = {
   skipped: '已跳过',
   results: '操作结果',
   pending: '等待执行',
-  urls: 'URL 或磁力链接',
+  urls: '种子地址',
   onePerLine: '每行一个链接',
   torrentFiles: '种子文件',
   chooseFiles: '选择文件',

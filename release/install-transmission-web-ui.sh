@@ -160,6 +160,9 @@ if [ "$probe" = 1 ]; then
   [ -n "$user" ] || fail 'Specify the real --service-user'
   actual=$(id -un)
   [ "$actual" = "$user" ] || fail "Run this probe as $user (currently $actual)"
+  # BusyBox find may resolve cwd even for an absolute traversal. The invoking
+  # administrator's home can be inaccessible after switching service accounts.
+  cd / || fail 'Cannot enter a service-readable working directory'
   files=$(mktemp "${TMPDIR:-/tmp}/twui-read-probe.XXXXXXXX")
   trap 'rm -f "$files"' EXIT
   find -L "$web/" -type f > "$files" || fail 'Cannot traverse the Web root as the service account'
@@ -419,15 +422,213 @@ function value(path,depth,   c,k,v,j,token) {
 END { if(failed)exit 2;pos=1;value("",0);ws();if(pos<=length(src) || !result_seen)exit 2 }
 
 TWUI_EMBEDDED_HELPER_3_END
+cat > "$work/login-entry.sh" <<'TWUI_EMBEDDED_HELPER_4_END'
+# Sourced by the integrated installer; all rollback data belongs to its transaction.
+login_root=/usr/local/share/transmission-web-ui-login
+login_conf=/etc/nginx/conf.d/http.transmission-web-ui-login.conf
+login_state=off
+login_port() { sed -n 's/^[[:space:]]*"rpc-port"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p' /var/packages/transmission/var/settings.json; }
+login_set_port() {
+  [ "$(login_port)" = "$1" ] || return 1
+  sed "s/\(\"rpc-port\"[[:space:]]*:[[:space:]]*\)$1\([[:space:]]*[,}]*[[:space:]]*\)$/\1$2\2/" /var/packages/transmission/var/settings.json > "$work/login-settings"
+  cat "$work/login-settings" > /var/packages/transmission/var/settings.json || return 1
+  rm "$work/login-settings"
+  [ "$(login_port)" = "$2" ]
+}
+login_inspect() {
+  if [ "$mode" != package ]; then
+    [ "$login_page" != on ] || fail '内置登录入口目前支持DSM套件；Docker需配置独立代理。'
+    return
+  fi
+  if [ -e "$login_conf" ] || [ -L "$login_conf" ]; then
+    [ "$login_page" != off ] || fail '已存在受管理登录入口，不能跳过它更新界面。'
+    [ -d "$login_root" ] && [ ! -L "$login_root" ] && [ "$(stat -c %u "$login_root")" = 0 ] || fail '登录入口目录身份不符。'
+    [ "$(cat "$login_root/.managed" 2>/dev/null)" = twui-login-v1 ] || fail '不是受管理的登录入口。'
+    [ ! -L "$login_conf" ] && cmp -s "$login_conf" "$work/login-nginx.conf" && cmp -s "$login_conf" "$login_root/nginx.conf" || fail '登录入口配置已修改，拒绝覆盖。'
+    [ "$(login_port)" = 9093 ] && [ -r "$login_root/web/index.html" ] || fail '登录入口状态不完整。'
+    login_state=existing
+  else
+    [ "$login_page" != off ] || return 0
+    if [ "$login_page" = auto ] && [ ! -f /etc.defaults/VERSION ]; then return; fi
+    [ "$(login_port)" = 9091 ] || fail '首次创建登录入口目前要求原RPC端口9091；可用--login-page off保留原认证入口。'
+    [ ! -e "$login_root" ] && [ ! -L "$login_root" ] || fail '登录入口目录已存在但配置缺失，请先恢复原事务。'
+    login_anon=$(curl -sS --max-time 5 -o /dev/null -w '%{http_code}' http://127.0.0.1:9091/transmission/web/) || fail '无法检查原入口认证。'
+    [ "$login_anon" = 401 ] || { [ "$login_page" != on ] || fail '原服务未启用预期的密码认证。'; return 0; }
+    need netstat
+    if netstat -lnt | awk '$4 ~ /:9093$/ {found=1} END {exit !found}'; then fail '登录入口需要的9093端口已占用。'; fi
+    login_state=new
+  fi
+  need nginx
+  grep -Fq 'include conf.d/http.*.conf;' /etc/nginx/nginx.conf || fail 'DSM nginx配置入口不匹配。'
+  nginx -t || fail '现有nginx配置无效。'
+  case "$endpoint" in http://127.0.0.1:9091/transmission/web/|http://127.0.0.1:9093/transmission/web/) :;; *) fail '登录入口集成需要默认本机endpoint，请移除自定义--endpoint。';; esac
+  log '登录入口已纳入本次安装：网页保持9091；RPC继续密码认证；安装、升级和恢复同步处理登录资源。'
+}
+login_snapshot() {
+  record login-state "$login_state"
+  [ "$login_state" != off ] || return 0
+  record login-port "$(login_port)"
+  if [ "$login_state" = existing ]; then
+    cp -aL "$login_root/web" "$tx/login-old-web" || fail '登录资源备份失败。'
+    (cd "$tx" && find login-old-web -type f -exec sha256sum {} \;) > "$tx/login.sha256"
+    (cd "$tx" && sha256sum -c login.sha256 >/dev/null) || fail '登录资源备份校验失败。'
+  fi
+}
+login_publish_web() {
+  # Preserve a legacy real directory; subsequent upgrades use an atomic symlink switch.
+  if [ -e "$login_root/web" ] && [ ! -L "$login_root/web" ]; then
+    [ ! -e "$login_root/legacy-web-$(basename "$tx")" ] || return 1
+    mv "$login_root/web" "$login_root/legacy-web-$(basename "$tx")" || return 1
+  fi
+  login_switch=$(mktemp -d "$login_root/.switch.XXXXXXXX") || return 1
+  ln -s "$1" "$login_switch/web" && mv -f "$login_switch/web" "$login_root/" || return 1
+  rmdir "$login_switch"
+}
+login_stage_web() {
+  login_release=$login_root/releases/$2
+  [ ! -e "$login_release" ] && [ ! -L "$login_release" ] || return 1
+  mkdir -p "$login_release" || return 1
+  cp -aL "$1" "$login_release/web" || return 1
+  find "$login_root/releases" -type d -exec chmod 755 {} \; || return 1
+  find "$login_release/web" -type f -exec chmod 644 {} \; || return 1
+  login_publish_web "releases/$2/web"
+}
+login_verify() {
+  login_code=$(curl -sS --max-time 10 -D "$work/login-headers" -o "$work/login-index" -w '%{http_code}' http://127.0.0.1:9091/transmission/web/) || return 1
+  [ "$login_code" = 200 ] && ! grep -qi '^WWW-Authenticate:' "$work/login-headers" || return 1
+  cmp -s "$work/login-index" "$login_root/web/index.html" || return 1
+  login_code=$(curl -sS --max-time 10 -X POST -D "$work/login-headers" -o /dev/null -w '%{http_code}' http://127.0.0.1:9091/transmission/rpc) || return 1
+  [ "$login_code" = 401 ] && ! grep -qi '^WWW-Authenticate:' "$work/login-headers" || return 1
+  login_saved_endpoint=$endpoint
+  endpoint=http://127.0.0.1:9091/transmission/web/
+  login_ok=0
+  verify_endpoint "$(sha256sum "$login_root/web/index.html" | awk '{print $1}')" "$login_root/web" || login_ok=$?
+  endpoint=$login_saved_endpoint
+  return "$login_ok"
+}
+login_activate() {
+  [ "$login_state" != off ] || return 0
+  # Journal precedes the first mutation, including an interrupted initial creation.
+  printf 'started\n' > "$tx/login-progress"
+  if [ "$login_state" = new ]; then
+    mkdir -m 755 "$login_root" || return 1
+    printf 'twui-login-v1\n' > "$login_root/.managed"
+    cp "$work/login-nginx.conf" "$login_root/nginx.conf" || return 1
+  fi
+  login_stage_web "$prefix/current" "$(basename "$tx")" || return 1
+  if [ "$login_state" = new ]; then
+    cp "$work/login-nginx.conf" "$login_conf" || return 1
+    nginx -t || return 1
+    synopkg stop transmission >/dev/null || return 1
+    cp -p /var/packages/transmission/var/settings.json "$tx/login-settings-before" || return 1
+    login_set_port 9091 9093 || return 1
+    synopkg start transmission >/dev/null || return 1
+    nginx -s reload || return 1
+  fi
+  # nginx reload and daemon startup are asynchronous.
+  login_attempt=0
+  while [ "$login_attempt" -lt 20 ]; do
+    if login_verify; then return 0; fi
+    sleep 1; login_attempt=$((login_attempt + 1))
+  done
+  return 1
+}
+login_rollback() {
+  [ -f "$tx/login-progress" ] || return 0
+  login_previous=$(get login-state)
+  [ ! -L "$login_root" ] || return 1
+  if [ -e "$login_conf" ]; then cmp -s "$login_conf" "$work/login-nginx.conf" || return 1; fi
+  case "$login_previous" in
+    existing)
+      (cd "$tx" && sha256sum -c login.sha256 >/dev/null) || return 1
+      # Copy into a new directory; preserve every prior version and interrupted stage.
+      login_recovery=$(mktemp -d "$login_root/releases/recovery.XXXXXXXX") || return 1
+      cp -aL "$tx/login-old-web" "$login_recovery/web" || return 1
+      chmod 755 "$login_recovery"
+      login_publish_web "releases/${login_recovery##*/}/web" || return 1
+      ;;
+    new)
+      if [ -e "$login_conf" ]; then
+        rm "$login_conf" || return 1
+        nginx -t && nginx -s reload || return 1
+        sleep 2
+      fi
+      synopkg stop transmission >/dev/null || return 1
+      case "$(login_port)" in 9093) login_set_port 9093 9091 || return 1;; 9091) :;; *) return 1;; esac
+      # Preserve repair artifacts while freeing the canonical path for a new installation.
+      if [ -d "$login_root" ]; then
+        login_retained=$login_root.restored-$(basename "$tx")
+        [ ! -e "$login_retained" ] || return 1
+        mv "$login_root" "$login_retained" || return 1
+      fi
+      ;;
+    *) return 1;;
+  esac
+}
+
+TWUI_EMBEDDED_HELPER_4_END
+cat > "$work/login-nginx.conf" <<'TWUI_EMBEDDED_HELPER_5_END'
+# Managed Transmission login entry: public static UI, authenticated RPC only.
+server {
+    listen 9091;
+    server_name _;
+    access_log off;
+    client_max_body_size 32m;
+
+    location = / { return 302 /transmission/web/; }
+    location = /transmission/web { return 302 /transmission/web/; }
+    location /transmission/web/ {
+        alias /usr/local/share/transmission-web-ui-login/web/;
+        index index.html;
+        autoindex off;
+        add_header Cache-Control "no-store" always;
+        add_header X-Content-Type-Options "nosniff" always;
+    }
+    location = /transmission/rpc {
+        proxy_pass http://127.0.0.1:9093;
+        proxy_set_header Host 127.0.0.1:9093;
+        proxy_set_header Authorization $http_authorization;
+        proxy_set_header X-Transmission-Session-Id $http_x_transmission_session_id;
+        proxy_hide_header WWW-Authenticate;
+        proxy_cache off;
+        proxy_next_upstream off;
+        proxy_read_timeout 60s;
+        add_header Cache-Control "no-store" always;
+    }
+    location / { return 404; }
+}
+
+TWUI_EMBEDDED_HELPER_5_END
 }
 # This file is embedded after extract_helpers() in the standalone installer.
 set -eu
 umask 077
 VERSION=1
+login_page=auto
 mode=auto; action=install; archive=; url=; expected=; prefix=; container=; endpoint=; restore=; yes=0; tag=latest; tag_explicit=0
 work=; tx=; backup_root=; locked=0; mutating=0; finished=0; terminal_hidden=0; socket=; api=; original_id=; name=; old_link=; original_web=; reuse=0; package_root=/var/packages/transmission
 log() { printf '%s\n' "$*"; }
-fail() { log "错误：$*" >&2; exit 1; }
+fail() {
+  if [ "$action" = check ]; then
+    log '【预检未通过】暂不能安装。' >&2
+    log "原因：$*" >&2
+    log '下一步：按上述原因检查环境或参数，修正后重新运行 --check；如不确定，请保留完整输出供排查（不要提供密码）。' >&2
+  else
+    log "错误：$*" >&2
+  fi
+  exit 1
+}
+preflight_success() {
+  log ''
+  log '【预检通过】当前环境检查正常，可以继续安装。'
+  log '已确认：安装环境及原Web目录、原界面访问、RPC只读握手。'
+  log '本次仅预检，未安装、未切换界面、未重启Transmission。'
+  log '下一步：在当前脚本所在目录执行以下命令，按提示确认备份和必要重启：'
+  log '  sudo sh install-transmission-web-ui.sh'
+  log '若本次指定了 --mode、--container、--prefix 或 --endpoint，正式安装时请保留这些参数，仅去掉 --check。'
+  log '若指定了 --login-page，也请保留该选项。'
+  log '安装阶段仍会校验发布包、备份和接入条件；预检通过不代表安装已完成。'
+}
 need() { command -v "$1" >/dev/null 2>&1 || fail "缺少系统工具 $1；未切换界面。"; }
 usage() {
   cat <<'HELP'
@@ -436,21 +637,22 @@ Transmission Web UI 一体化安装器
   sudo sh install-transmission-web-ui.sh --archive 包.tar.gz
   sudo sh install-transmission-web-ui.sh --restore /备份目录
 可选：--mode package|docker --container 名称 --prefix 目录 --endpoint http://NAS:端口/transmission/web/
-      --url HTTPS归档地址 --sha256 摘要 --version v2.0.1 --yes --check
+      --url HTTPS归档地址 --sha256 摘要 --version v2.0.1 --yes --check --login-page auto|on|off
 --yes 同意已展示的备份、接入及必要服务重启；不跳过校验或未知环境保护。
-离线包旁须有同名.sha256，或明确提供--sha256。不会修改下载任务/daemon设置。
+离线包旁须有同名.sha256，或明确提供--sha256。DSM登录入口默认自动整合，网页保持9091，RPC改为9093；密码和下载设置保持。
 恢复只撤销界面和容器接入，不恢复/覆盖任务数据。备份可能含容器凭据，仅管理员可读。
 HELP
 }
 while [ "$#" -gt 0 ]; do
   case "$1" in
-    --archive|--url|--sha256|--prefix|--container|--endpoint|--mode|--version|--restore)
+    --archive|--url|--sha256|--prefix|--container|--endpoint|--mode|--version|--restore|--login-page)
       [ "$#" -ge 2 ] || fail "$1 缺少参数"
-      case "$1" in --archive) archive=$2;; --url) url=$2;; --sha256) expected=$2;; --prefix) prefix=$2;; --container) container=$2; mode=docker;; --endpoint) endpoint=$2;; --mode) mode=$2;; --version) tag=$2; tag_explicit=1;; --restore) restore=$2; action=restore;; esac
+      case "$1" in --login-page) login_page=$2;; --archive) archive=$2;; --url) url=$2;; --sha256) expected=$2;; --prefix) prefix=$2;; --container) container=$2; mode=docker;; --endpoint) endpoint=$2;; --mode) mode=$2;; --version) tag=$2; tag_explicit=1;; --restore) restore=$2; action=restore;; esac
       shift 2;;
     --yes|-y) yes=1; shift;; --check) action=check; shift;; --help|-h) usage; exit 0;; *) fail "未知参数 $1";;
   esac
 done
+case "$login_page" in auto|on|off) :;; *) fail '--login-page应为auto、on或off。';; esac
 confirm() {
   log "$1"
   [ "$yes" = 1 ] && return 0
@@ -465,7 +667,7 @@ ask() {
 }
 safe_path() {
   case "$1" in /*) :;; *) fail '需要绝对路径。';; esac
-  case "$1" in /|/usr|/var|/etc|/opt|/tmp|/root|/home|*/../*|*/./*|*/..|*/.|*//*|*/|*[!A-Za-z0-9_./-]*) fail "不支持的目录：$1（请使用不含空格的独立目录）";; esac
+  case "$1" in /|/usr|/var|/etc|/opt|/tmp|/root|/home|*/../*|*/./*|*/..|*/.|*//*|*/|*[!A-Za-z0-9_./@-]*) fail "不支持的目录：$1（请使用不含空格的独立目录）";; esac
 }
 json_string() { printf '"%s"' "$(printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g')"; }
 fetch() {
@@ -526,7 +728,11 @@ setup_engine() {
   case "$api" in *[!0-9.]*|'') fail '无法确定Docker API版本。';; esac
   curl --silent --show-error --fail --max-time 10 --unix-socket "$socket" http://localhost/_ping >/dev/null || fail '无法连接本机Docker API（curl需支持Unix socket）。'
 }
-restart_package() { synopkg restart transmission >/dev/null; }
+restart_package() {
+  log '正在重启Transmission套件，等待DSM返回；此阶段可能需要一些时间……'
+  synopkg restart transmission >/dev/null || return 1
+  log '套件重启命令已完成，接下来验证页面和RPC。'
+}
 verify_recovery_tree() {
   recovery_source=$1
   (cd "$tx/old-web" && find . -type f | sort) > "$work/recovery-files" || return 1
@@ -573,6 +779,7 @@ rollback() {
     [ "$original_name" = "/$name" ] || docker rename "$original_id" "$name" || return 1
     docker start "$original_id" >/dev/null || return 1
   else
+    login_rollback || return 1
     old_link=$(get xdg-link)
     displaced=$(get displaced)
     saved_current=$(get current)
@@ -597,6 +804,7 @@ rollback() {
   fi
   # Verify the old entry and read-only RPC, rather than reporting a successful copy as recovery.
   verify_endpoint "$(get old-entry-sha)" "$tx/old-web" || return 1
+  if [ -f "$tx/login-progress" ] && [ "$(get login-state)" = existing ]; then login_verify || return 1; fi
   record status rolled-back
   rm -f "$backup_root/pending"
   log "已恢复原界面及服务接入，备份保留：$tx"
@@ -637,6 +845,7 @@ fi
 for utility in curl tar sha256sum awk sed grep sort uniq find chmod chown mkdir mktemp rm cp mv ln readlink cat rmdir id date df du sleep stat cmp tr head wc dirname basename cut; do need "$utility"; done
 work=$(mktemp -d "${TMPDIR:-/tmp}/twui-wizard.XXXXXXXX")
 extract_helpers
+. "$work/login-entry.sh"
 # Authentication stays in a private curl config, never in argv, backups, or logs.
 : > "$work/http-auth"
 http() {
@@ -821,16 +1030,21 @@ load_backup() {
   [ "$(stat -c %u "$restore")" = 0 ] && [ "$(stat -c %a "$restore")" = 700 ] || fail '备份目录必须由root拥有且权限为700。'
   tx=$restore; backup_root=$(dirname "$tx")
   mode=$(get mode); prefix=$(get prefix); endpoint=$(get endpoint)
+  if [ "$mode" = package ] && [ -e "$login_conf" ] && [ ! -f "$tx/login-state" ]; then
+    fail '该旧备份未记录当前登录入口；请先使用旧独立入口的恢复命令，再恢复此备份，避免只恢复部分界面。'
+  fi
   safe_path "$prefix"
   case "$mode" in package) need synopkg;; docker) setup_engine;; *) fail '备份环境类型无效。';; esac
   (cd "$tx" && sha256sum -c backup.sha256 >/dev/null && sha256sum -c web.sha256 >/dev/null) || fail '备份摘要不符，未恢复。'
+  if [ -f "$tx/login.sha256" ]; then (cd "$tx" && sha256sum -c login.sha256 >/dev/null) || fail '登录资源备份摘要不符。'; fi
 }
 if [ "$action" = restore ]; then
   load_backup
   acquire_lock
   code=$(http "$endpoint" "$work/current-page" || :)
   [ "$code" != 401 ] || credentials
-  confirm "将恢复备份 $tx。会恢复原Web接入并启动原服务；不回滚下载任务或daemon设置。"
+  if [ "$code" != 401 ] && ! check_rpc; then [ "$code" != 401 ] || credentials; fi
+  confirm "将恢复备份 $tx。会恢复原Web及登录入口接入并启动原服务；不回滚下载任务或其他daemon设置。"
   rollback || fail "恢复尚未完成，备份仍在 $tx；没有删除数据卷。"
   finished=1; exit 0
 fi
@@ -844,6 +1058,7 @@ case "$mode" in auto)
   package|docker) :;; *) fail '环境类型应为package或docker。';;
 esac
 case "$mode" in package) inspect_package;; docker) inspect_docker;; esac
+login_inspect
 safe_path "$prefix"
 [ ! -L "$prefix" ] || fail '安装目录本身不能是软链。'
 if [ -e "$prefix" ]; then
@@ -872,7 +1087,10 @@ else
 fi
 log "环境：$mode；Web地址：$endpoint；安装目录：$prefix"
 log '原Web页面和RPC只读检查通过。'
-[ "$action" != check ] || { log '只读预检完成；未安装、未重启。'; exit 0; }
+if [ "$action" = check ]; then
+  preflight_success
+  exit 0
+fi
 if [ -z "$archive" ] && [ -z "$url" ] && [ "$tag_explicit" = 0 ] && command -v extract_bundled_release >/dev/null 2>&1; then
   need base64
   log '正在校验单文件安装器内置的离线发布包……'
@@ -903,6 +1121,9 @@ printf '%s\n' "$expected" | grep -Eq '^[0-9a-f]{64}$' || fail 'SHA256摘要格�
 # Validate archive paths, types and all file hashes in a private temporary prefix first.
 sh "$work/install.sh" --prefix "$work/validated" --archive "$archive" > "$work/validation.log" 2>&1 || { cat "$work/validation.log"; fail '包内部验证失败。'; }
 selected=$(cat "$work/validated/current/../VERSION")
+if [ "$login_state" != off ]; then
+  grep -l 'login-page' "$work/validated/current"/assets/*.js >/dev/null 2>&1 || fail '发布包不含登录页，拒绝把旧静态资源部署到登录入口。'
+fi
 if [ -e "$prefix/releases/$selected" ]; then
   if cmp -s "$prefix/releases/$selected/SHA256SUMS" "$work/validated/current/../SHA256SUMS"; then
     log "版本$selected已安装，内容一致，将核验后重新接入。"
@@ -925,6 +1146,7 @@ record original-web "$original_web"
 record current "$(readlink "$prefix/current" 2>/dev/null || :)"
 record previous "$(readlink "$prefix/previous" 2>/dev/null || :)"
 record status preparing
+login_snapshot
 log '正在备份完整旧Web资源和接入信息（不是只备份首页）……'
 if [ "$mode" = docker ]; then old_kb=$(docker exec "$original_id" du -sk "$original_web/" | awk '{print $1}')
 else old_kb=$(du -sk "$original_web/" | awk '{print $1}'); fi
@@ -980,7 +1202,7 @@ find "$tx/old-web" -exec sh -c 'for file do if printf "%s" "$file" | LC_ALL=C gr
 cp "$work/backup.sha256" "$tx/backup.sha256"
 record status prepared
 log "备份已验证：$tx"
-confirm "准备安装$selected。会短暂停止/启动当前Transmission服务以接入新界面。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。"
+confirm "准备安装$selected。会短暂停止/启动当前Transmission服务以接入新界面。登录入口状态：$login_state（new时由nginx接管9091，RPC改为9093；existing时同步更新登录资源）。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。"
 # Recheck the instance identity after the user confirmation, before changing anything.
 if [ "$mode" = docker ]; then [ "$(docker_id "$name")" = "$original_id" ] || fail '确认期间容器已变化，停止。'; fi
 printf '%s\n' "$stamp" > "$backup_root/pending"
@@ -1003,16 +1225,19 @@ if [ "$mode" = docker ] && [ "$reuse" = 0 ]; then
 elif [ "$mode" = package ]; then
   chown sc-transmission "$prefix"
   if [ -e "$old_link" ] || [ -L "$old_link" ]; then mv "$old_link" "$old_link.twui-original-$stamp"; fi
-  sudo -u sc-transmission -- sh "$prefix/releases/$selected/synocommunity.sh" --attach --prefix "$prefix" > "$work/attach.log" 2>&1 || { cat "$work/attach.log"; fail '套件接入失败。'; }
+  (cd / && sudo -u sc-transmission -- sh "$prefix/releases/$selected/synocommunity.sh" --attach --prefix "$prefix") > "$work/attach.log" 2>&1 || { cat "$work/attach.log"; fail '套件接入失败。'; }
   restart_package || fail '套件重启失败。'
 fi
 new_sha=$(sha256sum "$prefix/current/index.html" | awk '{print $1}')
 verify_endpoint "$new_sha" "$prefix/current" || fail '新界面或RPC验证失败；开始自动回滚。'
+login_activate || fail '登录入口验证失败；开始恢复界面与登录入口。'
 if [ "$mode" = docker ] && [ "$reuse" = 0 ]; then check_docker_persistence "$new_id"; fi
 record status committed
 printf '%s\n' "$stamp" > "$backup_root/latest"
 rm -f "$backup_root/pending"
 finished=1; mutating=0
-log "安装完成：$endpoint"
+if [ "$login_state" != off ]; then
+  log '安装完成：http://群晖IP:9091/transmission/web/（原账号密码）；登录页面和RPC认证已验证。'
+else log "安装完成：$endpoint"; fi
 log "完整资源及RPC只读验证通过。恢复入口：sudo sh install-transmission-web-ui.sh --restore $tx"
 log '备份和原容器/旧资源已保留；请勿在确认实际使用前删除。浏览器标签/偏好仍保留在原浏览器中；界面恢复不会撤销任务操作。'

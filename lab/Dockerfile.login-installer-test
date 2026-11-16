@@ -1,0 +1,2 @@
+FROM twui-lab/installer-test:local
+RUN apt-get update && apt-get install -y --no-install-recommends nginx net-tools && rm -rf /var/lib/apt/lists/*

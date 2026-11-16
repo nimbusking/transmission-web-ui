@@ -1,4 +1,14 @@
 import type { Torrent } from './types';
+import { safeCount } from './status';
+export function torrentSizeTotal(torrents: Torrent[]): number | undefined {
+  let total = 0;
+  for (const torrent of torrents) {
+    const bytes = safeCount(torrent.totalSize);
+    if (bytes === undefined || safeCount(total + bytes) === undefined) return undefined;
+    total += bytes;
+  }
+  return total;
+}
 export interface NavNode {
   key: string;
   name: string;
@@ -55,10 +65,9 @@ export function hasWarning(t: Torrent): boolean {
 }
 function add(node: NavNode, t: Torrent) {
   node.count = (node.count ?? 0) + 1;
+  const bytes = safeCount(t.totalSize);
   node.size =
-    node.size === undefined || !Number.isFinite(t.totalSize) || t.totalSize! < 0
-      ? undefined
-      : node.size + t.totalSize!;
+    node.size === undefined || bytes === undefined ? undefined : safeCount(node.size + bytes);
 }
 export function navigationGroups(torrents: Torrent[]) {
   const servers = new Map<string, NavNode>(),

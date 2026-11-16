@@ -122,7 +122,7 @@ test('twenty headers, safe values, check progress, drag order and row label entr
   const row = page.locator('[data-torrent-id="100"]');
   await expect(row.locator('.row-number')).toHaveText('1');
   await expect(row).toContainText('1.00 KB');
-  await expect(row).toContainText('2.00 KiB'); // Other byte columns retain their existing units.
+  await expect(row).toContainText('2.00 KB'); // Other byte columns retain their existing units.
   await expect(row).toContainText('512.00 B');
   await expect(row).not.toContainText('1970');
   await expect(row).not.toContainText('secret');

@@ -66,6 +66,18 @@ sh install.sh --prefix /absolute/persistent/path/transmission-web-ui --uninstall
 
 代理需同时转发静态资源和 POST RPC，保留请求/响应的 `X-Transmission-Session-Id`，以及需要时的 Authorization、Content-Type。不要缓存 RPC POST 或 409 响应。409 是会话握手的一部分，应原样转发并保留会话头。使用 UI 自带登录时可在同源代理保护 RPC；认证只存当前页面内存。
 
+### DSM 原端口上的自定义登录页
+
+Transmission 直接提供的 HTML 也受 Basic 认证保护；仅替换静态文件不能消除网页加载前的浏览器认证弹窗。`release/login-nginx.conf` 提供公开静态页面，仅将精确的 `/transmission/rpc` 转发给仍开启密码认证的 Transmission，并隐藏 `WWW-Authenticate` 响应头，让错误密码在页面内显示。401、409 和会话头保持原样，不缓存 RPC，也不重试有副作用的请求。
+
+从 `2.0.0-installer.5` 起，单文件安装器已整合此入口。针对已核对的 SynoCommunity 4.1.4-32、原端口9091和启用密码认证的DSM，默认 `--login-page auto` 使用系统nginx接管9091，将RPC移到9093；不额外安装nginx。`--login-page on` 显式要求支持，`off` 为尚未配置入口的设备保留浏览器原认证。已有独立修复入口会自动迁移，升级时同步更新 `/usr/local/share/transmission-web-ui-login/web`，无需再次执行独立脚本。RPC密码及访问限制保留。不含登录页的旧发布包会在切换前被拒绝。
+
+执行前检查原服务认证、备用端口、管理标记和nginx配置。登录资源快照纳入安装器同一备份，失败恢复及 `--restore <本次备份目录>` 同时处理Web资源和登录入口：首次接入恢复回原9091认证入口；已有入口升级恢复旧登录资源并保留9091/9093布局。原独立修复脚本仅用于尚未迁入一体化安装器的旧修复包。强制终止或断电需手动执行一体化安装器给出的恢复命令。DSM升级后配置保留尚未验证。
+
+Docker模式仍支持原静态资源安装，但本版不自动迁移任意容器的端口或创建nginx代理；明确指定 `--login-page on` 时会拒绝并解释。容器自定义登录入口可使用上述配置原则单独部署，不将DSM集成宣称为全平台自动配置。
+
+`npm run test:login-entry` 使用本地独立 nginx 和真实 Transmission 4.1.4，验证公开页面、匿名/错误密码拒绝、正确密码与 409 会话握手，并通过 Chromium 实际完成页面登录。容器仅用于本地测试，NAS 无需 Docker；该测试不等同于 DSM 安装脚本的实机验收。
+
 运行配置 `app-config.json` 可改为同源 RPC 路径，不能包含 URL 用户名/密码，也不接受跨源 RPC。配置文件和首页应避免长期强缓存；带内容 hash 的静态资源可长期缓存。代理处终止 HTTPS 时，浏览器访问的 UI 和 RPC 必须保持同源。
 
 本机 `proxy` profile 在 19098 端口验证了 `/ui/` 与 `/nas/transmission/web/` 两种路径及 409 会话头。测试代理 Python 只用于实验，不随 release 部署，也不替代用户的 DSM/Nginx 代理配置。

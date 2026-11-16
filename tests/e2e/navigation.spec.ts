@@ -98,7 +98,7 @@ test('tree filters, counters, expansion persistence and statistics', async ({ pa
     .getByRole('button', { name: 'Expand/collapse Cumulative', exact: true })
     .scrollIntoViewIfNeeded();
   await expect(tree.getByRole('treeitem').filter({ hasText: 'Uploaded' }).first()).toContainText(
-    '1.0 KiB',
+    '1.0 KB',
   );
   await tree.getByRole('button', { name: 'Expand/collapse Cumulative', exact: true }).click();
   await expect(tree.getByRole('treeitem').filter({ hasText: 'Cumulative' })).toHaveAttribute(

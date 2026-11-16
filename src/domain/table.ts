@@ -3,7 +3,7 @@ import type { Torrent } from './types';
 import { torrentServers, NO_TRACKER, UNKNOWN_TRACKER } from './navigation';
 export function tableBytes(value: unknown, rate = false): string {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) return '—';
-  const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
   let n = value,
     i = 0;
   while (n >= 1024 && i < units.length - 1) {

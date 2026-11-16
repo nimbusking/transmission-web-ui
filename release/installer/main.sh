@@ -2,10 +2,31 @@
 set -eu
 umask 077
 VERSION=1
+login_page=auto
 mode=auto; action=install; archive=; url=; expected=; prefix=; container=; endpoint=; restore=; yes=0; tag=latest; tag_explicit=0
 work=; tx=; backup_root=; locked=0; mutating=0; finished=0; terminal_hidden=0; socket=; api=; original_id=; name=; old_link=; original_web=; reuse=0; package_root=/var/packages/transmission
 log() { printf '%s\n' "$*"; }
-fail() { log "错误：$*" >&2; exit 1; }
+fail() {
+  if [ "$action" = check ]; then
+    log '【预检未通过】暂不能安装。' >&2
+    log "原因：$*" >&2
+    log '下一步：按上述原因检查环境或参数，修正后重新运行 --check；如不确定，请保留完整输出供排查（不要提供密码）。' >&2
+  else
+    log "错误：$*" >&2
+  fi
+  exit 1
+}
+preflight_success() {
+  log ''
+  log '【预检通过】当前环境检查正常，可以继续安装。'
+  log '已确认：安装环境及原Web目录、原界面访问、RPC只读握手。'
+  log '本次仅预检，未安装、未切换界面、未重启Transmission。'
+  log '下一步：在当前脚本所在目录执行以下命令，按提示确认备份和必要重启：'
+  log '  sudo sh install-transmission-web-ui.sh'
+  log '若本次指定了 --mode、--container、--prefix 或 --endpoint，正式安装时请保留这些参数，仅去掉 --check。'
+  log '若指定了 --login-page，也请保留该选项。'
+  log '安装阶段仍会校验发布包、备份和接入条件；预检通过不代表安装已完成。'
+}
 need() { command -v "$1" >/dev/null 2>&1 || fail "缺少系统工具 $1；未切换界面。"; }
 usage() {
   cat <<'HELP'
@@ -14,21 +35,22 @@ Transmission Web UI 一体化安装器
   sudo sh install-transmission-web-ui.sh --archive 包.tar.gz
   sudo sh install-transmission-web-ui.sh --restore /备份目录
 可选：--mode package|docker --container 名称 --prefix 目录 --endpoint http://NAS:端口/transmission/web/
-      --url HTTPS归档地址 --sha256 摘要 --version v2.0.1 --yes --check
+      --url HTTPS归档地址 --sha256 摘要 --version v2.0.1 --yes --check --login-page auto|on|off
 --yes 同意已展示的备份、接入及必要服务重启；不跳过校验或未知环境保护。
-离线包旁须有同名.sha256，或明确提供--sha256。不会修改下载任务/daemon设置。
+离线包旁须有同名.sha256，或明确提供--sha256。DSM登录入口默认自动整合，网页保持9091，RPC改为9093；密码和下载设置保持。
 恢复只撤销界面和容器接入，不恢复/覆盖任务数据。备份可能含容器凭据，仅管理员可读。
 HELP
 }
 while [ "$#" -gt 0 ]; do
   case "$1" in
-    --archive|--url|--sha256|--prefix|--container|--endpoint|--mode|--version|--restore)
+    --archive|--url|--sha256|--prefix|--container|--endpoint|--mode|--version|--restore|--login-page)
       [ "$#" -ge 2 ] || fail "$1 缺少参数"
-      case "$1" in --archive) archive=$2;; --url) url=$2;; --sha256) expected=$2;; --prefix) prefix=$2;; --container) container=$2; mode=docker;; --endpoint) endpoint=$2;; --mode) mode=$2;; --version) tag=$2; tag_explicit=1;; --restore) restore=$2; action=restore;; esac
+      case "$1" in --login-page) login_page=$2;; --archive) archive=$2;; --url) url=$2;; --sha256) expected=$2;; --prefix) prefix=$2;; --container) container=$2; mode=docker;; --endpoint) endpoint=$2;; --mode) mode=$2;; --version) tag=$2; tag_explicit=1;; --restore) restore=$2; action=restore;; esac
       shift 2;;
     --yes|-y) yes=1; shift;; --check) action=check; shift;; --help|-h) usage; exit 0;; *) fail "未知参数 $1";;
   esac
 done
+case "$login_page" in auto|on|off) :;; *) fail '--login-page应为auto、on或off。';; esac
 confirm() {
   log "$1"
   [ "$yes" = 1 ] && return 0
@@ -43,7 +65,7 @@ ask() {
 }
 safe_path() {
   case "$1" in /*) :;; *) fail '需要绝对路径。';; esac
-  case "$1" in /|/usr|/var|/etc|/opt|/tmp|/root|/home|*/../*|*/./*|*/..|*/.|*//*|*/|*[!A-Za-z0-9_./-]*) fail "不支持的目录：$1（请使用不含空格的独立目录）";; esac
+  case "$1" in /|/usr|/var|/etc|/opt|/tmp|/root|/home|*/../*|*/./*|*/..|*/.|*//*|*/|*[!A-Za-z0-9_./@-]*) fail "不支持的目录：$1（请使用不含空格的独立目录）";; esac
 }
 json_string() { printf '"%s"' "$(printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g')"; }
 fetch() {
@@ -104,7 +126,11 @@ setup_engine() {
   case "$api" in *[!0-9.]*|'') fail '无法确定Docker API版本。';; esac
   curl --silent --show-error --fail --max-time 10 --unix-socket "$socket" http://localhost/_ping >/dev/null || fail '无法连接本机Docker API（curl需支持Unix socket）。'
 }
-restart_package() { synopkg restart transmission >/dev/null; }
+restart_package() {
+  log '正在重启Transmission套件，等待DSM返回；此阶段可能需要一些时间……'
+  synopkg restart transmission >/dev/null || return 1
+  log '套件重启命令已完成，接下来验证页面和RPC。'
+}
 verify_recovery_tree() {
   recovery_source=$1
   (cd "$tx/old-web" && find . -type f | sort) > "$work/recovery-files" || return 1
@@ -151,6 +177,7 @@ rollback() {
     [ "$original_name" = "/$name" ] || docker rename "$original_id" "$name" || return 1
     docker start "$original_id" >/dev/null || return 1
   else
+    login_rollback || return 1
     old_link=$(get xdg-link)
     displaced=$(get displaced)
     saved_current=$(get current)
@@ -175,6 +202,7 @@ rollback() {
   fi
   # Verify the old entry and read-only RPC, rather than reporting a successful copy as recovery.
   verify_endpoint "$(get old-entry-sha)" "$tx/old-web" || return 1
+  if [ -f "$tx/login-progress" ] && [ "$(get login-state)" = existing ]; then login_verify || return 1; fi
   record status rolled-back
   rm -f "$backup_root/pending"
   log "已恢复原界面及服务接入，备份保留：$tx"
@@ -215,6 +243,7 @@ fi
 for utility in curl tar sha256sum awk sed grep sort uniq find chmod chown mkdir mktemp rm cp mv ln readlink cat rmdir id date df du sleep stat cmp tr head wc dirname basename cut; do need "$utility"; done
 work=$(mktemp -d "${TMPDIR:-/tmp}/twui-wizard.XXXXXXXX")
 extract_helpers
+. "$work/login-entry.sh"
 # Authentication stays in a private curl config, never in argv, backups, or logs.
 : > "$work/http-auth"
 http() {
@@ -399,16 +428,21 @@ load_backup() {
   [ "$(stat -c %u "$restore")" = 0 ] && [ "$(stat -c %a "$restore")" = 700 ] || fail '备份目录必须由root拥有且权限为700。'
   tx=$restore; backup_root=$(dirname "$tx")
   mode=$(get mode); prefix=$(get prefix); endpoint=$(get endpoint)
+  if [ "$mode" = package ] && [ -e "$login_conf" ] && [ ! -f "$tx/login-state" ]; then
+    fail '该旧备份未记录当前登录入口；请先使用旧独立入口的恢复命令，再恢复此备份，避免只恢复部分界面。'
+  fi
   safe_path "$prefix"
   case "$mode" in package) need synopkg;; docker) setup_engine;; *) fail '备份环境类型无效。';; esac
   (cd "$tx" && sha256sum -c backup.sha256 >/dev/null && sha256sum -c web.sha256 >/dev/null) || fail '备份摘要不符，未恢复。'
+  if [ -f "$tx/login.sha256" ]; then (cd "$tx" && sha256sum -c login.sha256 >/dev/null) || fail '登录资源备份摘要不符。'; fi
 }
 if [ "$action" = restore ]; then
   load_backup
   acquire_lock
   code=$(http "$endpoint" "$work/current-page" || :)
   [ "$code" != 401 ] || credentials
-  confirm "将恢复备份 $tx。会恢复原Web接入并启动原服务；不回滚下载任务或daemon设置。"
+  if [ "$code" != 401 ] && ! check_rpc; then [ "$code" != 401 ] || credentials; fi
+  confirm "将恢复备份 $tx。会恢复原Web及登录入口接入并启动原服务；不回滚下载任务或其他daemon设置。"
   rollback || fail "恢复尚未完成，备份仍在 $tx；没有删除数据卷。"
   finished=1; exit 0
 fi
@@ -422,6 +456,7 @@ case "$mode" in auto)
   package|docker) :;; *) fail '环境类型应为package或docker。';;
 esac
 case "$mode" in package) inspect_package;; docker) inspect_docker;; esac
+login_inspect
 safe_path "$prefix"
 [ ! -L "$prefix" ] || fail '安装目录本身不能是软链。'
 if [ -e "$prefix" ]; then
@@ -450,7 +485,10 @@ else
 fi
 log "环境：$mode；Web地址：$endpoint；安装目录：$prefix"
 log '原Web页面和RPC只读检查通过。'
-[ "$action" != check ] || { log '只读预检完成；未安装、未重启。'; exit 0; }
+if [ "$action" = check ]; then
+  preflight_success
+  exit 0
+fi
 if [ -z "$archive" ] && [ -z "$url" ] && [ "$tag_explicit" = 0 ] && command -v extract_bundled_release >/dev/null 2>&1; then
   need base64
   log '正在校验单文件安装器内置的离线发布包……'
@@ -481,6 +519,9 @@ printf '%s\n' "$expected" | grep -Eq '^[0-9a-f]{64}$' || fail 'SHA256摘要格�
 # Validate archive paths, types and all file hashes in a private temporary prefix first.
 sh "$work/install.sh" --prefix "$work/validated" --archive "$archive" > "$work/validation.log" 2>&1 || { cat "$work/validation.log"; fail '包内部验证失败。'; }
 selected=$(cat "$work/validated/current/../VERSION")
+if [ "$login_state" != off ]; then
+  grep -l 'login-page' "$work/validated/current"/assets/*.js >/dev/null 2>&1 || fail '发布包不含登录页，拒绝把旧静态资源部署到登录入口。'
+fi
 if [ -e "$prefix/releases/$selected" ]; then
   if cmp -s "$prefix/releases/$selected/SHA256SUMS" "$work/validated/current/../SHA256SUMS"; then
     log "版本$selected已安装，内容一致，将核验后重新接入。"
@@ -503,6 +544,7 @@ record original-web "$original_web"
 record current "$(readlink "$prefix/current" 2>/dev/null || :)"
 record previous "$(readlink "$prefix/previous" 2>/dev/null || :)"
 record status preparing
+login_snapshot
 log '正在备份完整旧Web资源和接入信息（不是只备份首页）……'
 if [ "$mode" = docker ]; then old_kb=$(docker exec "$original_id" du -sk "$original_web/" | awk '{print $1}')
 else old_kb=$(du -sk "$original_web/" | awk '{print $1}'); fi
@@ -558,7 +600,7 @@ find "$tx/old-web" -exec sh -c 'for file do if printf "%s" "$file" | LC_ALL=C gr
 cp "$work/backup.sha256" "$tx/backup.sha256"
 record status prepared
 log "备份已验证：$tx"
-confirm "准备安装$selected。会短暂停止/启动当前Transmission服务以接入新界面。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。"
+confirm "准备安装$selected。会短暂停止/启动当前Transmission服务以接入新界面。登录入口状态：$login_state（new时由nginx接管9091，RPC改为9093；existing时同步更新登录资源）。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。"
 # Recheck the instance identity after the user confirmation, before changing anything.
 if [ "$mode" = docker ]; then [ "$(docker_id "$name")" = "$original_id" ] || fail '确认期间容器已变化，停止。'; fi
 printf '%s\n' "$stamp" > "$backup_root/pending"
@@ -581,16 +623,19 @@ if [ "$mode" = docker ] && [ "$reuse" = 0 ]; then
 elif [ "$mode" = package ]; then
   chown sc-transmission "$prefix"
   if [ -e "$old_link" ] || [ -L "$old_link" ]; then mv "$old_link" "$old_link.twui-original-$stamp"; fi
-  sudo -u sc-transmission -- sh "$prefix/releases/$selected/synocommunity.sh" --attach --prefix "$prefix" > "$work/attach.log" 2>&1 || { cat "$work/attach.log"; fail '套件接入失败。'; }
+  (cd / && sudo -u sc-transmission -- sh "$prefix/releases/$selected/synocommunity.sh" --attach --prefix "$prefix") > "$work/attach.log" 2>&1 || { cat "$work/attach.log"; fail '套件接入失败。'; }
   restart_package || fail '套件重启失败。'
 fi
 new_sha=$(sha256sum "$prefix/current/index.html" | awk '{print $1}')
 verify_endpoint "$new_sha" "$prefix/current" || fail '新界面或RPC验证失败；开始自动回滚。'
+login_activate || fail '登录入口验证失败；开始恢复界面与登录入口。'
 if [ "$mode" = docker ] && [ "$reuse" = 0 ]; then check_docker_persistence "$new_id"; fi
 record status committed
 printf '%s\n' "$stamp" > "$backup_root/latest"
 rm -f "$backup_root/pending"
 finished=1; mutating=0
-log "安装完成：$endpoint"
+if [ "$login_state" != off ]; then
+  log '安装完成：http://群晖IP:9091/transmission/web/（原账号密码）；登录页面和RPC认证已验证。'
+else log "安装完成：$endpoint"; fi
 log "完整资源及RPC只读验证通过。恢复入口：sudo sh install-transmission-web-ui.sh --restore $tx"
 log '备份和原容器/旧资源已保留；请勿在确认实际使用前删除。浏览器标签/偏好仍保留在原浏览器中；界面恢复不会撤销任务操作。'

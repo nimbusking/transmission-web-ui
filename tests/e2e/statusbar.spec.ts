@@ -64,9 +64,9 @@ test('authoritative speed/space values, zero, unknown, disk failure/recovery, of
 }) => {
   const state = await fixture(page),
     bar = page.locator('.workspace-statusbar');
-  await expect(bar.locator('.statusbar-download')).toContainText('4.0 KiB/s');
-  await expect(bar.locator('.statusbar-upload')).toContainText('2.0 KiB/s');
-  await expect(bar.locator('.statusbar-space')).toContainText('1.0 GiB');
+  await expect(bar.locator('.statusbar-download')).toContainText('4.0 KB/s');
+  await expect(bar.locator('.statusbar-upload')).toContainText('2.0 KB/s');
+  await expect(bar.locator('.statusbar-space')).toContainText('1.0 GB');
   await expect(bar.locator('.statusbar-space')).toHaveAttribute('title', /\/data\/default/);
   await expect(page.locator('.topbar .connection,.topbar .speed,.sidebar-caption')).toHaveCount(0);
   await expect(bar).toContainText('Transmission Web UI 2.0.0');
@@ -85,13 +85,13 @@ test('authoritative speed/space values, zero, unknown, disk failure/recovery, of
   state.download = 8192;
   state.spaceFail = true;
   await refresh(page);
-  await expect(bar.locator('.statusbar-download')).toContainText('8.0 KiB/s');
+  await expect(bar.locator('.statusbar-download')).toContainText('8.0 KB/s');
   await expect(bar.locator('.connection')).toContainText('Connected');
   await expect(bar.locator('.statusbar-space')).toHaveAttribute('title', /path unavailable/);
   state.spaceFail = false;
   state.space = 2048;
   await refresh(page);
-  await expect(bar.locator('.statusbar-space')).toContainText('2.0 KiB');
+  await expect(bar.locator('.statusbar-space')).toContainText('2.0 KB');
   const count = state.calls.length;
   await page.waitForTimeout(2300);
   expect(state.calls.length).toBe(count);
@@ -99,7 +99,7 @@ test('authoritative speed/space values, zero, unknown, disk failure/recovery, of
   await refresh(page);
   await expect(bar.locator('.connection')).toContainText('Connection unavailable');
   await expect(bar.locator('.statusbar-stale')).toBeVisible();
-  await expect(bar.locator('.statusbar-download')).toContainText('8.0 KiB/s');
+  await expect(bar.locator('.statusbar-download')).toContainText('8.0 KB/s');
   state.offline = false;
   await refresh(page);
   await expect(bar.locator('.connection')).toContainText('Connected');

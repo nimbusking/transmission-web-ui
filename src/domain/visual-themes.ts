@@ -194,6 +194,56 @@ export function visualVariables(profile: ReturnType<typeof visualProfile>): Reco
     '--skin-shadow': profile.shadow,
   };
 }
+export function formControlOverrides(
+  profile: ReturnType<typeof visualProfile>,
+): GlobalThemeOverrides {
+  const p = profile.palette;
+  const input = {
+    borderRadius: profile.radius,
+    color: p.subtle,
+    colorHover: p.subtle,
+    colorFocus: p.subtle,
+    colorDisabled: p.canvas,
+    textColor: p.text,
+    textColorDisabled: p.muted,
+    placeholderColor: p.muted,
+    placeholderColorDisabled: p.muted,
+    suffixTextColor: p.muted,
+    border: `1px solid ${p.muted}`,
+    borderDisabled: `1px solid ${p.muted}`,
+    borderHover: `1px solid ${p.accent}`,
+    borderFocus: `1px solid ${p.accent}`,
+    boxShadowFocus: `0 0 0 2px ${p.selected}`,
+  };
+  return {
+    Input: input,
+    InputNumber: { peers: { Input: input }, iconColorDisabled: p.muted },
+    AutoComplete: { peers: { Input: input } },
+    TimePicker: { peers: { Input: input } },
+    Select: {
+      peers: {
+        InternalSelection: {
+          color: p.subtle,
+          colorActive: p.subtle,
+          colorDisabled: p.canvas,
+          textColor: p.text,
+          textColorDisabled: p.muted,
+          placeholderColor: p.muted,
+          placeholderColorDisabled: p.muted,
+          border: `1px solid ${p.muted}`,
+          borderHover: `1px solid ${p.accent}`,
+          borderFocus: `1px solid ${p.accent}`,
+          borderActive: `1px solid ${p.accent}`,
+          boxShadowFocus: `0 0 0 2px ${p.selected}`,
+          boxShadowActive: `0 0 0 2px ${p.selected}`,
+          arrowColor: p.muted,
+          arrowColorDisabled: p.muted,
+        },
+      },
+    },
+    ColorPicker: { border: `1px solid ${p.muted}`, peers: { Input: input } },
+  };
+}
 export function visualOverrides(profile: ReturnType<typeof visualProfile>): GlobalThemeOverrides {
   const p = profile.palette;
   const modern = profile.id === 'modern';
@@ -237,6 +287,7 @@ export function visualOverrides(profile: ReturnType<typeof visualProfile>): Glob
       colorFocus: p.surface,
       colorHover: profile.id === 'material' ? p.subtle : p.surface,
     },
+    ...(profile.dark ? formControlOverrides(profile) : {}),
     Card: {
       borderRadius: profile.radius,
       boxShadow: profile.shadow,
