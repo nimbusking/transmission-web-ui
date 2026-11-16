@@ -1,0 +1,22 @@
+{
+  "at": "2026-11-16T09:51:58.526Z",
+  "scope": "30 synchronous 5000-row/20-column model update+sort samples, not UI frame time or 30-minute soak",
+  "results": {
+    "baseline": {
+      "p50Ms": 3.879339999999999,
+      "p95Ms": 6.631256999999998,
+      "rows": 5000,
+      "visibleColumns": 20,
+      "dynamicRequestBytes": 345,
+      "dynamicResponseBytes": 1086671
+    },
+    "candidate": {
+      "p50Ms": 7.111718999999994,
+      "p95Ms": 10.284575999999987,
+      "rows": 5000,
+      "visibleColumns": 20,
+      "dynamicRequestBytes": 386,
+      "dynamicResponseBytes": 1546671
+    }
+  }
+}

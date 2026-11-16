@@ -1,0 +1,11 @@
+{
+  "archive": "artifacts/transmission-web-ui-2.0.0-shared-compatibility-20261116.tar.gz",
+  "sha256": "83900acada1ae2aebe642cd80c0bfde69f539e3e995fdc0dac041e95e8ab89aa",
+  "bytes": 418584,
+  "verifiedFiles": 60,
+  "webFiles": 44,
+  "source": "frozen dist, no rebuild",
+  "published19081": true,
+  "commitPushArchive": false,
+  "publicationEvidence": "shared-compatibility-publication.json"
+}

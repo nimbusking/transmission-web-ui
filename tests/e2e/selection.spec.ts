@@ -22,7 +22,11 @@ test('checked scope, detail selection, sorted Shift range and context menu are i
           ? {
               torrents:
                 body.arguments.ids && Array.isArray(body.arguments.ids)
-                  ? rows.filter((x) => body.arguments.ids.includes(x.id))
+                  ? rows.filter(
+                      (x) =>
+                        body.arguments.ids.includes(x.id) ||
+                        body.arguments.ids.includes(x.hashString),
+                    )
                   : rows,
             }
           : {};

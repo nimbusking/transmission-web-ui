@@ -1,3 +1,17 @@
+import {
+  LIMIT_FIELDS,
+  limitPatch,
+  limitMatches,
+  type LimitIntent,
+  type LimitBaseline,
+} from '../domain/limits';
+import {
+  trackerCapabilities,
+  trackerSnapshot,
+  sameTrackers,
+  trackerPatch,
+  type TrackerEdit,
+} from '../domain/tracker-edit';
 import { nonnegativeNumber } from '../domain/status';
 import type { SessionStatistics } from '../domain/navigation';
 import { defineStore } from 'pinia';
@@ -26,13 +40,15 @@ import {
   normalizeTorrent,
   SUMMARY_FIELDS,
 } from '../domain/torrents';
-import { RpcClient, RpcError, reconciliationInterval } from '../services/rpc';
+import { RpcClient, RpcError, isUnknownOutcome, reconciliationInterval } from '../services/rpc';
 import { SettingsRepository, readLegacy, normalizeFolders } from '../services/settings';
 import type { RuntimeConfig } from '../services/config';
 import { runBatch } from '../services/batch';
 import { validateSessionPatch } from '../services/session-fields';
 import { setLanguage } from '../i18n';
 
+const targetRevision = Symbol('observed-task-lifecycle');
+type CapturedTarget = TorrentTarget & { [targetRevision]?: number };
 const allowedMethods = new Set([
   'torrent-start',
   'torrent-start-now',
@@ -63,7 +79,8 @@ export const useAppStore = defineStore('application', () => {
     lastUpdated = ref(0),
     storageAvailable = ref(true);
   const selectedId = ref<number | null>(null),
-    checkedIds = ref<number[]>([]),
+    checkedTargets = shallowRef<TorrentTarget[]>([]),
+    selectedTarget = shallowRef<TorrentTarget>(),
     detailSection = ref<DetailSection>('general'),
     detail = shallowRef<Torrent>(),
     detailLoading = ref(false),
@@ -82,12 +99,100 @@ export const useAppStore = defineStore('application', () => {
     lastSession = 0,
     detailSequence = 0;
   let operationController: AbortController | undefined;
+  let operationToken: symbol | undefined;
+  const trackerCapability = computed(() => trackerCapabilities(session.value, generation.value));
+  function acquireOperation() {
+    if (operationBusy.value) throw new Error('Another batch is active');
+    const token = Symbol('operation');
+    operationToken = token;
+    operationController = new AbortController();
+    operationBusy.value = true;
+    operationResults.value = [];
+    return { token, signal: operationController.signal, epoch: generation.value };
+  }
+  function releaseOperation(token: symbol) {
+    if (operationToken !== token) return;
+    operationBusy.value = false;
+    operationController = undefined;
+    operationToken = undefined;
+  }
+  function assertOperation(lock: ReturnType<typeof acquireOperation>) {
+    if (operationToken !== lock.token || generation.value !== lock.epoch || lock.signal.aborted)
+      throw new RpcError('cancelled', 'Operation cancelled; reconcile before retrying');
+  }
+
   let pendingFull = false,
     disposed = false;
+  const identityVersions = new Map<number, number>();
   const torrents = computed(() => Array.from(byId.values()));
   const current = computed(() =>
     selectedId.value === null ? undefined : byId.get(selectedId.value),
   );
+  const checkedIds = computed({
+    get: () => checkedTargets.value.filter(isTargetCurrent).map((target) => target.id),
+    set: (ids: number[]) => setCheckedIds(ids),
+  });
+  function isTargetCurrent(target: TorrentTarget) {
+    return (
+      target.generation === generation.value &&
+      ((target as CapturedTarget)[targetRevision] === undefined ||
+        (target as CapturedTarget)[targetRevision] === (identityVersions.get(target.id) ?? 0)) &&
+      !!target.hashString &&
+      byId.get(target.id)?.hashString === target.hashString
+    );
+  }
+  function captureTarget(id: number): CapturedTarget {
+    const hashString = byId.get(id)?.hashString;
+    if (!hashString) throw new Error(`Task identity unavailable: ${id}`);
+    return {
+      id,
+      hashString,
+      generation: generation.value,
+      [targetRevision]: identityVersions.get(id) ?? 0,
+    };
+  }
+  function observeIdentities(items: Torrent[], removed: number[] = [], snapshot = false) {
+    const incoming = new Map(items.map((row) => [row.id, row.hashString]));
+    const gone = new Set(removed);
+    for (const [id, row] of byId)
+      if (
+        gone.has(id) ||
+        (snapshot && !incoming.has(id)) ||
+        (incoming.has(id) && incoming.get(id) !== row.hashString)
+      )
+        identityVersions.set(id, (identityVersions.get(id) ?? 0) + 1);
+  }
+  function setCheckedIds(ids: number[]) {
+    const previous = new Map(checkedTargets.value.map((target) => [target.id, target]));
+    checkedTargets.value = [...new Set(ids)].flatMap((id) => {
+      const old = previous.get(id);
+      if (old) return isTargetCurrent(old) ? [old] : [];
+      const hashString = byId.get(id)?.hashString;
+      return ready.value && hashString ? [captureTarget(id)] : [];
+    });
+  }
+  function clearChecked() {
+    checkedTargets.value = [];
+  }
+  function toggleChecked(id: number, checked: boolean) {
+    setCheckedIds(checked ? [...checkedIds.value, id] : checkedIds.value.filter((x) => x !== id));
+  }
+  function captureCheckedTargets() {
+    const captured = checkedTargets.value.map((target) => ({ ...target }));
+    validateTargets(captured);
+    return captured;
+  }
+  function reconcileIdentities() {
+    checkedTargets.value = checkedTargets.value.filter(isTargetCurrent);
+    if (selectedTarget.value && !isTargetCurrent(selectedTarget.value)) select(null);
+  }
+  function detailTarget(): TorrentTarget {
+    const target = selectedTarget.value;
+    if (!target || !detail.value || detail.value.hashString !== target.hashString)
+      throw new Error('Task identity unavailable');
+    validateTargets([target]);
+    return { ...target };
+  }
   async function initialize(runtime: RuntimeConfig) {
     disposed = false;
     config.value = runtime;
@@ -152,6 +257,8 @@ export const useAppStore = defineStore('application', () => {
     controller = new AbortController();
     refreshTask = null;
     generation.value++;
+    operationController?.abort();
+    if (operationToken) releaseOperation(operationToken);
     stats.value = {};
     session.value = undefined;
     freeSpace.value = { path: '' };
@@ -160,7 +267,8 @@ export const useAppStore = defineStore('application', () => {
     connecting.value = true;
     error.value = '';
     selectedId.value = null;
-    checkedIds.value = [];
+    clearChecked();
+    selectedTarget.value = undefined;
     detail.value = undefined;
     if (username !== undefined) rpc.authenticate(username, password ?? '');
     try {
@@ -226,14 +334,44 @@ export const useAppStore = defineStore('application', () => {
         if (epoch !== generation.value) return;
         if (!Array.isArray(response.torrents))
           throw new RpcError('protocol', 'Missing torrents array');
-        const missing = applyDelta(byId, response.torrents, response.removed, snapshot);
+        observeIdentities(response.torrents, response.removed, snapshot);
+        const missing = applyDelta(
+          byId,
+          response.torrents,
+          response.removed,
+          snapshot,
+          snapshot ? SUMMARY_FIELDS : DYNAMIC_FIELDS,
+        );
+        reconcileIdentities();
         if (missing.length) {
-          const base = await rpc.torrents(BASE_FIELDS, missing, { signal: controller.signal });
-          if (epoch !== generation.value) return;
-          applyDelta(byId, base.torrents);
+          const revisions = new Map(missing.map((id) => [id, byId.get(id)]));
+          try {
+            const base = await rpc.torrents(
+              BASE_FIELDS,
+              missing.map((id) => byId.get(id)?.hashString || id),
+              { signal: controller.signal },
+            );
+            if (epoch !== generation.value) return;
+            applyDelta(
+              byId,
+              base.torrents.filter(
+                (row) =>
+                  revisions.has(row.id) &&
+                  revisions.get(row.id) === byId.get(row.id) &&
+                  (!revisions.get(row.id)?.hashString ||
+                    revisions.get(row.id)?.hashString === row.hashString),
+              ),
+              [],
+              false,
+              BASE_FIELDS,
+            );
+          } catch {
+            // A missing base row retries on the existing refresh chain only.
+            if (epoch !== generation.value) return;
+          }
         }
         if (snapshot) lastSnapshot = Date.now();
-        checkedIds.value = checkedIds.value.filter((id) => byId.has(id));
+        reconcileIdentities();
         if (selectedId.value !== null && !byId.has(selectedId.value)) select(null);
         const statistics = await rpc.call('session-stats', {}, { signal: controller.signal });
         if (epoch !== generation.value) return;
@@ -291,6 +429,7 @@ export const useAppStore = defineStore('application', () => {
     }
   }
   function select(id: number | null) {
+    selectedTarget.value = id === null || !byId.get(id)?.hashString ? undefined : captureTarget(id);
     selectedId.value = id;
     detail.value = undefined;
     detailError.value = '';
@@ -301,12 +440,13 @@ export const useAppStore = defineStore('application', () => {
   }
   async function loadDetail(section = detailSection.value) {
     detailSection.value = section;
+    const target = selectedTarget.value;
     const id = selectedId.value,
       epoch = generation.value,
       sequence = ++detailSequence;
     detailController?.abort();
     detailController = new AbortController();
-    if (id === null || !byId.has(id)) return;
+    if (id === null || !target || !isTargetCurrent(target)) return;
     detailLoading.value = true;
     detailError.value = '';
     const fields: Record<DetailSection, string[]> = {
@@ -332,12 +472,21 @@ export const useAppStore = defineStore('application', () => {
       peers: ['id', 'peers', 'peersFrom'],
     };
     try {
-      const response = await rpc.torrents(fields[section], [id], {
-        signal: detailController.signal,
-      });
-      if (epoch !== generation.value || sequence !== detailSequence || selectedId.value !== id)
+      const response = await rpc.torrents(
+        [...new Set([...fields[section], 'hashString'])],
+        [target.hashString],
+        {
+          signal: detailController.signal,
+        },
+      );
+      if (
+        epoch !== generation.value ||
+        sequence !== detailSequence ||
+        selectedId.value !== id ||
+        !isTargetCurrent(target)
+      )
         return;
-      const row = response.torrents.find((t) => t.id === id);
+      const row = response.torrents.find((t) => t.id === id && t.hashString === target.hashString);
       if (row) detail.value = normalizeTorrent(row);
     } catch (e) {
       if (sequence === detailSequence && !(e instanceof RpcError && e.kind === 'cancelled'))
@@ -351,22 +500,23 @@ export const useAppStore = defineStore('application', () => {
     return [...new Set(ids)].map((id) => {
       const torrent = byId.get(id);
       if (!torrent?.hashString) throw new Error(`Task identity unavailable: ${id}`);
-      return { id, hashString: torrent.hashString, generation: generation.value };
+      return captureTarget(id);
     });
   }
   function validateTargets(items: TorrentTarget[]) {
     if (!items.length || !ready.value) throw new Error('No valid operation targets');
     for (const item of items)
-      if (item.generation !== generation.value || byId.get(item.id)?.hashString !== item.hashString)
-        throw new Error('Task identity changed; select the tasks again');
+      if (!isTargetCurrent(item)) throw new Error('Task identity changed; select the tasks again');
   }
   async function command(
     method: string,
     items: TorrentTarget[],
     args: Record<string, unknown> = {},
     workflow = false,
+    token?: symbol,
   ) {
     validateTargets(items);
+    if (operationBusy.value && token !== operationToken) throw new Error('Another batch is active');
     if (
       !workflow &&
       matchJob.value?.running &&
@@ -388,26 +538,24 @@ export const useAppStore = defineStore('application', () => {
     args: Record<string, unknown> = {},
   ): Promise<BatchResult> {
     validateTargets(items);
-    if (operationBusy.value) throw new Error('Another batch is active');
-    operationController = new AbortController();
-    operationBusy.value = true;
-    operationResults.value = [];
+    const lock = acquireOperation();
     try {
       const result = await runBatch(
         items,
-        (target) => command(method, [target], args).then(() => {}),
+        (target) => command(method, [target], args, false, lock.token).then(() => {}),
         (target) => ({ id: target.id, name: byId.get(target.id)?.name ?? String(target.id) }),
         {
-          signal: operationController.signal,
+          signal: lock.signal,
           concurrency: method === 'torrent-set-location' || method === 'torrent-verify' ? 1 : 3,
-          onProgress: (values) => (operationResults.value = values),
+          onProgress: (values) => {
+            if (operationToken === lock.token) operationResults.value = values;
+          },
         },
       );
       await refresh(true).catch(() => {});
       return result;
     } finally {
-      operationBusy.value = false;
-      operationController = undefined;
+      releaseOperation(lock.token);
     }
   }
   async function readTarget(target: TorrentTarget, fields: string[]): Promise<Torrent> {
@@ -418,62 +566,106 @@ export const useAppStore = defineStore('application', () => {
     );
     validateTargets([target]);
     const item = response.torrents[0];
-    if (!item || item.hashString !== target.hashString) throw new Error('Task no longer exists');
+    if (!item || item.id !== target.id || item.hashString !== target.hashString)
+      throw new Error('Task no longer exists');
     return normalizeTorrent(item);
+  }
+  async function saveLimits(baselines: LimitBaseline[], intent: LimitIntent): Promise<BatchResult> {
+    validateTargets(baselines.map((x) => x.target));
+    const lock = acquireOperation();
+    try {
+      const plans: { target: TorrentTarget; patch: Record<string, unknown> }[] = [];
+      // All preflights settle before the first write. A conflict stops the whole batch.
+      for (const baseline of baselines) {
+        assertOperation(lock);
+        const current = await readTarget(baseline.target, LIMIT_FIELDS);
+        plans.push({
+          target: baseline.target,
+          patch: limitPatch(baseline.row, current, intent, session.value),
+        });
+      }
+      validateTargets(baselines.map((x) => x.target));
+      const items: ItemResult[] = [];
+      for (const plan of plans) {
+        const result: ItemResult = {
+          id: plan.target.id,
+          name: byId.get(plan.target.id)?.name ?? plan.target.hashString,
+          status: 'skipped',
+        };
+        if (lock.signal.aborted || lock.epoch !== generation.value) result.status = 'cancelled';
+        else if (!Object.keys(plan.patch).length) result.message = 'No changes needed';
+        else {
+          let submitted = false;
+          try {
+            assertOperation(lock);
+            await command('torrent-set', [plan.target], plan.patch, false, lock.token);
+            submitted = true;
+            const actual = await readTarget(plan.target, LIMIT_FIELDS);
+            result.status = limitMatches(actual, intent) ? 'success' : 'failed';
+            if (result.status === 'failed')
+              result.message = 'Saved values do not match; reload before editing';
+          } catch (e) {
+            result.status = submitted || isUnknownOutcome(e) ? 'unknown' : 'failed';
+            result.message =
+              result.status === 'unknown'
+                ? 'May have been applied; reload to reconcile'
+                : errorMessage(e);
+          }
+        }
+        items.push(result);
+        if (operationToken === lock.token) operationResults.value = [...items];
+      }
+      return { items, completedAt: Date.now() };
+    } finally {
+      releaseOperation(lock.token);
+    }
+  }
+  async function saveTrackerPlan(
+    target: TorrentTarget,
+    expected: Tracker[],
+    replacement: TrackerEdit[],
+    lock: ReturnType<typeof acquireOperation>,
+  ) {
+    assertOperation(lock);
+    validateTargets([target]);
+    const baseline = trackerSnapshot(expected);
+    const patch = trackerPatch(baseline, replacement, trackerCapability.value);
+    const current = trackerSnapshot((await readTarget(target, ['trackers'])).trackers);
+    assertOperation(lock);
+    if (!sameTrackers(current, baseline, true))
+      throw new Error('Tracker list changed; reload before editing');
+    if (!Object.keys(patch).length)
+      return { status: 'skipped' as const, message: 'No changes needed' };
+    let submitted = false;
+    try {
+      await command('torrent-set', [target], patch, false, lock.token);
+      submitted = true;
+      const actual = trackerSnapshot((await readTarget(target, ['trackers'])).trackers);
+      if (!sameTrackers(actual, replacement))
+        throw new Error('Saved Tracker list does not match; reload before editing');
+      return { status: 'success' as const };
+    } catch (e) {
+      if (submitted && !(e instanceof Error && e.message.startsWith('Saved Tracker')))
+        throw new RpcError('timeout', 'May have been applied; reload to reconcile');
+      throw e;
+    }
   }
   async function updateTrackers(
     target: TorrentTarget,
-    expected: string[],
-    replacement: { announce: string; tier: number; id?: number }[],
+    expected: Tracker[],
+    replacement: TrackerEdit[],
   ) {
-    validateTargets([target]);
+    const lock = acquireOperation();
     try {
-      const current = await readTarget(target, [
-        'trackers',
-        ...(session.value!['rpc-version'] >= 17 ? ['trackerList'] : []),
-      ]);
-      const before = (current.trackers ?? []).map((x) => x.announce);
-      if (JSON.stringify(before) !== JSON.stringify(expected))
-        throw new Error('Tracker list changed; reload before editing');
-      for (const tracker of replacement)
-        if (!/^(https?|udp):\/\//i.test(tracker.announce))
-          throw new Error('Tracker URL must use http, https or udp');
-      if (session.value!['rpc-version'] >= 17) {
-        const tiers = new Map<number, string[]>();
-        for (const item of replacement)
-          tiers.set(item.tier, [...(tiers.get(item.tier) ?? []), item.announce]);
-        await command('torrent-set', [target], {
-          trackerList: [...tiers.entries()]
-            .sort((a, b) => a[0] - b[0])
-            .map(([, urls]) => urls.join('\n'))
-            .join('\n\n'),
-        });
-      } else {
-        const existing = current.trackers ?? [],
-          retained = new Set(replacement.flatMap((x) => (x.id === undefined ? [] : [x.id])));
-        const trackerRemove = existing.filter((x) => !retained.has(x.id)).map((x) => x.id);
-        // Transmission 3.00 consumes flat position/URL pairs and renumbers on removal.
-        // Replace against the captured current list before any membership changes.
-        const trackerReplace = replacement.flatMap((x) =>
-          x.id !== undefined && existing.some((y) => y.id === x.id && y.announce !== x.announce)
-            ? [x.id, x.announce]
-            : [],
-        );
-        const trackerAdd = replacement.filter((x) => x.id === undefined).map((x) => x.announce);
-        if (trackerReplace.length) await command('torrent-set', [target], { trackerReplace });
-        if (trackerRemove.length) await command('torrent-set', [target], { trackerRemove });
-        if (trackerAdd.length) await command('torrent-set', [target], { trackerAdd });
-      }
+      return await saveTrackerPlan(target, expected, replacement, lock);
     } finally {
-      // 3.00 may have committed an earlier step before a later command fails.
-      // Reconcile that partial result without hiding the original write error.
+      releaseOperation(lock.token);
       if (
+        isTargetCurrent(target) &&
         selectedId.value === target.id &&
-        generation.value === target.generation &&
         detailSection.value === 'trackers'
       )
         await loadDetail('trackers');
-      await refresh(true).catch(() => {});
     }
   }
   async function addTasks(
@@ -481,10 +673,7 @@ export const useAppStore = defineStore('application', () => {
     options: { directory: string; paused: boolean; labels: string[]; setDefault: boolean },
   ) {
     if (!ready.value) throw new Error('Not connected');
-    if (operationBusy.value) throw new Error('Another batch is active');
-    operationController = new AbortController();
-    operationBusy.value = true;
-    operationResults.value = [];
+    const lock = acquireOperation();
     try {
       if (options.setDefault) await saveSession({ 'download-dir': options.directory });
       const plan = inputs.filter((x) => x.filename?.trim() || x.metainfo);
@@ -524,42 +713,41 @@ export const useAppStore = defineStore('application', () => {
         },
         (item) => ({ id: item.name, name: item.name }),
         {
-          signal: operationController.signal,
+          signal: lock.signal,
           concurrency: 3,
-          onProgress: (value) => (operationResults.value = value),
+          onProgress: (value) => {
+            if (operationToken === lock.token) operationResults.value = value;
+          },
         },
       );
       await refresh(true).catch(() => {});
       return result;
     } finally {
-      operationBusy.value = false;
-      operationController = undefined;
+      releaseOperation(lock.token);
     }
   }
   function cancelOperations() {
     operationController?.abort();
   }
   async function replaceTrackersBatch(
-    plan: { target: TorrentTarget; name: string; before: string[]; after: Tracker[] }[],
+    plan: { target: TorrentTarget; name: string; before: Tracker[]; after: Tracker[] }[],
   ) {
-    if (operationBusy.value) throw new Error('Another batch is active');
-    operationController = new AbortController();
-    operationBusy.value = true;
-    operationResults.value = [];
+    const lock = acquireOperation();
     try {
       return await runBatch(
         plan,
-        (item) => updateTrackers(item.target, item.before, item.after),
+        (item) => saveTrackerPlan(item.target, item.before, item.after, lock),
         (item) => ({ id: item.target.id, name: item.name }),
         {
-          signal: operationController.signal,
+          signal: lock.signal,
           concurrency: 3,
-          onProgress: (values) => (operationResults.value = values),
+          onProgress: (values) => {
+            if (operationToken === lock.token) operationResults.value = values;
+          },
         },
       );
     } finally {
-      operationBusy.value = false;
-      operationController = undefined;
+      releaseOperation(lock.token);
     }
   }
   async function saveSession(patch: Record<string, unknown>) {
@@ -675,10 +863,19 @@ export const useAppStore = defineStore('application', () => {
     select,
     loadDetail,
     targets,
+    setCheckedIds,
+    clearChecked,
+    toggleChecked,
+    captureCheckedTargets,
+    isTargetCurrent,
+    validateTargets,
+    detailTarget,
     command,
     execute,
     readTarget,
     updateTrackers,
+    saveLimits,
+    trackerCapability,
     addTasks,
     replaceTrackersBatch,
     cancelOperations,

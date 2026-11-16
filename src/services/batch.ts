@@ -6,7 +6,7 @@ export async function runBatch<T>(
   execute: (
     item: T,
     index: number,
-  ) => Promise<void | { status: 'success' | 'duplicate'; message?: string }>,
+  ) => Promise<void | { status: 'success' | 'duplicate' | 'skipped'; message?: string }>,
   identify: (item: T) => { id: number | string; name: string },
   options: {
     concurrency?: number;

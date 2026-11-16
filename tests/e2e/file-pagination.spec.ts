@@ -34,7 +34,8 @@ async function fixture(page: Page) {
     if (b.method === 'torrent-set') state.writes.push(b);
     if (isFiles && state.fail)
       return route.fulfill({ json: { tag: b.tag, result: 'file read rejected' } });
-    const id = b.arguments.ids?.[0] ?? 1;
+    const requested = b.arguments.ids?.[0];
+    const id = rows.find((row) => row.id === requested || row.hashString === requested)?.id ?? 1;
     const files = id === 2 ? [{ name: 'only.txt', length: 1, bytesCompleted: 1 }] : state.files;
     await route.fulfill({
       json: {

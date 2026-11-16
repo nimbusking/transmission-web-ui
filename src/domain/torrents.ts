@@ -1,3 +1,4 @@
+import { heldBytes, safeCount, wantedValue, priorityValue, progressFraction } from './status';
 import { hasWarning, inFolder, torrentServers, trackerServer } from './navigation';
 import { createNameMatcher } from './name-search';
 import type { Torrent, ColumnSetting, Settings } from './types';
@@ -15,6 +16,9 @@ export const BASE_FIELDS = [
 ];
 export const DYNAMIC_FIELDS = [
   'id',
+  'hashString',
+  'haveValid',
+  'haveUnchecked',
   'name',
   'status',
   'percentDone',
@@ -148,25 +152,35 @@ export function defaultSettings(): Settings {
 }
 export function normalizeTorrent(raw: Torrent): Torrent {
   const item = { ...raw };
-  if (raw.wanted) item.wanted = raw.wanted.map(Boolean);
+  for (const key of ['peersSendingToUs', 'peersGettingFromUs'])
+    if (Object.hasOwn(raw, key)) item[key] = safeCount(raw[key]);
+  if (Object.hasOwn(raw, 'percentDone')) item.percentDone = progressFraction(raw.percentDone);
+  if (raw.wanted) item.wanted = raw.wanted.map(wantedValue);
   if (raw.fileStats)
-    item.fileStats = raw.fileStats.map((x) => ({ ...x, wanted: Boolean(x.wanted) }));
+    item.fileStats = raw.fileStats.map((x) => ({
+      ...x,
+      wanted: wantedValue(x.wanted),
+      priority: priorityValue(x.priority),
+    }));
   if (raw.trackerStats) {
     for (const field of ['seederCount', 'leecherCount']) {
       const values = raw.trackerStats.map((x) => x[field]);
       item[field] =
-        values.length && values.every((x) => typeof x === 'number' && Number.isFinite(x) && x >= 0)
-          ? values.reduce((sum: number, x: number) => sum + x, 0)
+        values.length && values.every((x) => safeCount(x) !== undefined)
+          ? safeCount(values.reduce((sum: number, x: number) => sum + x, 0))
           : undefined;
     }
   }
+  item.completeSize = heldBytes(item);
   return item;
 }
+const knownIdentity = new WeakMap<Torrent, string>();
 export function applyDelta(
   byId: Map<number, Torrent>,
   items: Torrent[],
   removed: number[] = [],
   snapshot = false,
+  requestedFields: readonly string[] = [],
 ): number[] {
   if (snapshot) {
     const keep = new Set(items.map((x) => x.id));
@@ -176,22 +190,55 @@ export function applyDelta(
   const missing: number[] = [];
   for (const raw of items) {
     if (!Number.isInteger(raw.id)) continue;
-    const item = normalizeTorrent(raw),
+    const input = { ...raw };
+    if (requestedFields.includes('hashString') && !input.hashString) input.hashString = undefined;
+    for (const field of [
+      'haveValid',
+      'haveUnchecked',
+      'trackerStats',
+      'peersSendingToUs',
+      'peersGettingFromUs',
+      'percentDone',
+    ])
+      if (requestedFields.includes(field) && !Object.hasOwn(input, field)) input[field] = undefined;
+    const item = normalizeTorrent(input),
       previous = byId.get(item.id);
-    const next = { ...previous, ...item };
-    if (typeof next.totalSize === 'number' && typeof next.leftUntilDone === 'number')
-      next.completeSize = Math.max(0, next.totalSize - next.leftUntilDone);
+    const replaced =
+      !!(previous?.hashString || (previous && knownIdentity.get(previous))) &&
+      !!item.hashString &&
+      (previous?.hashString || (previous && knownIdentity.get(previous))) !== item.hashString;
+    const metadataReady =
+      previous && previous.metadataPercentComplete !== 1 && item.metadataPercentComplete === 1;
+    const next = { ...(replaced ? undefined : previous), ...item };
+    if (metadataReady && !requestedFields.includes('totalSize')) next.totalSize = undefined;
+    next.completeSize = heldBytes(next);
+    if (Object.hasOwn(input, 'trackerStats') && !input.trackerStats) {
+      next.seederCount = undefined;
+      next.leecherCount = undefined;
+    }
+    const identity =
+      next.hashString || (previous && knownIdentity.get(previous)) || previous?.hashString;
+    if (identity) knownIdentity.set(next, identity);
     // Preserve the reference unless fields actually changed. RPC arrays are compared by value.
     const changed =
       !previous ||
+      replaced ||
+      metadataReady ||
       next.completeSize !== previous.completeSize ||
+      next.seederCount !== previous.seederCount ||
+      next.leecherCount !== previous.leecherCount ||
       Object.keys(item).some((key) =>
         typeof item[key] === 'object'
           ? JSON.stringify(item[key]) !== JSON.stringify(previous[key])
           : item[key] !== previous[key],
       );
     if (changed) byId.set(item.id, next);
-    if (!next.hashString || next.downloadDir === undefined) missing.push(item.id);
+    if (
+      !next.hashString ||
+      next.downloadDir === undefined ||
+      (next.metadataPercentComplete === 1 && next.totalSize === undefined)
+    )
+      missing.push(item.id);
   }
   return missing;
 }

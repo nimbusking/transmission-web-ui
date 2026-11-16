@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { compatibilityMessage } from '../i18n/compatibility';
+import { trackerSnapshot, trackerPatch, type TrackerEdit } from '../domain/tracker-edit';
+import type { Tracker } from '../domain/types';
+import { heldBytes, progressText } from '../domain/status';
+import { peerCount } from '../domain/table';
 import { computed, h, ref, watch } from 'vue';
 import {
   fileRows,
@@ -48,10 +53,11 @@ const fileQuery = ref(''),
   regex = ref(false),
   checkedFiles = ref<number[]>([]),
   trackerEdit = ref(false),
+  trackerAttempted = ref(false),
   trackerText = ref(''),
   trackerTarget = ref<TorrentTarget>(),
-  expectedTrackers = ref<string[]>([]),
-  originalTrackers = ref<{ id: number; announce: string; tier: number }[]>([]);
+  expectedTrackers = ref<Tracker[]>([]),
+  originalTrackers = ref<TrackerEdit[]>([]);
 const busy = ref(false),
   failure = ref(''),
   ipResult = ref(''),
@@ -61,6 +67,8 @@ const busy = ref(false),
 watch(
   () => app.selectedId,
   () => {
+    trackerEdit.value = false;
+    renameTarget.value = undefined;
     checkedFiles.value = [];
     fileQuery.value = '';
     filePreset.value = 'all';
@@ -169,7 +177,7 @@ const fileColumns = computed<DataTableColumns<any>>(() => [
     ...sortableFile('wanted'),
     title: t('wantedColumn'),
     width: 90,
-    render: (row) => (row.stat?.wanted ? '✓' : '—'),
+    render: (row) => (row.stat?.wanted === undefined ? t('unknown') : row.stat.wanted ? '✓' : '—'),
   },
   {
     key: 'priority',
@@ -181,7 +189,9 @@ const fileColumns = computed<DataTableColumns<any>>(() => [
           ? 'priorityHigh'
           : row.stat?.priority === -1
             ? 'priorityLow'
-            : 'priorityNormal',
+            : row.stat?.priority === 0
+              ? 'priorityNormal'
+              : 'unknown',
       ),
   },
   {
@@ -197,7 +207,7 @@ const fileColumns = computed<DataTableColumns<any>>(() => [
           onClick: () => {
             renamePath.value = row.name;
             renameValue.value = row.name.split('/').at(-1);
-            renameTarget.value = app.targets([app.selectedId!])[0];
+            renameTarget.value = app.detailTarget();
           },
         },
         () => t('rename'),
@@ -251,17 +261,14 @@ const overview = computed(() => {
     ['hashString', row.hashString],
     ['status', t(STATUS_NAMES[row.status ?? -1] || 'unknown')],
     ['totalSize', bytes(row.totalSize)],
-    [
-      'completeSize',
-      bytes(Math.max(0, (row.totalSize ?? 0) - (row.leftUntilDone ?? row.totalSize ?? 0))),
-    ],
+    ['completeSize', bytes(heldBytes(row))],
     ['leftUntilDone', bytes(row.leftUntilDone)],
     ['eta', formatDuration(row.eta ?? -1)],
-    ['percentDone', `${((row.percentDone ?? 0) * 100).toFixed(1)}%`],
+    ['percentDone', progressText(row.percentDone)],
     ['rateDownload', bytes(row.rateDownload, true)],
     ['rateUpload', bytes(row.rateUpload, true)],
-    ['seederCount', `${row.seederCount ?? 0} (${row.peersSendingToUs ?? 0})`],
-    ['leecherCount', `${row.leecherCount ?? 0} (${row.peersGettingFromUs ?? 0})`],
+    ['seederCount', peerCount(row.seederCount, row.peersSendingToUs)],
+    ['leecherCount', peerCount(row.leecherCount, row.peersGettingFromUs)],
     ['uploadedEver', bytes(row.uploadedEver)],
     ['downloadedEver', bytes(row.downloadedEver)],
     ['uploadRatio', formatRatio(row.uploadRatio ?? -1)],
@@ -283,19 +290,22 @@ const overview = computed(() => {
   }));
 });
 async function attempt(work: () => Promise<unknown>) {
+  const epoch = app.generation,
+    identity = app.current?.hashString;
   busy.value = true;
   failure.value = '';
   try {
     await work();
   } catch (e) {
-    failure.value = errorMessage(e);
+    if (epoch === app.generation && identity === app.current?.hashString)
+      failure.value = compatibilityMessage(errorMessage(e), t);
   } finally {
     busy.value = false;
   }
 }
 async function fileCommand(key: string) {
   if (!checkedFiles.value.length) return;
-  const targets = app.targets([app.selectedId!]),
+  const targets = [app.detailTarget()],
     indexes = [...checkedFiles.value];
   await attempt(async () => {
     await app.command('torrent-set', targets, { [key]: indexes });
@@ -325,18 +335,21 @@ async function renameFile() {
   });
 }
 function editTrackers() {
-  trackerTarget.value = app.targets([app.selectedId!])[0];
-  originalTrackers.value = (app.detail?.trackers ?? []).map((x) => ({ ...x }));
-  expectedTrackers.value = originalTrackers.value.map((x) => x.announce);
+  trackerAttempted.value = false;
+  failure.value = '';
+  trackerTarget.value = app.detailTarget();
+  originalTrackers.value = trackerSnapshot(app.detail?.trackers);
+  expectedTrackers.value = trackerSnapshot(app.detail?.trackers);
   trackerText.value = originalTrackers.value
     .map((x, i, a) => `${i && x.tier !== a[i - 1].tier ? '\n' : ''}${x.announce}`)
     .join('\n');
   trackerEdit.value = true;
 }
-async function saveTrackers() {
+const trackerReplacement = computed(() => {
+  if (app.trackerCapability.state === 'url-only') return originalTrackers.value;
   let tier = 0,
     index = 0;
-  const replacement = trackerText.value.split('\n').flatMap((line) => {
+  return trackerText.value.split('\n').flatMap((line) => {
     const announce = line.trim();
     if (!announce) {
       tier++;
@@ -345,9 +358,29 @@ async function saveTrackers() {
     const prior = originalTrackers.value[index++];
     return [{ announce, tier, ...(prior ? { id: prior.id } : {}) }];
   });
+});
+const trackerPlanError = computed(() => {
+  if (!trackerEdit.value) return '';
+  try {
+    trackerPatch(expectedTrackers.value, trackerReplacement.value, app.trackerCapability);
+    return '';
+  } catch (e) {
+    return compatibilityMessage(errorMessage(e), t);
+  }
+});
+watch(
+  () => app.generation,
+  () => {
+    trackerEdit.value = false;
+    renameTarget.value = undefined;
+  },
+);
+async function saveTrackers() {
+  if (trackerAttempted.value || busy.value || trackerPlanError.value) return;
+  trackerAttempted.value = true;
   const target = trackerTarget.value!;
   await attempt(async () => {
-    await app.updateTrackers(target, expectedTrackers.value, replacement);
+    await app.updateTrackers(target, expectedTrackers.value, trackerReplacement.value);
     if (trackerTarget.value === target) trackerEdit.value = false;
   });
 }
@@ -409,7 +442,17 @@ async function copyMagnet() {
     <div class="detail-content">
       <dl v-if="app.detailSection === 'general'" class="overview-grid">
         <template v-for="entry in overview" :key="entry.key"
-          ><dt>{{ t(entry.key) }}</dt>
+          ><dt
+            :title="
+              entry.key === 'completeSize'
+                ? t('heldBytesHint')
+                : ['seederCount', 'leecherCount'].includes(entry.key)
+                  ? t('trackerReportsHint')
+                  : undefined
+            "
+          >
+            {{ t(entry.key) }}
+          </dt>
           <dd :class="{ mono: entry.key === 'hashString' }">{{ entry.value }}</dd></template
         >
         <dt>Magnet</dt>
@@ -528,9 +571,17 @@ async function copyMagnet() {
       </template>
       <template v-if="app.detailSection === 'trackers'"
         ><div class="detail-toolbar">
-          <NButton size="tiny" :disabled="!app.detail || busy" @click="editTrackers">{{
-            t('edit')
-          }}</NButton>
+          <NButton
+            size="tiny"
+            :disabled="
+              !app.detail?.trackers ||
+              busy ||
+              app.operationBusy ||
+              app.trackerCapability.state === 'unknown'
+            "
+            @click="editTrackers"
+            >{{ t('edit') }}</NButton
+          >
         </div>
         <NDataTable
           :columns="trackerColumns"
@@ -557,17 +608,61 @@ async function copyMagnet() {
     <NModal
       v-model:show="trackerEdit"
       preset="card"
-      :title="t('trackerList')"
+      :title="t('trackerEditor')"
       class="dialog medium-dialog"
+      ><template v-if="app.trackerCapability.state === 'url-only'">
+        <p>{{ t('trackerUrlOnly') }}</p>
+        <label v-for="(row, index) in originalTrackers" :key="row.id ?? `new-${index}`">
+          {{ t('tier') }} {{ row.tier }}
+          <NInput v-model:value="row.announce" :disabled="busy || trackerAttempted" />
+          <NButton
+            :disabled="busy || trackerAttempted"
+            @click="originalTrackers.splice(index, 1)"
+            >{{ t('remove') }}</NButton
+          >
+        </label>
+        <NButton
+          :disabled="busy || trackerAttempted"
+          @click="
+            originalTrackers.push({
+              announce: '',
+              tier: originalTrackers.length
+                ? Math.max(...originalTrackers.map((x) => x.tier)) + 1
+                : 0,
+            })
+          "
+          >{{ t('trackerAddMember') }}</NButton
+        > </template
       ><NInput
+        v-else
         v-model:value="trackerText"
         type="textarea"
         :autosize="{ minRows: 8, maxRows: 20 }"
-      /><NAlert v-if="failure" type="error">{{ failure }}</NAlert
+      /><NAlert v-if="trackerPlanError" type="warning">{{ trackerPlanError }}</NAlert
+      ><NAlert v-if="failure" type="error">{{ failure }}</NAlert
       ><template #footer
-        ><NButton type="primary" :loading="busy" @click="saveTrackers">{{
-          t('save')
-        }}</NButton></template
+        ><NButton
+          v-if="trackerAttempted"
+          :disabled="busy"
+          @click="
+            async () => {
+              await app.loadDetail('trackers');
+              if (!app.detailError) editTrackers();
+            }
+          "
+          >{{ t('reloadBaseline') }}</NButton
+        ><NButton
+          :disabled="
+            trackerAttempted ||
+            !!trackerPlanError ||
+            app.operationBusy ||
+            app.trackerCapability.state === 'unknown'
+          "
+          type="primary"
+          :loading="busy"
+          @click="saveTrackers"
+          >{{ t('save') }}</NButton
+        ></template
       ></NModal
     ><NModal
       :show="!!renameTarget"

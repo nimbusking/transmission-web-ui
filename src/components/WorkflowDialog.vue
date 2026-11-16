@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { compatibilityMessage } from '../i18n/compatibility';
+import { ref, watch, onUnmounted } from 'vue';
 import { NModal, NInput, NButton, NAlert } from 'naive-ui';
 import { useI18n } from 'vue-i18n';
 import { useAppStore } from '../stores/app';
 import type { TorrentTarget, Tracker } from '../domain/types';
+import { trackerSnapshot, trackerPatch } from '../domain/tracker-edit';
 import { errorMessage } from '../domain/torrents';
 import { normalizeFolders } from '../services/settings';
 import { runBatch } from '../services/batch';
@@ -25,7 +27,7 @@ const busy = ref(false),
   folders = ref(app.settings.folderDictionary.join('\n')),
   oldUrl = ref(''),
   newUrl = ref('');
-const preview = ref<{ target: TorrentTarget; name: string; before: string[]; after: Tracker[] }[]>(
+const preview = ref<{ target: TorrentTarget; name: string; before: Tracker[]; after: Tracker[] }[]>(
   [],
 );
 async function attempt(work: () => Promise<unknown>) {
@@ -34,12 +36,27 @@ async function attempt(work: () => Promise<unknown>) {
   try {
     await work();
   } catch (e) {
-    error.value = errorMessage(e);
+    error.value = compatibilityMessage(errorMessage(e), t);
   } finally {
     busy.value = false;
   }
 }
+let sequence = 0;
+watch(
+  [oldUrl, newUrl, () => app.generation],
+  () => {
+    sequence++;
+    preview.value = [];
+  },
+  { flush: 'sync' },
+);
+onUnmounted(() => {
+  sequence++;
+});
 async function prepare() {
+  const serial = ++sequence,
+    old = oldUrl.value,
+    next = newUrl.value;
   await attempt(async () => {
     preview.value = [];
     if (!oldUrl.value.trim()) throw new Error(t('oldUrl'));
@@ -48,39 +65,44 @@ async function prepare() {
       frozen,
       async (target) => {
         const torrent = await app.readTarget(target, ['name', 'trackers']);
-        const before = torrent.trackers ?? [];
+        const before = trackerSnapshot(torrent.trackers);
         const after = before.map((tracker) => ({
           ...tracker,
-          announce: tracker.announce.replaceAll(oldUrl.value, newUrl.value),
+          announce: tracker.announce.replaceAll(old, next),
         }));
+        trackerPatch(before, after, app.trackerCapability);
         if (after.some((tracker, i) => tracker.announce !== before[i].announce))
           rows.push({
             target,
             name: torrent.name ?? target.hashString,
-            before: before.map((x) => x.announce),
+            before,
             after,
           });
       },
       (target) => ({ id: target.id, name: app.byId.get(target.id)?.name ?? target.hashString }),
     );
+    if (serial !== sequence) return;
     preview.value = rows;
     app.operationResults = results.items;
     if (results.items.some((x) => x.status !== 'success'))
       error.value = results.items
         .filter((x) => x.status !== 'success')
-        .map((x) => `${x.name}: ${x.message ?? ''}`)
+        .map((x) => `${x.name}: ${compatibilityMessage(x.message ?? '', t)}`)
         .join('\n');
   });
 }
 async function replace() {
+  const serial = ++sequence;
   const plan = preview.value.map((x) => ({ ...x }));
+  preview.value = [];
   await attempt(async () => {
     const result = await app.replaceTrackersBatch(plan);
+    if (serial !== sequence) return;
     preview.value = [];
     if (result.items.some((x) => x.status !== 'success'))
       error.value = result.items
         .filter((x) => x.status !== 'success')
-        .map((x) => `${x.name}: ${t(x.status)} ${x.message ?? ''}`)
+        .map((x) => `${x.name}: ${t(x.status)} ${compatibilityMessage(x.message ?? '', t)}`)
         .join('\n');
   });
 }
@@ -108,7 +130,7 @@ async function replace() {
         <div v-for="item in preview" :key="item.target.hashString" class="import-preview">
           <strong>{{ item.name }}</strong>
           <div v-for="(url, i) in item.before" :key="i">
-            <del v-if="url !== item.after[i].announce">{{ url }}</del> →
+            <del v-if="url.announce !== item.after[i].announce">{{ url.announce }}</del> →
             {{ item.after[i].announce }}
           </div>
         </div>

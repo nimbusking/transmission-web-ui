@@ -553,3 +553,8 @@ compare:check -- --restart-check 对同一 daemon 临时修改一个连接数参
 现有六个本地样例的真实进度为 100%、0%、50%、50%、0%、100%，均暂停；文件和 config 保存在 twui-compare 卷。另提供未添加的 G 文件/URL。重置只按自己 manifest 的 hash 移除和重建样例，不删其他任务。人工核对项目见 local-comparison.md；空 Peer 数据不代表所有 Peer/外部服务功能已经实际逐项测试。
 
 本轮保留 twui-compare 运行供用户比对，仅停止 twui-lab。截图和当前部署/摘要信息在 artifacts/comparison-results.json、.lab/comparison/deployment.json。不要将本机代理和实验 Python 当作 NAS Release 的额外运行依赖。
+
+
+## 2026-11-16 共用兼容性修复增量
+
+按既有OpenSpec第30节实施；选择身份、真实持有量/未知值、方向独立限速、Tracker完整基线及3.00挡板见[实施与验收记录](shared-compatibility-implementation-2026-11-16.md)。证据区分真实daemon回读、受控故障/浏览器与已有测试失效。无持久化schema迁移，无新轮询或任务配置tab；19080/19081只读，G4未发布，13.12长测待办保持开放。

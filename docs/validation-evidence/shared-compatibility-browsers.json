@@ -1,0 +1,39 @@
+{
+  "frozenBuild": "shared-compatibility-build.json",
+  "groups": [
+    {
+      "browser": "chromium",
+      "passed": 71,
+      "elapsed": "54.2s",
+      "report": ".lab/shared-compatibility-candidate-chromium-report"
+    },
+    {
+      "browser": "firefox",
+      "passed": 71,
+      "elapsed": "1.3m",
+      "report": ".lab/shared-compatibility-candidate-firefox-report"
+    },
+    {
+      "browser": "webkit",
+      "passed": 71,
+      "elapsed": "1.5m",
+      "report": ".lab/shared-compatibility-candidate-webkit-report"
+    }
+  ],
+  "total": 213,
+  "historicalExcluded": "details.spec.ts task configuration tab...; identical obsolete Daemon-category failure on previous candidate; original assertion preserved",
+  "noBuildDuringTests": true,
+  "followupDetails": {
+    "passed": 6,
+    "browsers": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "report": ".lab/blockers-details-report",
+    "previouslyExcludedCaseResolved": true,
+    "change": "Preserve detail isolation assertions; replace obsolete Daemon/config-grid assertion with current seven categories and initial read-only save state.",
+    "sameFrozenBuild": true,
+    "countsNotAddedToOriginalTotal": true
+  }
+}

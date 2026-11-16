@@ -1,3 +1,4 @@
+import { safeCount, progressFraction } from './status';
 import type { Torrent } from './types';
 import { torrentServers, NO_TRACKER, UNKNOWN_TRACKER } from './navigation';
 export function tableBytes(value: unknown, rate = false): string {
@@ -23,8 +24,7 @@ export function tableServers(row: Torrent): string {
   return values.length ? values.join(', ') : '—';
 }
 export function peerCount(total: unknown, active: unknown): string {
-  const count = (n: unknown) =>
-    typeof n === 'number' && Number.isFinite(n) && n >= 0 ? String(n) : '—';
+  const count = (n: unknown) => (safeCount(n) !== undefined ? String(n) : '—');
   return `${count(total)} (${count(active)})`;
 }
 export function progressValue(row: Torrent): { checking: boolean; value: number | undefined } {
@@ -32,9 +32,6 @@ export function progressValue(row: Torrent): { checking: boolean; value: number 
   const raw = checking ? row.recheckProgress : row.percentDone;
   return {
     checking,
-    value:
-      typeof raw === 'number' && Number.isFinite(raw)
-        ? Math.max(0, Math.min(1, raw)) * 100
-        : undefined,
+    value: progressFraction(raw) === undefined ? undefined : progressFraction(raw)! * 100,
   };
 }

@@ -1,0 +1,799 @@
+{
+  "frozenBuild": "shared-compatibility-build.json",
+  "distFilesUnchanged": 78,
+  "details": {
+    "passed": 6,
+    "report": ".lab/blockers-details-report"
+  },
+  "runtime": {
+    "passed": 3,
+    "report": ".lab/blockers-runtime-report",
+    "environment": {
+      "at": "2026-11-16T10:30:35.008Z",
+      "exitCode": 0,
+      "dedicatedNetwork": true,
+      "localPrivatePayloadBytes": 67108864,
+      "sourceUtpEnabled": false,
+      "temporaryContainersCleaned": true,
+      "comparisonGuarded": true,
+      "comparisonUnchanged": true
+    },
+    "cases": {
+      "3.00": {
+        "version": "3.00",
+        "writes": [
+          {
+            "cache-size-mb": 5
+          },
+          {
+            "cache-size-mb": 6
+          },
+          {
+            "queue-stalled-enabled": false,
+            "speed-limit-down-enabled": true,
+            "speed-limit-down": 128
+          },
+          {
+            "download-queue-enabled": true,
+            "utp-enabled": false,
+            "download-queue-size": 1
+          },
+          {
+            "download-queue-size": 2
+          },
+          {
+            "download-queue-enabled": false
+          }
+        ],
+        "results": {
+          "savedBaseline": {
+            "cacheMB": 6,
+            "noUnsavedChanges": true
+          },
+          "queueAfterDisable": [
+            {
+              "downloadedEver": 0,
+              "hashString": "f2d62ecc2b1f09c474b2c675718cf16e9811418f",
+              "rateDownload": 0,
+              "status": 4
+            },
+            {
+              "downloadedEver": 0,
+              "hashString": "81b9c0049b8e2c5f78542bd61cb9e6949bee3dc3",
+              "rateDownload": 0,
+              "status": 4
+            },
+            {
+              "downloadedEver": 0,
+              "hashString": "f2c0264250c356071147368eb1f9f6d1921ffd1e",
+              "rateDownload": 0,
+              "status": 0
+            }
+          ],
+          "queueAfterExplicitStart": {
+            "before": [
+              {
+                "downloadedEver": 27175,
+                "hashString": "f2d62ecc2b1f09c474b2c675718cf16e9811418f",
+                "rateDownload": 13000,
+                "status": 4
+              },
+              {
+                "downloadedEver": 20454,
+                "hashString": "81b9c0049b8e2c5f78542bd61cb9e6949bee3dc3",
+                "rateDownload": 10000,
+                "status": 4
+              },
+              {
+                "downloadedEver": 16371,
+                "hashString": "f2c0264250c356071147368eb1f9f6d1921ffd1e",
+                "rateDownload": 8000,
+                "status": 4
+              }
+            ],
+            "after": [
+              {
+                "downloadedEver": 483088,
+                "hashString": "f2d62ecc2b1f09c474b2c675718cf16e9811418f",
+                "rateDownload": 47000,
+                "status": 4
+              },
+              {
+                "downloadedEver": 449593,
+                "hashString": "81b9c0049b8e2c5f78542bd61cb9e6949bee3dc3",
+                "rateDownload": 41000,
+                "status": 4
+              },
+              {
+                "downloadedEver": 410520,
+                "hashString": "f2c0264250c356071147368eb1f9f6d1921ffd1e",
+                "rateDownload": 38000,
+                "status": 4
+              }
+            ]
+          }
+        }
+      },
+      "4.0.6": {
+        "version": "4.0.6",
+        "writes": [
+          {
+            "cache-size-mb": 5
+          },
+          {
+            "cache-size-mb": 6
+          },
+          {
+            "speed-limit-down-enabled": true,
+            "speed-limit-down": 128
+          },
+          {
+            "alt-speed-time-enabled": true,
+            "alt-speed-down": 32,
+            "alt-speed-time-begin": 628,
+            "alt-speed-time-end": 629
+          }
+        ],
+        "results": {
+          "savedBaseline": {
+            "cacheMB": 6,
+            "noUnsavedChanges": true
+          },
+          "actualScheduleAndDraft": {
+            "daemonTimezone": "UTC",
+            "begin": "10:28",
+            "end": "10:29",
+            "normal": {
+              "bytes": 786432,
+              "seconds": 6.003,
+              "bytesPerSecond": 131006.49675162419
+            },
+            "alternate": {
+              "bytes": 196608,
+              "seconds": 6.002,
+              "bytesPerSecond": 32757.080973008997
+            },
+            "restored": {
+              "bytes": 786432,
+              "seconds": 6.003,
+              "bytesPerSecond": 131006.49675162419
+            },
+            "checkboxFollowedBothTransitions": true,
+            "otherDraftPreserved": true,
+            "draftPortNotApplied": true
+          }
+        }
+      },
+      "4.1.4": {
+        "version": "4.1.4",
+        "writes": [
+          {
+            "cache-size-mb": 5
+          },
+          {
+            "cache-size-mb": 6
+          },
+          {
+            "queue-stalled-enabled": false,
+            "speed-limit-down-enabled": true,
+            "speed-limit-down": 128
+          },
+          {
+            "download-queue-enabled": true,
+            "utp-enabled": false,
+            "download-queue-size": 1
+          },
+          {
+            "download-queue-size": 2
+          },
+          {
+            "download-queue-enabled": false
+          },
+          {
+            "alt-speed-time-enabled": true,
+            "alt-speed-down": 32,
+            "alt-speed-time-begin": 629,
+            "alt-speed-time-end": 630
+          }
+        ],
+        "results": {
+          "savedBaseline": {
+            "cacheMB": 6,
+            "noUnsavedChanges": true
+          },
+          "queueAfterDisable": [
+            {
+              "downloadedEver": 0,
+              "hashString": "146fe089541f058e7cea8269404dd7cdce1d41c9",
+              "rateDownload": 0,
+              "status": 4
+            },
+            {
+              "downloadedEver": 0,
+              "hashString": "5c9086ed1842fee6c47a95303d9819536c608b60",
+              "rateDownload": 0,
+              "status": 4
+            },
+            {
+              "downloadedEver": 0,
+              "hashString": "8191c47e312c4fc619e93913a281b1683c0b21f2",
+              "rateDownload": 0,
+              "status": 0
+            }
+          ],
+          "queueAfterExplicitStart": {
+            "before": [
+              {
+                "downloadedEver": 147456,
+                "hashString": "146fe089541f058e7cea8269404dd7cdce1d41c9",
+                "rateDownload": 73728,
+                "status": 4
+              },
+              {
+                "downloadedEver": 81920,
+                "hashString": "5c9086ed1842fee6c47a95303d9819536c608b60",
+                "rateDownload": 40960,
+                "status": 4
+              },
+              {
+                "downloadedEver": 16384,
+                "hashString": "8191c47e312c4fc619e93913a281b1683c0b21f2",
+                "rateDownload": 8192,
+                "status": 4
+              }
+            ],
+            "after": [
+              {
+                "downloadedEver": 557056,
+                "hashString": "146fe089541f058e7cea8269404dd7cdce1d41c9",
+                "rateDownload": 32768,
+                "status": 4
+              },
+              {
+                "downloadedEver": 524288,
+                "hashString": "5c9086ed1842fee6c47a95303d9819536c608b60",
+                "rateDownload": 49152,
+                "status": 4
+              },
+              {
+                "downloadedEver": 425984,
+                "hashString": "8191c47e312c4fc619e93913a281b1683c0b21f2",
+                "rateDownload": 40960,
+                "status": 4
+              }
+            ]
+          },
+          "actualScheduleAndDraft": {
+            "daemonTimezone": "UTC",
+            "begin": "10:29",
+            "end": "10:30",
+            "normal": {
+              "bytes": 770048,
+              "seconds": 6.003,
+              "bytesPerSecond": 128277.19473596534
+            },
+            "alternate": {
+              "bytes": 196608,
+              "seconds": 6.002,
+              "bytesPerSecond": 32757.080973008997
+            },
+            "restored": {
+              "bytes": 770048,
+              "seconds": 6.002,
+              "bytesPerSecond": 128298.56714428525
+            },
+            "checkboxFollowedBothTransitions": true,
+            "otherDraftPreserved": true,
+            "draftPortNotApplied": true
+          }
+        }
+      }
+    }
+  },
+  "priorAttempts": [
+    {
+      "attempt": 1,
+      "environment": {
+        "at": "2026-11-16T10:23:19.860Z",
+        "exitCode": 1,
+        "dedicatedNetwork": true,
+        "localPrivatePayloadBytes": 67108864,
+        "sourceUtpEnabled": false,
+        "temporaryContainersCleaned": true,
+        "comparisonGuarded": true,
+        "comparisonUnchanged": true
+      },
+      "cases": {
+        "3.00": {
+          "version": "3.00",
+          "writes": [
+            {
+              "cache-size-mb": 5
+            },
+            {
+              "cache-size-mb": 6
+            },
+            {
+              "queue-stalled-enabled": false,
+              "speed-limit-down-enabled": true,
+              "speed-limit-down": 128
+            },
+            {
+              "download-queue-enabled": true,
+              "download-queue-size": 1
+            },
+            {
+              "download-queue-size": 2
+            },
+            {
+              "download-queue-enabled": false
+            }
+          ],
+          "results": {
+            "savedBaseline": {
+              "cacheMB": 6,
+              "noUnsavedChanges": true
+            },
+            "queueAfterDisable": [
+              {
+                "downloadedEver": 0,
+                "hashString": "d8e75702423de3e478656ecad81699086fe238f0",
+                "rateDownload": 0,
+                "status": 4
+              },
+              {
+                "downloadedEver": 0,
+                "hashString": "639199a2c9d9f2296881c2dd1528a3817fff6cd6",
+                "rateDownload": 0,
+                "status": 4
+              },
+              {
+                "downloadedEver": 0,
+                "hashString": "04b69fa98a25db99be8db2b07beb09ef36d33a75",
+                "rateDownload": 0,
+                "status": 0
+              }
+            ],
+            "queueAfterExplicitStart": {
+              "before": [
+                {
+                  "downloadedEver": 0,
+                  "hashString": "d8e75702423de3e478656ecad81699086fe238f0",
+                  "rateDownload": 0,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 0,
+                  "hashString": "639199a2c9d9f2296881c2dd1528a3817fff6cd6",
+                  "rateDownload": 0,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 0,
+                  "hashString": "04b69fa98a25db99be8db2b07beb09ef36d33a75",
+                  "rateDownload": 0,
+                  "status": 4
+                }
+              ],
+              "after": [
+                {
+                  "downloadedEver": 0,
+                  "hashString": "d8e75702423de3e478656ecad81699086fe238f0",
+                  "rateDownload": 0,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 0,
+                  "hashString": "639199a2c9d9f2296881c2dd1528a3817fff6cd6",
+                  "rateDownload": 0,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 0,
+                  "hashString": "04b69fa98a25db99be8db2b07beb09ef36d33a75",
+                  "rateDownload": 0,
+                  "status": 4
+                }
+              ]
+            }
+          }
+        },
+        "4.0.6": {
+          "version": "4.0.6",
+          "writes": [
+            {
+              "cache-size-mb": 5
+            },
+            {
+              "cache-size-mb": 6
+            },
+            {
+              "speed-limit-down-enabled": true,
+              "speed-limit-down": 128
+            },
+            {
+              "alt-speed-time-enabled": true,
+              "alt-speed-down": 32,
+              "alt-speed-time-begin": 622,
+              "alt-speed-time-end": 623
+            }
+          ],
+          "results": {
+            "savedBaseline": {
+              "cacheMB": 6,
+              "noUnsavedChanges": true
+            },
+            "actualScheduleAndDraft": {
+              "daemonTimezone": "UTC",
+              "begin": "10:22",
+              "end": "10:23",
+              "normal": {
+                "bytes": 786432,
+                "seconds": 6.004,
+                "bytesPerSecond": 130984.67688207862
+              },
+              "alternate": {
+                "bytes": 196608,
+                "seconds": 6.002,
+                "bytesPerSecond": 32757.080973008997
+              },
+              "restored": {
+                "bytes": 786432,
+                "seconds": 6.003,
+                "bytesPerSecond": 131006.49675162419
+              },
+              "checkboxFollowedBothTransitions": true,
+              "otherDraftPreserved": true,
+              "draftPortNotApplied": true
+            }
+          }
+        },
+        "4.1.4": {
+          "version": "4.1.4",
+          "writes": [
+            {
+              "cache-size-mb": 5
+            },
+            {
+              "cache-size-mb": 6
+            },
+            {
+              "queue-stalled-enabled": false,
+              "speed-limit-down-enabled": true,
+              "speed-limit-down": 128
+            },
+            {
+              "download-queue-enabled": true,
+              "download-queue-size": 1
+            },
+            {
+              "download-queue-size": 2
+            },
+            {
+              "download-queue-enabled": false
+            }
+          ],
+          "results": {
+            "savedBaseline": {
+              "cacheMB": 6,
+              "noUnsavedChanges": true
+            },
+            "queueAfterDisable": [
+              {
+                "downloadedEver": 0,
+                "hashString": "d8e75702423de3e478656ecad81699086fe238f0",
+                "rateDownload": 0,
+                "status": 4
+              },
+              {
+                "downloadedEver": 0,
+                "hashString": "639199a2c9d9f2296881c2dd1528a3817fff6cd6",
+                "rateDownload": 0,
+                "status": 4
+              },
+              {
+                "downloadedEver": 0,
+                "hashString": "04b69fa98a25db99be8db2b07beb09ef36d33a75",
+                "rateDownload": 0,
+                "status": 0
+              }
+            ],
+            "queueAfterExplicitStart": {
+              "before": [
+                {
+                  "downloadedEver": 0,
+                  "hashString": "d8e75702423de3e478656ecad81699086fe238f0",
+                  "rateDownload": 0,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 0,
+                  "hashString": "639199a2c9d9f2296881c2dd1528a3817fff6cd6",
+                  "rateDownload": 0,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 0,
+                  "hashString": "04b69fa98a25db99be8db2b07beb09ef36d33a75",
+                  "rateDownload": 0,
+                  "status": 4
+                }
+              ],
+              "after": [
+                {
+                  "downloadedEver": 0,
+                  "hashString": "d8e75702423de3e478656ecad81699086fe238f0",
+                  "rateDownload": 0,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 0,
+                  "hashString": "639199a2c9d9f2296881c2dd1528a3817fff6cd6",
+                  "rateDownload": 0,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 0,
+                  "hashString": "04b69fa98a25db99be8db2b07beb09ef36d33a75",
+                  "rateDownload": 0,
+                  "status": 4
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "attempt": 2,
+      "environment": {
+        "at": "2026-11-16T10:26:34.771Z",
+        "exitCode": 1,
+        "dedicatedNetwork": true,
+        "localPrivatePayloadBytes": 67108864,
+        "sourceUtpEnabled": false,
+        "temporaryContainersCleaned": true,
+        "comparisonGuarded": true,
+        "comparisonUnchanged": true
+      },
+      "cases": {
+        "3.00": {
+          "version": "3.00",
+          "writes": [
+            {
+              "cache-size-mb": 5
+            },
+            {
+              "cache-size-mb": 6
+            },
+            {
+              "queue-stalled-enabled": false,
+              "speed-limit-down-enabled": true,
+              "speed-limit-down": 128
+            },
+            {
+              "download-queue-enabled": true,
+              "download-queue-size": 1
+            },
+            {
+              "download-queue-size": 2
+            },
+            {
+              "download-queue-enabled": false
+            }
+          ],
+          "results": {
+            "savedBaseline": {
+              "cacheMB": 6,
+              "noUnsavedChanges": true
+            },
+            "queueAfterDisable": [
+              {
+                "downloadedEver": 0,
+                "hashString": "d8e75702423de3e478656ecad81699086fe238f0",
+                "rateDownload": 0,
+                "status": 4
+              },
+              {
+                "downloadedEver": 0,
+                "hashString": "639199a2c9d9f2296881c2dd1528a3817fff6cd6",
+                "rateDownload": 0,
+                "status": 4
+              },
+              {
+                "downloadedEver": 0,
+                "hashString": "04b69fa98a25db99be8db2b07beb09ef36d33a75",
+                "rateDownload": 0,
+                "status": 0
+              }
+            ]
+          }
+        },
+        "4.0.6": {
+          "version": "4.0.6",
+          "writes": [
+            {
+              "cache-size-mb": 5
+            },
+            {
+              "cache-size-mb": 6
+            },
+            {
+              "speed-limit-down-enabled": true,
+              "speed-limit-down": 128
+            },
+            {
+              "alt-speed-time-enabled": true,
+              "alt-speed-down": 32,
+              "alt-speed-time-begin": 625,
+              "alt-speed-time-end": 626
+            }
+          ],
+          "results": {
+            "savedBaseline": {
+              "cacheMB": 6,
+              "noUnsavedChanges": true
+            },
+            "actualScheduleAndDraft": {
+              "daemonTimezone": "UTC",
+              "begin": "10:25",
+              "end": "10:26",
+              "normal": {
+                "bytes": 851968,
+                "seconds": 6.004,
+                "bytesPerSecond": 141900.06662225185
+              },
+              "alternate": {
+                "bytes": 196608,
+                "seconds": 6.003,
+                "bytesPerSecond": 32751.624187906047
+              },
+              "restored": {
+                "bytes": 786432,
+                "seconds": 6.003,
+                "bytesPerSecond": 131006.49675162419
+              },
+              "checkboxFollowedBothTransitions": true,
+              "otherDraftPreserved": true,
+              "draftPortNotApplied": true
+            }
+          }
+        },
+        "4.1.4": {
+          "version": "4.1.4",
+          "writes": [
+            {
+              "cache-size-mb": 5
+            },
+            {
+              "cache-size-mb": 6
+            },
+            {
+              "queue-stalled-enabled": false,
+              "speed-limit-down-enabled": true,
+              "speed-limit-down": 128
+            },
+            {
+              "download-queue-enabled": true,
+              "download-queue-size": 1
+            },
+            {
+              "download-queue-size": 2
+            },
+            {
+              "download-queue-enabled": false
+            },
+            {
+              "alt-speed-time-enabled": true,
+              "alt-speed-down": 32,
+              "alt-speed-time-begin": 625,
+              "alt-speed-time-end": 626
+            }
+          ],
+          "results": {
+            "savedBaseline": {
+              "cacheMB": 6,
+              "noUnsavedChanges": true
+            },
+            "queueAfterDisable": [
+              {
+                "downloadedEver": 0,
+                "hashString": "d8e75702423de3e478656ecad81699086fe238f0",
+                "rateDownload": 0,
+                "status": 4
+              },
+              {
+                "downloadedEver": 0,
+                "hashString": "639199a2c9d9f2296881c2dd1528a3817fff6cd6",
+                "rateDownload": 0,
+                "status": 4
+              },
+              {
+                "downloadedEver": 0,
+                "hashString": "04b69fa98a25db99be8db2b07beb09ef36d33a75",
+                "rateDownload": 0,
+                "status": 0
+              }
+            ],
+            "queueAfterExplicitStart": {
+              "before": [
+                {
+                  "downloadedEver": 81920,
+                  "hashString": "d8e75702423de3e478656ecad81699086fe238f0",
+                  "rateDownload": 40960,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 16384,
+                  "hashString": "639199a2c9d9f2296881c2dd1528a3817fff6cd6",
+                  "rateDownload": 8192,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 16384,
+                  "hashString": "04b69fa98a25db99be8db2b07beb09ef36d33a75",
+                  "rateDownload": 8192,
+                  "status": 4
+                }
+              ],
+              "after": [
+                {
+                  "downloadedEver": 507904,
+                  "hashString": "d8e75702423de3e478656ecad81699086fe238f0",
+                  "rateDownload": 49152,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 425984,
+                  "hashString": "639199a2c9d9f2296881c2dd1528a3817fff6cd6",
+                  "rateDownload": 32768,
+                  "status": 4
+                },
+                {
+                  "downloadedEver": 442368,
+                  "hashString": "04b69fa98a25db99be8db2b07beb09ef36d33a75",
+                  "rateDownload": 40960,
+                  "status": 4
+                }
+              ]
+            },
+            "actualScheduleAndDraft": {
+              "daemonTimezone": "UTC",
+              "begin": "10:25",
+              "end": "10:26",
+              "normal": {
+                "bytes": 770048,
+                "seconds": 6.002,
+                "bytesPerSecond": 128298.56714428525
+              },
+              "alternate": {
+                "bytes": 180224,
+                "seconds": 6.002,
+                "bytesPerSecond": 30027.32422525825
+              },
+              "restored": {
+                "bytes": 770048,
+                "seconds": 6.001,
+                "bytesPerSecond": 128319.94667555406
+              },
+              "checkboxFollowedBothTransitions": true,
+              "otherDraftPreserved": true,
+              "draftPortNotApplied": true
+            }
+          }
+        }
+      }
+    }
+  ],
+  "boundary": "Final queue checks use separate swarms and explicitly disabled uTP. Default transport 3.00 peer establishment failure remains recorded; no general network or all-settings certification.",
+  "checks": [
+    "lint",
+    "typecheck",
+    "targeted prettier",
+    "openspec strict",
+    "git diff --check",
+    "legacy 816 files",
+    "candidate archive SHA256"
+  ],
+  "published": false
+}

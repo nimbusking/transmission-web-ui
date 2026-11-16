@@ -31,7 +31,7 @@ export interface Torrent {
   files?: TorrentFile[];
   fileStats?: FileStat[];
   peers?: Peer[];
-  wanted?: boolean[];
+  wanted?: (boolean | undefined)[];
   [key: string]: any;
 }
 export interface Tracker {
@@ -53,8 +53,8 @@ export interface TorrentFile {
 }
 export interface FileStat {
   bytesCompleted: number;
-  wanted: boolean;
-  priority: number;
+  wanted?: boolean;
+  priority?: number;
 }
 export interface Peer {
   address: string;

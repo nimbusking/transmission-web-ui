@@ -1,0 +1,29 @@
+{
+  "at": "2026-11-16T09:59:30.615Z",
+  "results": [
+    {
+      "port": 19080,
+      "version": "4.1.4 (a6d907d9ea)",
+      "count": 7,
+      "taskIdentityDigest": "41fab8148b9a8d08359afda95996cea08a9a829450f45713d01b060b806882fa",
+      "indexSha256": "e17b79a9f0e0c952f8b5e3fc4f8a5eb9f98e2c9f7c22d7cd32f8dfc7883c4b90",
+      "methods": [
+        "session-get",
+        "torrent-get"
+      ],
+      "modifyingRpc": 0
+    },
+    {
+      "port": 19081,
+      "version": "4.1.4 (a6d907d9ea)",
+      "count": 7,
+      "taskIdentityDigest": "41fab8148b9a8d08359afda95996cea08a9a829450f45713d01b060b806882fa",
+      "indexSha256": "8d22cc23d8578ddd602417d3a071fe2cbef6964d4e7dd42e40017c13e570eca9",
+      "methods": [
+        "session-get",
+        "torrent-get"
+      ],
+      "modifyingRpc": 0
+    }
+  ]
+}

@@ -84,3 +84,8 @@ scripts/test-table-fields.mjs使用生产RpcClient，四版各新增自有暂停
 文件列表底栏补齐（用户2026-11-16截图）→ old文件pager/fields/pagerFilter三个模板只读依据 → DetailPane+domain/torrent-files、独立filePageSize兼容schema → 模型4用例/设置1用例与最终42三浏览器（万文件/5000页内虚拟化/原始索引200和9999/选择隔离/模板/失败/四皮肤明暗窄屏/两种遮挡与宽度）→ OpenSpec28节/file-list-controls.md，file-pagination-*.json与实页D三文件截图。现有RPC方法未改，mock操作不能当作四版daemon真实写入验收。
 
 任务配置（用户2026-11-16追加条件）→ 候选设计取消，3.00隔离seedIdleLimit0请求success/回读仍17证据 → 移除DetailPane配置tab/通用草稿保存与config详情路由，保留四页/全局设置公共网格 → 最终92unit/48三浏览器（配置入口不存在、零专用读写、余下详情/文件分页和全局设置）→ OpenSpec29节及取消设计，torrent-config-cancellation.json与remove-task-config证据。旧配置草稿验收属于历史已移除功能，不再是当前要求。
+
+
+## 2026-11-16 共用兼容性修复增量
+
+按既有OpenSpec第30节实施；选择身份、真实持有量/未知值、方向独立限速、Tracker完整基线及3.00挡板见[实施与验收记录](shared-compatibility-implementation-2026-11-16.md)。证据区分真实daemon回读、受控故障/浏览器与已有测试失效。无持久化schema迁移，无新轮询或任务配置tab；19080/19081只读，G4未发布，13.12长测待办保持开放。

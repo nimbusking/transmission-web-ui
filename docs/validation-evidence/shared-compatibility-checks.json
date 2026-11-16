@@ -1,0 +1,69 @@
+{
+  "at": "2026-11-16 Asia/Shanghai",
+  "checks": [
+    {
+      "command": "npm run lint",
+      "chunk_id": "a6ed42",
+      "wall_time_seconds": 1.6653596309999998,
+      "exit_code": 0,
+      "original_token_count": 12,
+      "output": "\n> transmission-web-ui@2.0.0 lint\n> eslint .\n\n"
+    },
+    {
+      "command": "npm run format:check",
+      "chunk_id": "c98583",
+      "wall_time_seconds": 1.785080948,
+      "exit_code": 0,
+      "original_token_count": 42,
+      "output": "\n> transmission-web-ui@2.0.0 format:check\n> prettier --check src tests scripts/*.mjs *.{ts,js,json}\n\nChecking formatting...\nAll matched files use Prettier code style!\n"
+    },
+    {
+      "command": "npm run typecheck",
+      "chunk_id": "aa38f7",
+      "wall_time_seconds": 3.416883143,
+      "exit_code": 0,
+      "original_token_count": 15,
+      "output": "\n> transmission-web-ui@2.0.0 typecheck\n> vue-tsc --noEmit\n\n"
+    },
+    {
+      "command": "npm test",
+      "chunk_id": "1c80ed",
+      "wall_time_seconds": 1.97452717,
+      "exit_code": 0,
+      "original_token_count": 68,
+      "output": "\n> transmission-web-ui@2.0.0 test\n> vitest run\n\n\n RUN  v5.1.0 /mnt/data/dev/github/transmission-web-ui\n\n\n Test Files  14 passed (14)\n      Tests  122 passed (122)\n   Start at  18:08:23\n   Duration  1.82s (tests 60%, import 20%, environment 9%, transform 9%, worker 2%)\n\n"
+    },
+    {
+      "command": "npm run spec:validate",
+      "chunk_id": "310d91",
+      "wall_time_seconds": 0.074490511,
+      "exit_code": 0,
+      "original_token_count": 47,
+      "output": "\n> transmission-web-ui@2.0.0 spec:validate\n> OPENSPEC_TELEMETRY=0 openspec validate rebuild-transmission-web-ui --strict --no-interactive\n\nChange 'rebuild-transmission-web-ui' is valid\n"
+    },
+    {
+      "command": "npm run check:legacy",
+      "chunk_id": "d9375e",
+      "wall_time_seconds": 0.000014503,
+      "exit_code": 0,
+      "original_token_count": 28,
+      "output": "\n> transmission-web-ui@2.0.0 check:legacy\n> node scripts/check-legacy.mjs\n\nLegacy baseline intact: 816 files\n"
+    },
+    {
+      "command": "npm run check:size",
+      "chunk_id": "670bf5",
+      "wall_time_seconds": 0.000012034,
+      "exit_code": 0,
+      "original_token_count": 28,
+      "output": "\n> transmission-web-ui@2.0.0 check:size\n> node scripts/check-size.mjs\n\nAll JS/CSS gzip: 382.0 KiB <= 800 KiB\n"
+    },
+    {
+      "command": "git diff --check",
+      "chunk_id": "2731cc",
+      "wall_time_seconds": 0.000014469,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  ]
+}

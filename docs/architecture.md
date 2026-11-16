@@ -150,3 +150,8 @@ DetailPane文件页用domain/torrent-files合并原始index/files/fileStats（wa
 
 ## 任务配置入口移除（2026-11-16）
 按用户追加条件取消任务配置改造，DetailSection与详情加载路由仅保留general/files/trackers/peers；DetailPane不再维护通用任务参数草稿/提交表单。文件/Tracker重命名和其他对话框自身草稿仍独立保留，取消任务tab时保留全局设置；第34节已将SettingsDialog迁至专属设置表单布局，不恢复任务配置入口。取消前设计为历史依据，不是当前API；隔离3.00输入边界失败不等于所有参数或四个版本不受支持，具体证据见validation.md。
+
+
+## 2026-11-16 共用兼容性修复增量
+
+按既有OpenSpec第30节实施；选择身份、真实持有量/未知值、方向独立限速、Tracker完整基线及3.00挡板见[实施与验收记录](shared-compatibility-implementation-2026-11-16.md)。证据区分真实daemon回读、受控故障/浏览器与已有测试失效。无持久化schema迁移，无新轮询或任务配置tab；19080/19081只读，G4未发布，13.12长测待办保持开放。

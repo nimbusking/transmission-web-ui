@@ -43,12 +43,21 @@ it('C05: normalizes daemon wanted booleans and numbers', () => {
     false,
   ]);
 });
-it('legacy completed size uses total minus remaining, independently of cumulative downloaded bytes', () => {
+it('completed size uses held data independently of selected remaining and cumulative bytes', () => {
   const rows = new Map<number, Torrent>();
-  applyDelta(rows, [{ id: 1, totalSize: 1000, leftUntilDone: 300, downloadedEver: 1800 }]);
+  applyDelta(rows, [
+    {
+      id: 1,
+      totalSize: 1000,
+      haveValid: 600,
+      haveUnchecked: 100,
+      leftUntilDone: 300,
+      downloadedEver: 1800,
+    },
+  ]);
   expect(rows.get(1)?.completeSize).toBe(700);
   applyDelta(rows, [{ id: 1, leftUntilDone: 100 }]);
-  expect(rows.get(1)?.completeSize).toBe(900);
+  expect(rows.get(1)?.completeSize).toBe(700);
   expect(
     normalizeTorrent({
       id: 1,

@@ -46,6 +46,8 @@ async function fixture(page: Page, count = 3, old = false) {
     status: id === 1 ? 2 : 0,
     totalSize: 1024,
     leftUntilDone: 512,
+    haveValid: 512,
+    haveUnchecked: 0,
     percentDone: 0.5,
     recheckProgress: 0.25,
     eta: -1,

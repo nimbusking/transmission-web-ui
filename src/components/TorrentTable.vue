@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, ref } from 'vue';
+import { computed, h, ref, watch } from 'vue';
 import {
   Download,
   Upload,
@@ -15,7 +15,7 @@ import { tableBytes, tableDate, tableServers, peerCount, progressValue } from '.
 import { NDataTable, NCheckbox, NTag, type DataTableColumns } from 'naive-ui';
 import { useI18n } from 'vue-i18n';
 import { useAppStore } from '../stores/app';
-import type { Torrent } from '../domain/types';
+import type { Torrent, TorrentTarget } from '../domain/types';
 import { formatDuration, formatRatio, STATUS_NAMES } from '../domain/torrents';
 const props = defineProps<{
   rows: Torrent[];
@@ -30,11 +30,17 @@ const emit = defineEmits<{
 }>();
 const app = useAppStore(),
   { t } = useI18n(),
-  anchor = ref<number | null>(null);
+  anchor = ref<TorrentTarget>();
+watch(
+  () => anchor.value && app.isTargetCurrent(anchor.value),
+  (valid) => {
+    if (!valid) anchor.value = undefined;
+  },
+);
 function check(row: Torrent, checked: boolean, shift = false) {
   const ids = new Set(app.checkedIds),
     index = props.rows.findIndex((x) => x.id === row.id),
-    start = props.rows.findIndex((x) => x.id === anchor.value);
+    start = props.rows.findIndex((x) => x.id === anchor.value?.id);
   const range =
     shift && start >= 0
       ? props.rows.slice(Math.min(start, index), Math.max(start, index) + 1)
@@ -42,8 +48,8 @@ function check(row: Torrent, checked: boolean, shift = false) {
   for (const item of range)
     if (checked) ids.add(item.id);
     else ids.delete(item.id);
-  app.checkedIds = [...ids];
-  anchor.value = row.id;
+  app.setCheckedIds([...ids]);
+  anchor.value = row.hashString ? app.targets([row.id])[0] : undefined;
 }
 function resize(event: PointerEvent, key: string, initial: number) {
   event.preventDefault();
@@ -257,7 +263,7 @@ const columns = computed<DataTableColumns<Torrent>>(() => [
           !props.rows.every((x) => app.checkedIds.includes(x.id)),
         'aria-label': t('selectAll'),
         onUpdateChecked: (checked: boolean) => {
-          app.checkedIds = checked ? props.rows.map((x) => x.id) : [];
+          app.setCheckedIds(checked ? props.rows.map((x) => x.id) : []);
         },
       }),
     render: (row) =>
@@ -271,6 +277,7 @@ const columns = computed<DataTableColumns<Torrent>>(() => [
         },
         h(NCheckbox, {
           checked: app.checkedIds.includes(row.id),
+          disabled: !row.hashString,
           'aria-label': row.name,
           onKeydown: (e: KeyboardEvent) => {
             if (e.key === ' ') {
@@ -306,6 +313,12 @@ const columns = computed<DataTableColumns<Torrent>>(() => [
           'div',
           {
             class: 'column-head',
+            title:
+              c.key === 'completeSize'
+                ? t('heldBytesHint')
+                : ['seederCount', 'leecherCount'].includes(c.key)
+                  ? t('trackerReportsHint')
+                  : undefined,
             'data-column-key': c.key,
             style: { width: `${Math.max(40, c.width - 20)}px` },
             onDragover: (event: DragEvent) => event.preventDefault(),

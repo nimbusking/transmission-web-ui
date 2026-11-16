@@ -27,7 +27,10 @@ test.beforeEach(async ({ page }) => {
             : b.method === 'torrent-get'
               ? {
                   torrents: (Array.isArray(b.arguments.ids)
-                    ? rows.filter((x) => b.arguments.ids.includes(x.id))
+                    ? rows.filter(
+                        (x) =>
+                          b.arguments.ids.includes(x.id) || b.arguments.ids.includes(x.hashString),
+                      )
                     : rows
                   ).map((row) => ({
                     ...row,

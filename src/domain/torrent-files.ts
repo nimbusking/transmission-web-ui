@@ -1,3 +1,4 @@
+import { wantedValue, priorityValue } from './status';
 import type { Torrent, TorrentFile, FileStat } from './types';
 import { fileProgress } from './torrents';
 export type FilePreset = 'all' | 'padding' | 'unnecessary';
@@ -12,8 +13,8 @@ export function fileRows(torrent: Torrent | undefined): FileRow[] {
       bytesCompleted: stat?.bytesCompleted ?? file.bytesCompleted,
       stat: {
         ...stat,
-        wanted: stat?.wanted ?? torrent?.wanted?.[index],
-        priority: stat?.priority ?? torrent?.priorities?.[index],
+        wanted: wantedValue(stat?.wanted) ?? wantedValue(torrent?.wanted?.[index]),
+        priority: priorityValue(stat?.priority) ?? priorityValue(torrent?.priorities?.[index]),
       },
     };
   });

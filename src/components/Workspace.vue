@@ -14,6 +14,7 @@ import {
 } from 'naive-ui';
 import { useI18n } from 'vue-i18n';
 import { useAppStore } from '../stores/app';
+import { progressFraction, progressText } from '../domain/status';
 import { selectTorrents, formatBytes, errorMessage, STATUS_NAMES } from '../domain/torrents';
 import type { TorrentTarget } from '../domain/types';
 import TorrentTable from './TorrentTable.vue';
@@ -80,7 +81,7 @@ const user = ref(''),
   password = ref(''),
   showAuth = ref(false),
   showResults = ref(false);
-const context = ref<{ x: number; y: number; ids: number[] } | null>(null);
+const context = ref<{ x: number; y: number; targets: TorrentTarget[] } | null>(null);
 let debounce: ReturnType<typeof setTimeout> | undefined;
 watch(search, (v) => {
   clearTimeout(debounce);
@@ -112,9 +113,9 @@ const rows = computed(() =>
 );
 watch([filter, debounced, folder, tracker, label, () => app.settings.ui.pageSize], () => {
   page.value = 1;
-  app.checkedIds = [];
+  app.clearChecked();
 });
-watch(page, () => (app.checkedIds = []));
+watch(page, () => app.clearChecked());
 watch(
   () => filtered.value.length,
   (length) => {
@@ -205,12 +206,13 @@ async function operateBulk(key: string) {
 }
 function operateChecked(key: string) {
   if (!app.ready || app.operationBusy || !app.checkedIds.length) return;
-  return operate(key, [...app.checkedIds]);
+  return operate(key, [], app.captureCheckedTargets());
 }
-async function operate(key: string, ids: number[]) {
+async function operate(key: string, ids: number[], frozen?: TorrentTarget[]) {
   context.value = null;
   try {
-    captured.value = app.targets(ids);
+    captured.value = frozen ?? app.targets(ids);
+    app.validateTargets(captured.value);
     if (key === 'rename' && captured.value.length !== 1)
       throw new Error(t('targetCount', { count: 1 }));
     if (commands[key]) {
@@ -222,6 +224,19 @@ async function operate(key: string, ids: number[]) {
     message.error(errorMessage(e));
   }
 }
+function openContext(event: MouseEvent, ids: number[]) {
+  try {
+    context.value = { x: event.clientX, y: event.clientY, targets: app.targets(ids) };
+  } catch (e) {
+    message.error(errorMessage(e));
+  }
+}
+watch(
+  () => context.value?.targets.every(app.isTargetCurrent),
+  (valid) => {
+    if (valid === false) context.value = null;
+  },
+);
 function sort(key: string) {
   if (sortKey.value === key) descending.value = !descending.value;
   else {
@@ -403,7 +418,7 @@ function collapseOnListBlank(event: MouseEvent) {
             :descending="descending"
             @sort="sort"
             @labels="(id) => operate('labels', [id])"
-            @context="(event, ids) => (context = { x: event.clientX, y: event.clientY, ids })"
+            @context="openContext"
           />
           <div class="mobile-list">
             <article
@@ -414,17 +429,14 @@ function collapseOnListBlank(event: MouseEvent) {
             >
               <NCheckbox
                 :checked="app.checkedIds.includes(row.id)"
+                :disabled="!row.hashString"
                 @click.stop
-                @update:checked="
-                  (checked) =>
-                    (app.checkedIds = checked
-                      ? [...app.checkedIds, row.id]
-                      : app.checkedIds.filter((id) => id !== row.id))
-                "
+                @update:checked="(checked) => app.toggleChecked(row.id, checked)"
               />
               <div>
                 <strong>{{ row.name }}</strong><NProgress
-                  :percentage="(row.percentDone || 0) * 100"
+                  :percentage="(progressFraction(row.percentDone) ?? 0) * 100"
+                  :aria-label="progressText(row.percentDone)"
                   :show-indicator="false"
                   :height="3"
                 /><small
@@ -488,7 +500,7 @@ function collapseOnListBlank(event: MouseEvent) {
           @update:page-size="
             (pageSize) => {
               page = 1;
-              app.checkedIds = [];
+              app.clearChecked();
               app.updateUi({ pageSize });
             }
           "
@@ -531,7 +543,7 @@ function collapseOnListBlank(event: MouseEvent) {
         { key: 'remove', label: t('remove') },
       ]"
       @clickoutside="context = null"
-      @select="(key) => operate(String(key), context?.ids ?? [])"
+      @select="(key) => operate(String(key), [], context?.targets ?? [])"
     />
     <AddDialog v-if="add" :files="dropped" @close="add = false" /><ActionDialog
       v-if="action"

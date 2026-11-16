@@ -112,7 +112,23 @@ test('task configuration tab is removed and remaining details issue no config re
       ),
   ).toBe(true);
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
-  await page.locator('.n-tabs-tab').getByText('Daemon', { exact: true }).click();
-  await expect(page.locator('.config-grid')).toHaveCSS('display', 'grid');
-  await expect(page.locator('.config-grid label').first()).toHaveCSS('flex-direction', 'column');
+  const settings = page.locator('.settings-dialog');
+  await expect(settings.locator('.n-tabs-tab')).toHaveText([
+    'Basic settings',
+    'Network',
+    'Bandwidth limits',
+    'Schedule',
+    'Folder dictionary',
+    'Extra settings',
+    'User labels',
+  ]);
+  await settings.locator('.n-tabs-tab').getByText('Basic settings', { exact: true }).click();
+  await expect(settings.locator('[data-setting="download-dir"] input')).toHaveValue('/data');
+  await expect(settings.locator('[data-setting="download-dir"] input')).toBeEnabled();
+  await expect(
+    settings.getByRole('button', { name: 'Save Transmission parameters', exact: true }),
+  ).toBeDisabled();
+  expect(
+    calls.filter((call) => call.method === 'torrent-set' || call.method === 'session-set'),
+  ).toHaveLength(0);
 });

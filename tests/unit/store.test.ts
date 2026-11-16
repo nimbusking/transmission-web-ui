@@ -26,7 +26,19 @@ beforeEach(async () => {
         return envelope(body, { version: '4.0.6', 'rpc-version': 17, 'session-id': 'session' });
       if (body.method === 'torrent-get') {
         if (failList) throw new TypeError('offline');
-        return envelope(body, { torrents: rows });
+        const ids = body.arguments.ids;
+        const selected = rows.filter(
+          (row) => !Array.isArray(ids) || ids.includes(row.id) || ids.includes(row.hashString),
+        );
+        return envelope(body, {
+          torrents: selected.map((row) =>
+            Object.fromEntries(
+              body.arguments.fields
+                .filter((key: string) => key in row)
+                .map((key: string) => [key, row[key]]),
+            ),
+          ),
+        });
       }
       return envelope(body, {});
     }),
@@ -105,11 +117,14 @@ it('B11: late detail response never overwrites the newly selected task', async (
   let release!: () => void;
   intercept = (body) => {
     if (body.method !== 'torrent-get' || !body.arguments.ids) return;
-    if (body.arguments.ids[0] === 1)
+    if (body.arguments.ids[0] === 'one')
       return new Promise((resolve) => {
-        release = () => resolve(envelope(body, { torrents: [{ id: 1, comment: 'late' }] }));
+        release = () =>
+          resolve(envelope(body, { torrents: [{ id: 1, hashString: 'one', comment: 'late' }] }));
       });
-    return Promise.resolve(envelope(body, { torrents: [{ id: 2, comment: 'current' }] }));
+    return Promise.resolve(
+      envelope(body, { torrents: [{ id: 2, hashString: 'two', comment: 'current' }] }),
+    );
   };
   app.select(1);
   app.select(2);
@@ -119,7 +134,8 @@ it('B11: late detail response never overwrites the newly selected task', async (
   await Promise.resolve();
   expect(app.detail?.comment).toBe('current');
 });
-it('3.00 uses flat Tracker replacement before removal renumbers positions', async () => {
+// D9/C11 explicitly supersedes the previous multi-step 3.00 mixed-edit contract.
+it('3.00 mixed edits and group changes are rejected before the first modifying RPC', async () => {
   rows = [
     {
       id: 1,
@@ -133,53 +149,40 @@ it('3.00 uses flat Tracker replacement before removal renumbers positions', asyn
   ];
   await app.refresh(true);
   app.session = { version: '3.00', 'rpc-version': 16 };
-  await app.updateTrackers(
-    app.targets([1])[0],
-    ['http://a/announce', 'http://b/announce'],
+  for (const after of [
     [{ id: 1, announce: 'http://new/announce', tier: 1 }],
-  );
-  const writes = calls.filter((x) => x.method === 'torrent-set').map((x) => x.arguments);
-  expect(writes).toEqual([
-    { ids: ['one'], trackerReplace: [1, 'http://new/announce'] },
-    { ids: ['one'], trackerRemove: [0] },
-  ]);
+    rows[0].trackers.map((x: any) => ({ ...x, tier: 0 })),
+  ]) {
+    await expect(app.updateTrackers(app.targets([1])[0], rows[0].trackers, after)).rejects.toThrow(
+      'restricted',
+    );
+  }
+  expect(calls.filter((call) => call.method === 'torrent-set')).toHaveLength(0);
 });
-it('3.00 reconciles a partially committed Tracker update without retrying the failed write', async () => {
+it('3.00 pure URL replacement reads back and never retries an uncertain write', async () => {
   rows = [
     {
       id: 1,
       hashString: 'one',
       downloadDir: '/a',
-      trackers: [
-        { id: 0, announce: 'http://a/announce', tier: 0 },
-        { id: 1, announce: 'http://b/announce', tier: 1 },
-      ],
+      trackers: [{ id: 0, announce: 'http://a/announce', tier: 0 }],
     },
   ];
   await app.refresh(true);
   app.session = { version: '3.00', 'rpc-version': 16 };
   intercept = (body) => {
     if (body.method !== 'torrent-set') return;
-    if (body.arguments.trackerReplace) {
-      rows[0].trackers[1].announce = 'http://new/announce';
-      return Promise.resolve(envelope(body, {}));
-    }
-    return Promise.resolve(Response.json({ result: 'remove rejected', tag: body.tag }));
+    rows[0].trackers[0].announce = body.arguments.trackerReplace[1];
+    return Promise.reject(new TypeError('connection lost after write'));
   };
-  const before = calls.length;
   await expect(
-    app.updateTrackers(
-      app.targets([1])[0],
-      ['http://a/announce', 'http://b/announce'],
-      [{ id: 1, announce: 'http://new/announce', tier: 1 }],
-    ),
-  ).rejects.toThrow('remove rejected');
-  const after = calls.slice(before);
-  expect(after.filter((call) => call.method === 'torrent-set')).toHaveLength(2);
-  expect(
-    after.filter((call) => call.method === 'torrent-get').at(-1).arguments.ids,
-  ).toBeUndefined();
-  expect(app.byId.get(1)?.trackers?.[1].announce).toBe('http://new/announce');
+    app.updateTrackers(app.targets([1])[0], structuredClone(rows[0].trackers), [
+      { id: 0, announce: 'http://new/announce', tier: 0 },
+    ]),
+  ).rejects.toThrow();
+  expect(calls.filter((call) => call.method === 'torrent-set')).toHaveLength(1);
+  expect(rows[0].trackers[0].announce).toBe('http://new/announce');
+  expect(app.operationBusy).toBe(false);
 });
 it('B02: recently-active newcomers trigger base fill before target capture', async () => {
   intercept = (body) => {
@@ -660,4 +663,229 @@ it('a slow disk query times out independently and does not disconnect valid tran
   expect(app.freeSpace.error).toBeTruthy();
   expect(app.stats.downloadSpeed).toBe(42);
   expect(app.stale).toBe(false);
+});
+
+it('selection is captured at click; ID reuse invalidates only the changed identity before any write', async () => {
+  rows = [
+    {
+      id: 1,
+      hashString: 'old',
+      downloadDir: '/private',
+      trackers: [{ id: 0, announce: 'http://old', tier: 0 }],
+    },
+    { id: 2, hashString: 'stable', downloadDir: '/b' },
+  ];
+  await app.refresh(true);
+  app.setCheckedIds([1, 2]);
+  const frozen = app.captureCheckedTargets();
+  app.select(1);
+  rows = [
+    { id: 1, hashString: 'new', name: 'replacement' },
+    { id: 2, hashString: 'stable', downloadDir: '/b', name: 'renamed' },
+  ];
+  await app.refresh();
+  expect(app.checkedIds).toEqual([2]);
+  expect(app.captureCheckedTargets()).toEqual([frozen[1]]);
+  expect(app.selectedId).toBeNull();
+  expect(app.byId.get(1)?.downloadDir).toBeUndefined();
+  expect(app.byId.get(1)?.trackers).toBeUndefined();
+  const before = calls.length;
+  await expect(app.command('torrent-stop', frozen)).rejects.toThrow('identity');
+  expect(calls.length).toBe(before);
+});
+it('missing requested hash invalidates old selection even if bounded base fill restores identity', async () => {
+  rows = [{ id: 1, hashString: 'one', downloadDir: '/a' }];
+  await app.refresh(true);
+  app.setCheckedIds([1]);
+  intercept = (body) =>
+    body.method === 'torrent-get' && body.arguments.ids === 'recently-active'
+      ? Promise.resolve(envelope(body, { torrents: [{ id: 1, name: 'partial' }] }))
+      : undefined;
+  await app.refresh();
+  expect(app.checkedIds).toEqual([]);
+  expect(app.byId.get(1)?.hashString).toBe('one');
+});
+it('late details for reused numeric ID cannot populate the replacement task', async () => {
+  rows = [{ id: 1, hashString: 'old', downloadDir: '/a' }];
+  await app.refresh(true);
+  let release!: () => void;
+  intercept = (body) =>
+    body.method === 'torrent-get' && body.arguments.fields.includes('pieces')
+      ? new Promise((resolve) => {
+          release = () =>
+            resolve(envelope(body, { torrents: [{ id: 1, hashString: 'old', pieces: 'AAAA' }] }));
+        })
+      : undefined;
+  app.select(1);
+  expect(calls.at(-1).arguments.ids).toEqual(['old']);
+  rows = [{ id: 1, hashString: 'new', downloadDir: '/b' }];
+  await app.refresh();
+  release();
+  await Promise.resolve();
+  await Promise.resolve();
+  expect(app.selectedId).toBeNull();
+  expect(app.detail).toBeUndefined();
+});
+it('base response is discarded when its captured row revision has changed', async () => {
+  let release!: () => void;
+  intercept = (body) => {
+    if (body.method !== 'torrent-get') return;
+    if (body.arguments.ids === 'recently-active')
+      return Promise.resolve(envelope(body, { torrents: [{ id: 1, hashString: 'old' }] }));
+    expect(body.arguments.ids).toEqual(['old']);
+    return new Promise((resolve) => {
+      release = () =>
+        resolve(envelope(body, { torrents: [{ id: 1, hashString: 'old', downloadDir: '/old' }] }));
+    });
+  };
+  const reading = app.refresh();
+  await vi.waitFor(() => expect(release).toBeTypeOf('function'));
+  app.byId.set(1, { id: 1, hashString: 'new', downloadDir: '/new' });
+  release();
+  await reading;
+  expect(app.byId.get(1)?.hashString).toBe('new');
+  expect(app.byId.get(1)?.downloadDir).toBe('/new');
+});
+
+async function limitSetup() {
+  rows = [1, 2].map((id) => ({
+    id,
+    hashString: String(id),
+    downloadDir: '/data',
+    downloadLimited: true,
+    downloadLimit: 123,
+    uploadLimited: false,
+    uploadLimit: 456,
+  }));
+  await app.refresh(true);
+  return app.targets([1, 2]).map((target, i) => ({ target, row: structuredClone(rows[i]) }));
+}
+const downloadIntent = {
+  download: { mode: 'limit' as const, value: 321 },
+  upload: { mode: 'keep' as const, value: null },
+};
+it('limits preflight the whole batch before writing and ignore untouched upload changes', async () => {
+  const baselines = await limitSetup();
+  rows[1].downloadLimit = 99;
+  await expect(app.saveLimits(baselines, downloadIntent)).rejects.toThrow('changed');
+  expect(calls.filter((b) => b.method === 'torrent-set')).toHaveLength(0);
+  rows[1].downloadLimit = 123;
+  rows[0].uploadLimit = 789;
+  intercept = (b) => {
+    if (b.method === 'torrent-set')
+      Object.assign(
+        rows.find((r) => b.arguments.ids.includes(r.hashString)),
+        b.arguments,
+      );
+    return undefined;
+  };
+  const result = await app.saveLimits(baselines, downloadIntent);
+  expect(result.items.map((x) => x.status)).toEqual(['success', 'success']);
+  expect(calls.filter((b) => b.method === 'torrent-set').map((b) => b.arguments)).toEqual([
+    { ids: ['1'], downloadLimit: 321 },
+    { ids: ['2'], downloadLimit: 321 },
+  ]);
+  expect(rows[0].uploadLimit).toBe(789);
+});
+it('limits distinguish readback mismatch, read failure, no-op and pending cancellation', async () => {
+  const baseline = await limitSetup();
+  const mismatch = await app.saveLimits([baseline[0]], downloadIntent);
+  expect(mismatch.items[0].status).toBe('failed');
+  let written = false;
+  intercept = (b) => {
+    if (b.method === 'torrent-set') {
+      written = true;
+      app.cancelOperations();
+    }
+    if (written && b.method === 'torrent-get') return Promise.reject(new TypeError('offline'));
+    return undefined;
+  };
+  const result = await app.saveLimits(baseline, downloadIntent);
+  expect(result.items.map((x) => x.status)).toEqual(['unknown', 'cancelled']);
+  intercept = undefined;
+  rows[0].downloadLimit = 321;
+  expect((await app.saveLimits([baseline[0]], downloadIntent)).items[0].status).toBe('skipped');
+});
+it('preflight owns the busy token and old generation cannot unlock a new operation', async () => {
+  const baseline = await limitSetup();
+  let release!: () => void;
+  intercept = (b) =>
+    b.method === 'torrent-get' && b.arguments.fields.includes('downloadLimit')
+      ? new Promise((resolve) => {
+          release = () => resolve(envelope(b, { torrents: rows }));
+        })
+      : undefined;
+  const old = app.saveLimits(baseline, downloadIntent);
+  const oldFailure = expect(old).rejects.toThrow();
+  expect(app.operationBusy).toBe(true);
+  await expect(app.command('torrent-stop', [baseline[0].target])).rejects.toThrow('batch');
+  intercept = undefined;
+  await app.connect();
+  let releaseNew!: () => void;
+  intercept = (b) =>
+    b.method === 'torrent-stop'
+      ? new Promise((resolve) => {
+          releaseNew = () => resolve(envelope(b, {}));
+        })
+      : undefined;
+  const next = app.execute('torrent-stop', app.targets([1]));
+  release();
+  await oldFailure;
+  expect(app.operationBusy).toBe(true);
+  releaseNew();
+  await next;
+  expect(app.operationBusy).toBe(false);
+});
+it('Tracker ID/tier changes block overwrite, scrape updates do not, readback is mandatory', async () => {
+  rows = [
+    {
+      id: 1,
+      hashString: 'one',
+      downloadDir: '/a',
+      trackers: [
+        { id: 0, announce: 'http://a/announce', tier: 0 },
+        { id: 1, announce: 'http://b/announce', tier: 1 },
+      ],
+    },
+  ];
+  await app.refresh(true);
+  const target = app.targets([1])[0],
+    before = structuredClone(rows[0].trackers),
+    after = before.map((x: any) => ({ ...x, tier: 0 }));
+  rows[0].trackers[0].id = 9;
+  await expect(app.updateTrackers(target, before, after)).rejects.toThrow('changed');
+  expect(calls.filter((b) => b.method === 'torrent-set')).toHaveLength(0);
+  rows[0].trackers = before.map((x: any) => ({ ...x, seederCount: 20 }));
+  intercept = (b) => {
+    if (b.method === 'torrent-set')
+      rows[0].trackers = after.map((x: any) => ({ ...x, id: x.id + 10 }));
+    return undefined;
+  };
+  expect((await app.updateTrackers(target, before, after)).status).toBe('success');
+});
+
+it('an observed removal invalidates frozen windows even if the same hash and numeric ID return', async () => {
+  rows = [{ id: 1, hashString: 'same', downloadDir: '/data' }];
+  await app.refresh(true);
+  app.setCheckedIds([1]);
+  const frozen = app.captureCheckedTargets().map((x) => ({ ...x }));
+  rows = [];
+  await app.refresh(true);
+  rows = [{ id: 1, hashString: 'same', downloadDir: '/data' }];
+  await app.refresh(true);
+  await expect(app.command('torrent-stop', frozen)).rejects.toThrow('identity');
+  expect(app.checkedIds).toEqual([]);
+  expect(calls.filter((b) => b.method === 'torrent-stop')).toHaveLength(0);
+});
+it('capabilities are recomputed per connection and a temporary failure never persists a downgrade', async () => {
+  expect(app.trackerCapability.state).toBe('full');
+  app.session = { version: '3.00', 'rpc-version': 16 };
+  expect(app.trackerCapability.state).toBe('url-only');
+  failList = true;
+  await expect(app.refresh()).rejects.toThrow();
+  expect(app.trackerCapability.state).toBe('url-only');
+  failList = false;
+  const old = app.generation;
+  await app.connect();
+  expect(app.trackerCapability).toEqual({ generation: old + 1, state: 'full' });
 });

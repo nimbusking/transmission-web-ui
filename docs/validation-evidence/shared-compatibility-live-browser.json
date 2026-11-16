@@ -1,0 +1,23 @@
+{
+  "at": "2026-11-16T10:45:24.614Z",
+  "connected": true,
+  "settingsTabs": [
+    "Basic settings",
+    "Network",
+    "Bandwidth limits",
+    "Schedule",
+    "Folder dictionary",
+    "Extra settings",
+    "User labels"
+  ],
+  "errors": [],
+  "blockedWrites": [],
+  "rpcMethods": [
+    "session-get",
+    "torrent-get",
+    "session-stats",
+    "free-space"
+  ],
+  "screenshot": "artifacts/shared-compatibility-live.png",
+  "readOnly": true
+}

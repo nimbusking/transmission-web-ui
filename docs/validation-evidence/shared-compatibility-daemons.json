@@ -1,0 +1,519 @@
+{
+  "at": "2026-11-16T09:47:54.218Z",
+  "results": [
+    {
+      "version": "3.00 (bb6b5a062e)",
+      "cases": [
+        {
+          "case": "selective-held-bytes",
+          "actual": {
+            "downloadLimit": 100,
+            "downloadLimited": false,
+            "fileStats": [
+              {
+                "bytesCompleted": 16384,
+                "priority": 0,
+                "wanted": true
+              },
+              {
+                "bytesCompleted": 0,
+                "priority": 0,
+                "wanted": false
+              }
+            ],
+            "files": [
+              {
+                "bytesCompleted": 16384,
+                "length": 16384,
+                "name": "isolated-compat/a.bin"
+              },
+              {
+                "bytesCompleted": 0,
+                "length": 16384,
+                "name": "isolated-compat/b.bin"
+              }
+            ],
+            "hashString": "42bcef40cfdf8d3c222abcce81052ca077bc83bd",
+            "haveUnchecked": 0,
+            "haveValid": 16384,
+            "id": 1,
+            "leftUntilDone": 0,
+            "metadataPercentComplete": 1,
+            "percentDone": 1,
+            "priorities": [
+              0,
+              0
+            ],
+            "status": 0,
+            "totalSize": 32768,
+            "trackers": [
+              {
+                "announce": "http://127.0.0.1:19999/announce",
+                "id": 0,
+                "scrape": "http://127.0.0.1:19999/scrape",
+                "tier": 0
+              }
+            ],
+            "uploadLimit": 100,
+            "uploadLimited": false,
+            "wanted": [
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "case": "independent-limits-disable-and-zero",
+          "passed": true
+        },
+        {
+          "case": "limit-boundary-readback-disabled",
+          "values": [
+            {
+              "requested": 4194303,
+              "readback": 4194303
+            },
+            {
+              "requested": 4194304,
+              "readback": 4194304
+            },
+            {
+              "requested": 4294967,
+              "readback": 4294967
+            },
+            {
+              "requested": 4294968,
+              "readback": 0
+            },
+            {
+              "requested": 9007199254740,
+              "readback": 4294966
+            },
+            {
+              "requested": 9007199254740991,
+              "readback": 4294966
+            }
+          ]
+        },
+        {
+          "case": "tracker-pure-url-independent-add-remove",
+          "passed": true,
+          "afterAdd": [
+            {
+              "announce": "http://127.0.0.1:19998/changed",
+              "id": 0,
+              "scrape": "",
+              "tier": 0
+            },
+            {
+              "announce": "http://127.0.0.1:19997/added",
+              "id": 1,
+              "scrape": "",
+              "tier": 1
+            }
+          ]
+        },
+        {
+          "case": "file-index-and-priority",
+          "passed": true
+        }
+      ],
+      "hashOnlyRequests": true,
+      "network": "none",
+      "hostPorts": [],
+      "sharedMounts": []
+    },
+    {
+      "version": "4.0.0 (280ace12f8)",
+      "cases": [
+        {
+          "case": "selective-held-bytes",
+          "actual": {
+            "downloadLimit": 100,
+            "downloadLimited": false,
+            "fileStats": [
+              {
+                "bytesCompleted": 16384,
+                "priority": 0,
+                "wanted": true
+              },
+              {
+                "bytesCompleted": 0,
+                "priority": 0,
+                "wanted": false
+              }
+            ],
+            "files": [
+              {
+                "bytesCompleted": 16384,
+                "length": 16384,
+                "name": "isolated-compat/a.bin"
+              },
+              {
+                "bytesCompleted": 0,
+                "length": 16384,
+                "name": "isolated-compat/b.bin"
+              }
+            ],
+            "hashString": "42bcef40cfdf8d3c222abcce81052ca077bc83bd",
+            "haveUnchecked": 0,
+            "haveValid": 16384,
+            "id": 1,
+            "leftUntilDone": 0,
+            "metadataPercentComplete": 1,
+            "percentDone": 1,
+            "priorities": [
+              0,
+              0
+            ],
+            "status": 0,
+            "totalSize": 32768,
+            "trackers": [
+              {
+                "announce": "http://127.0.0.1:19999/announce",
+                "id": 0,
+                "scrape": "http://127.0.0.1:19999/scrape",
+                "sitename": "127.0.0.1",
+                "tier": 0
+              }
+            ],
+            "uploadLimit": 100,
+            "uploadLimited": false,
+            "wanted": [
+              true,
+              false
+            ]
+          }
+        },
+        {
+          "case": "independent-limits-disable-and-zero",
+          "passed": true
+        },
+        {
+          "case": "limit-boundary-readback-disabled",
+          "values": [
+            {
+              "requested": 4194303,
+              "readback": 4194303
+            },
+            {
+              "requested": 4194304,
+              "readback": 4194304
+            },
+            {
+              "requested": 4294967,
+              "readback": 4294967
+            },
+            {
+              "requested": 4294968,
+              "readback": 4294968
+            },
+            {
+              "requested": 9007199254740,
+              "readback": 9007199254740
+            },
+            {
+              "requested": 9007199254740991,
+              "readback": 9007199254740991
+            }
+          ]
+        },
+        {
+          "case": "tracker-pure-url-independent-add-remove",
+          "passed": true,
+          "afterAdd": [
+            {
+              "announce": "http://127.0.0.1:19998/changed",
+              "id": 1,
+              "scrape": "",
+              "sitename": "127.0.0.1",
+              "tier": 0
+            },
+            {
+              "announce": "http://127.0.0.1:19997/added",
+              "id": 3,
+              "scrape": "",
+              "sitename": "127.0.0.1",
+              "tier": 1
+            }
+          ]
+        },
+        {
+          "case": "full-group-edit-and-group-only-change",
+          "passed": true
+        },
+        {
+          "case": "file-index-and-priority",
+          "passed": true
+        }
+      ],
+      "hashOnlyRequests": true,
+      "network": "none",
+      "hostPorts": [],
+      "sharedMounts": []
+    },
+    {
+      "version": "4.0.6 (38c164933e)",
+      "cases": [
+        {
+          "case": "selective-held-bytes",
+          "actual": {
+            "downloadLimit": 100,
+            "downloadLimited": false,
+            "fileStats": [
+              {
+                "bytesCompleted": 16384,
+                "priority": 0,
+                "wanted": true
+              },
+              {
+                "bytesCompleted": 0,
+                "priority": 0,
+                "wanted": false
+              }
+            ],
+            "files": [
+              {
+                "bytesCompleted": 16384,
+                "length": 16384,
+                "name": "isolated-compat/a.bin"
+              },
+              {
+                "bytesCompleted": 0,
+                "length": 16384,
+                "name": "isolated-compat/b.bin"
+              }
+            ],
+            "hashString": "42bcef40cfdf8d3c222abcce81052ca077bc83bd",
+            "haveUnchecked": 0,
+            "haveValid": 16384,
+            "id": 1,
+            "leftUntilDone": 0,
+            "metadataPercentComplete": 1,
+            "percentDone": 1,
+            "priorities": [
+              0,
+              0
+            ],
+            "status": 0,
+            "totalSize": 32768,
+            "trackers": [
+              {
+                "announce": "http://127.0.0.1:19999/announce",
+                "id": 0,
+                "scrape": "http://127.0.0.1:19999/scrape",
+                "sitename": "127.0.0.1",
+                "tier": 0
+              }
+            ],
+            "uploadLimit": 100,
+            "uploadLimited": false,
+            "wanted": [
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "case": "independent-limits-disable-and-zero",
+          "passed": true
+        },
+        {
+          "case": "limit-boundary-readback-disabled",
+          "values": [
+            {
+              "requested": 4194303,
+              "readback": 4194303
+            },
+            {
+              "requested": 4194304,
+              "readback": 4194304
+            },
+            {
+              "requested": 4294967,
+              "readback": 4294967
+            },
+            {
+              "requested": 4294968,
+              "readback": 4294968
+            },
+            {
+              "requested": 9007199254740,
+              "readback": 9007199254740
+            },
+            {
+              "requested": 9007199254740991,
+              "readback": 9007199254740991
+            }
+          ]
+        },
+        {
+          "case": "tracker-pure-url-independent-add-remove",
+          "passed": true,
+          "afterAdd": [
+            {
+              "announce": "http://127.0.0.1:19998/changed",
+              "id": 1,
+              "scrape": "",
+              "sitename": "127.0.0.1",
+              "tier": 0
+            },
+            {
+              "announce": "http://127.0.0.1:19997/added",
+              "id": 3,
+              "scrape": "",
+              "sitename": "127.0.0.1",
+              "tier": 1
+            }
+          ]
+        },
+        {
+          "case": "full-group-edit-and-group-only-change",
+          "passed": true
+        },
+        {
+          "case": "file-index-and-priority",
+          "passed": true
+        }
+      ],
+      "hashOnlyRequests": true,
+      "network": "none",
+      "hostPorts": [],
+      "sharedMounts": []
+    },
+    {
+      "version": "4.1.4 (a6d907d9ea)",
+      "cases": [
+        {
+          "case": "selective-held-bytes",
+          "actual": {
+            "downloadLimit": 100,
+            "downloadLimited": false,
+            "fileStats": [
+              {
+                "bytesCompleted": 16384,
+                "priority": 0,
+                "wanted": true
+              },
+              {
+                "bytesCompleted": 0,
+                "priority": 0,
+                "wanted": false
+              }
+            ],
+            "files": [
+              {
+                "begin_piece": 0,
+                "bytesCompleted": 16384,
+                "end_piece": 1,
+                "length": 16384,
+                "name": "isolated-compat/a.bin"
+              },
+              {
+                "begin_piece": 1,
+                "bytesCompleted": 0,
+                "end_piece": 2,
+                "length": 16384,
+                "name": "isolated-compat/b.bin"
+              }
+            ],
+            "hashString": "42bcef40cfdf8d3c222abcce81052ca077bc83bd",
+            "haveUnchecked": 0,
+            "haveValid": 16384,
+            "id": 1,
+            "leftUntilDone": 0,
+            "metadataPercentComplete": 1,
+            "percentDone": 1,
+            "priorities": [
+              0,
+              0
+            ],
+            "status": 0,
+            "totalSize": 32768,
+            "trackers": [
+              {
+                "announce": "http://127.0.0.1:19999/announce",
+                "id": 0,
+                "scrape": "http://127.0.0.1:19999/scrape",
+                "sitename": "127.0.0.1",
+                "tier": 0
+              }
+            ],
+            "uploadLimit": 100,
+            "uploadLimited": false,
+            "wanted": [
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "case": "independent-limits-disable-and-zero",
+          "passed": true
+        },
+        {
+          "case": "limit-boundary-readback-disabled",
+          "values": [
+            {
+              "requested": 4194303,
+              "readback": 4194303
+            },
+            {
+              "requested": 4194304,
+              "readback": 4194304
+            },
+            {
+              "requested": 4294967,
+              "readback": 4294967
+            },
+            {
+              "requested": 4294968,
+              "readback": 4294968
+            },
+            {
+              "requested": 9007199254740,
+              "readback": 9007199254740
+            },
+            {
+              "requested": 9007199254740991,
+              "readback": 9007199254740991
+            }
+          ]
+        },
+        {
+          "case": "tracker-pure-url-independent-add-remove",
+          "passed": true,
+          "afterAdd": [
+            {
+              "announce": "http://127.0.0.1:19998/changed",
+              "id": 1,
+              "scrape": "",
+              "sitename": "127.0.0.1",
+              "tier": 0
+            },
+            {
+              "announce": "http://127.0.0.1:19997/added",
+              "id": 2,
+              "scrape": "",
+              "sitename": "127.0.0.1",
+              "tier": 1
+            }
+          ]
+        },
+        {
+          "case": "full-group-edit-and-group-only-change",
+          "passed": true
+        },
+        {
+          "case": "file-index-and-priority",
+          "passed": true
+        }
+      ],
+      "hashOnlyRequests": true,
+      "network": "none",
+      "hostPorts": [],
+      "sharedMounts": []
+    }
+  ],
+  "comparisonContainersTouched": false
+}

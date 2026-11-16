@@ -13,7 +13,15 @@ test('bulk Tracker preview is read-only; conflicts settle per task without overw
     }));
   await page.route('**/rpc', async (route) => {
     const body = route.request().postDataJSON();
-    if (body.method === 'torrent-set') writes.push(body);
+    if (body.method === 'torrent-set') {
+      writes.push(body);
+      for (const row of rows.filter((x) => body.arguments.ids.includes(x.hashString)))
+        row.trackers = body.arguments.trackerList
+          .split('\n\n')
+          .flatMap((group: string, tier: number) =>
+            group.split('\n').map((announce: string, id: number) => ({ id, announce, tier })),
+          );
+    }
     const ids = body.arguments.ids;
     const args =
       body.method === 'session-get'
