@@ -27,7 +27,7 @@ Path('/usr/local/bin/synopkg').chmod(0o755)
 Path('/etc/nginx/nginx.conf').write_text('user www-data;\nevents {}\nhttp { include /etc/nginx/mime.types; include conf.d/http.*.conf; }\n')
 subprocess.run(['nginx'], check=True)
 subprocess.run(['synopkg', 'start', 'transmission'], check=True)
-installer = '/repo/artifacts/installer-2.0.0-installer.5/install-transmission-web-ui.sh'
+installer = os.environ.get('TWUI_TEST_INSTALLER', '/repo/artifacts/installer-2.0.0-installer.5/install-transmission-web-ui.sh')
 backups = Path('/var/packages/transmission/var/.twui-backups-transmission-web-ui')
 
 def run(*args, success=True):
@@ -109,6 +109,9 @@ assert not Path('/etc/nginx/conf.d/http.transmission-web-ui-login.conf').exists(
 assert not (backups / 'pending').exists()
 # Convert the managed link into the legacy standalone repair's real web directory.
 run('--mode', 'package', '--yes')
+# Standalone repairs copy the raw template, not the generated installer's helper.
+shutil.copyfile('/repo/release/login-nginx.conf', config)
+shutil.copyfile('/repo/release/login-nginx.conf', root / 'nginx.conf')
 shutil.copytree(root / 'web', root / 'legacy-fixture')
 (root / 'web').unlink()
 (root / 'legacy-fixture').rename(root / 'web')

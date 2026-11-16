@@ -14,7 +14,8 @@ for (const [index, file] of files.entries()) {
   const source = await readFile(`release/${file}`, 'utf8');
   const delimiter = `TWUI_EMBEDDED_HELPER_${index}_END`;
   if (source.includes(delimiter)) throw new Error('Embedded delimiter collision');
-  script += `cat > "$work/${file.split('/').at(-1)}" <<'${delimiter}'\n${source}\n${delimiter}\n`;
+  const body = source.endsWith('\n') ? source : `${source}\n`;
+  script += `cat > "$work/${file.split('/').at(-1)}" <<'${delimiter}'\n${body}${delimiter}\n`;
 }
 script += '}\n';
 script += await readFile('release/installer/main.sh', 'utf8');

@@ -139,7 +139,6 @@ find "$stage" -type f -exec chmod 644 {} \;
 printf 'transmission-web-ui-v1\n' > "$stage/.twui-release"
 mv "$stage" "$prefix/releases/$version"
 switch_to "$version"
-
 TWUI_EMBEDDED_HELPER_0_END
 cat > "$work/synology-check.sh" <<'TWUI_EMBEDDED_HELPER_1_END'
 #!/bin/sh
@@ -179,7 +178,6 @@ else
   printf '%s\n' 'Container mode: mount the managed parent directory read-only, set the in-container TRANSMISSION_WEB_HOME, then recreate and verify HTTP/RPC.'
 fi
 printf 'Web root: %s\n' "$web"
-
 TWUI_EMBEDDED_HELPER_1_END
 cat > "$work/synocommunity.sh" <<'TWUI_EMBEDDED_HELPER_2_END'
 #!/bin/sh
@@ -344,7 +342,6 @@ printf '%s\n' twui-synocommunity-xdg-v1 "$link" "$prefix/current" "$version" > "
 mv "$staged" "$marker"; staged=
 ln -sT "$prefix/current" "$link" || fail 'Cannot create XDG link; registration retained for explicit detach/retry'
 printf '%s\n' 'Managed XDG link attached. Restart Transmission through Package Center, then verify static UI and RPC.' 'Vendor scripts, settings and bundled Web UI were not changed. NAS reboot and package upgrade still require real-device validation.'
-
 TWUI_EMBEDDED_HELPER_2_END
 cat > "$work/json-paths.awk" <<'TWUI_EMBEDDED_HELPER_3_END'
 # Strict JSON scalar extraction for read-only RPC persistence checks. No eval.
@@ -420,7 +417,6 @@ function value(path,depth,   c,k,v,j,token) {
 }
 { src=src $0 "\n" }
 END { if(failed)exit 2;pos=1;value("",0);ws();if(pos<=length(src) || !result_seen)exit 2 }
-
 TWUI_EMBEDDED_HELPER_3_END
 cat > "$work/login-entry.sh" <<'TWUI_EMBEDDED_HELPER_4_END'
 # Sourced by the integrated installer; all rollback data belongs to its transaction.
@@ -565,7 +561,6 @@ login_rollback() {
     *) return 1;;
   esac
 }
-
 TWUI_EMBEDDED_HELPER_4_END
 cat > "$work/login-nginx.conf" <<'TWUI_EMBEDDED_HELPER_5_END'
 # Managed Transmission login entry: public static UI, authenticated RPC only.
@@ -597,7 +592,6 @@ server {
     }
     location / { return 404; }
 }
-
 TWUI_EMBEDDED_HELPER_5_END
 }
 # This file is embedded after extract_helpers() in the standalone installer.
