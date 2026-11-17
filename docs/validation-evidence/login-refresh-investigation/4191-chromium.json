@@ -1,0 +1,8 @@
+{
+  "build": "artifacts/installer-2.0.0-installer.7/stage-2.0.0-installer.7/web",
+  "browser": "chromium",
+  "loginSucceeded": true,
+  "loginPageAfterReload": true,
+  "requestsBeforeReload": 3,
+  "requestsAfterReload": []
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "directory": "artifacts/stage-2.0.0",
+    "version": "2.0.0",
+    "sha256": {
+      "web/index.html": "8d22cc23d8578ddd602417d3a071fe2cbef6964d4e7dd42e40017c13e570eca9",
+      "web/app-config.json": "b7382255cb0866e789ed6798a65c0dbb03fe0119b518a75066dde28a048a54c7"
+    }
+  },
+  {
+    "directory": "artifacts/installer-2.0.0-installer.7/stage-2.0.0-installer.7",
+    "version": "2.0.0-installer.7",
+    "sha256": {
+      "web/index.html": "49ce2d69081d1a74527ce84b909809bb1d1b5e2fda297e927ce9766b08e9e9fe",
+      "web/app-config.json": "b7382255cb0866e789ed6798a65c0dbb03fe0119b518a75066dde28a048a54c7"
+    }
+  },
+  {
+    "directory": "artifacts/stage-2.1.0",
+    "version": "2.1.0",
+    "sha256": {
+      "web/index.html": "6fc01300c28d2108a7fa362ca18a3b31bc47659f163afcbf98203fb2c92c7de6",
+      "web/app-config.json": "b7382255cb0866e789ed6798a65c0dbb03fe0119b518a75066dde28a048a54c7"
+    }
+  }
+]

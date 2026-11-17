@@ -17,6 +17,7 @@ settings.write_text(json.dumps(data, indent=4))
 Path('/etc.defaults').mkdir(exist_ok=True)
 Path('/etc.defaults/VERSION').write_text('DSM simulation only\n')
 Path('/usr/local/bin/synopkg').write_text('''#!/bin/sh
+printf "%s\n" "$1" >> /tmp/synopkg-actions
 if [ "$1" = restart ]; then "$0" stop transmission && exec "$0" start transmission; fi
 export SYNOPKG_PKGNAME=transmission SYNOPKG_DSM_VERSION_MAJOR=7
 export SYNOPKG_PKGDEST=/var/packages/transmission/target SYNOPKG_PKGVAR=/var/packages/transmission/var SYNOPKG_PKGTMP=/tmp
@@ -67,6 +68,9 @@ def run(*args, success=True):
     assert (os.waitstatus_to_exitcode(status) == 0) == success, text
     return text
 
+def daemon_pid():
+    return Path('/var/packages/transmission/var/transmission.pid').read_text().strip()
+
 def port():
     return json.loads(settings.read_text())['rpc-port']
 
@@ -74,7 +78,10 @@ run('--mode', 'package', '--check')
 run('--mode', 'package', '--check', '--login-page', 'off')
 assert port() == 9091
 assert not Path('/usr/local/share/transmission-web-ui-login').exists()
+candidate_installer = installer
+installer = os.environ.get('TWUI_TEST_BASELINE_INSTALLER', installer)
 run('--mode', 'package', '--yes')
+installer = candidate_installer
 assert port() == 9093
 first = backups / (backups / 'latest').read_text().strip()
 root = Path('/usr/local/share/transmission-web-ui-login')
@@ -86,10 +93,16 @@ config.write_text(original_config + '\n# externally changed\n')
 run('--mode', 'package', '--check', success=False)
 assert os.readlink(root / 'web') == first_web
 config.write_text(original_config)
+upgrade_pid = daemon_pid()
+upgrade_actions = Path('/tmp/synopkg-actions').read_text()
 run('--mode', 'package', '--yes')
+assert daemon_pid() == upgrade_pid, 'UI upgrade restarted Transmission'
+assert Path('/tmp/synopkg-actions').read_text() == upgrade_actions
 second = backups / (backups / 'latest').read_text().strip()
 assert os.readlink(root / 'web') != first_web
 run('--restore', str(second), '--yes')
+assert daemon_pid() == upgrade_pid, 'UI restore restarted Transmission'
+assert Path('/tmp/synopkg-actions').read_text() == upgrade_actions
 assert port() == 9093
 assert (root / 'web/index.html').read_bytes() == (second / 'login-old-web/index.html').read_bytes()
 run('--restore', str(first), '--yes')
@@ -115,10 +128,30 @@ shutil.copyfile('/repo/release/login-nginx.conf', root / 'nginx.conf')
 shutil.copytree(root / 'web', root / 'legacy-fixture')
 (root / 'web').unlink()
 (root / 'legacy-fixture').rename(root / 'web')
+legacy_pid = daemon_pid()
 run('--mode', 'package', '--yes')
+assert daemon_pid() == legacy_pid, 'legacy web migration restarted Transmission'
 legacy = backups / (backups / 'latest').read_text().strip()
 assert (root / 'web').is_symlink()
 run('--restore', str(legacy), '--yes')
+assert daemon_pid() == legacy_pid, 'legacy web restore restarted Transmission'
 assert port() == 9093
 assert (root / 'web/index.html').read_bytes() == (legacy / 'login-old-web/index.html').read_bytes()
 print('PASS: fresh install, managed upgrade, upgrade rollback, first-install rollback, injected activation failure, legacy migration and recovery; authenticated RPC and resources verified')
+
+# Direct daemon Web serving also supports managed upgrades without a login proxy.
+creations = [p for p in backups.iterdir() if p.is_dir() and (p / 'login-state').exists()
+             and (p / 'login-state').read_text().strip() == 'new'
+             and (p / 'status').read_text().strip() == 'committed']
+run('--restore', str(sorted(creations)[-1]), '--yes')
+run('--mode', 'package', '--login-page', 'off', '--yes')
+direct_pid = daemon_pid()
+direct_actions = Path('/tmp/synopkg-actions').read_text()
+run('--mode', 'package', '--login-page', 'off', '--yes')
+direct_tx = backups / (backups / 'latest').read_text().strip()
+assert daemon_pid() == direct_pid
+assert Path('/tmp/synopkg-actions').read_text() == direct_actions
+run('--restore', str(direct_tx), '--yes')
+assert daemon_pid() == direct_pid
+assert Path('/tmp/synopkg-actions').read_text() == direct_actions
+print('PASS: direct daemon UI upgrade/restore made zero service calls')

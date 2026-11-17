@@ -1,0 +1,14 @@
+{
+  "README.md": "b8302c0ff6883e63927de8fb638e85126717c65a7fb5a26b5f0d255b85a9c46e",
+  "browser-login.log": "3dcae51beaae83399965e21bc60d540538fb2a49c4da60ba8f0292d16ce3ce83",
+  "diagnostic-matrix.log": "2801cb52156ca10d6e529c789e90272e1f2e808081bfdc1c3eefa518079f87f5",
+  "diagnostic-production.log": "3dcae51beaae83399965e21bc60d540538fb2a49c4da60ba8f0292d16ce3ce83",
+  "initial-startup-failure.log": "5c0adf2de2f6b3168e9f62c56e13487d56d07030cf8d75765af09b9277ce6b44",
+  "installer-fresh.log": "bfe973e2d986bdce6995df1ba6340a996ae39a279637a5567b8833792de4c723",
+  "installer-upgrade-210.log": "d3788eb390b6d236a453fbccdc577e39d75a7acd2e1c9fb513c142c11b688cd8",
+  "negative-211.log": "fd1fb58f70d131103c6ad22335871c8391d79d85fd246e2188d36dea883d35ad",
+  "package.json": "0a9796af077cd1c4a1abe5c13b54fe44b8ee34b6049f3a4a204a2176045c02f4",
+  "real-nginx-browser.log": "532455b59937fec4811ac2986dcf0456ac1b650dde9fc1b2504ea3f5cf70da3b",
+  "repository-check.log": "bfa33d8e9483b53986ed6a7e16df99189d826447c0db76b3d585181188399316",
+  "summary.json": "a8df9355160862b93cf250d79017b46a4094361bb1eccb4b11707c46afa3bc79"
+}

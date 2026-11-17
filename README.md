@@ -15,6 +15,8 @@
 
 发布包是完整的 HTML / JavaScript / CSS 静态资源，运行时不需要 Node.js、npm、Python、数据库或外部 CDN。保留现有 Transmission 服务、下载任务与数据，群晖可使用单文件离线安装器完成接入。
 
+2.1.0 增加浏览器本地诊断、手动日志导出和有限范围的离线故障重放；采集范围、保存位置和操作步骤见[诊断与重放说明](docs/diagnostics.md)。无需部署日志服务器。 遇到问题可使用[用户自查检查表](docs/diagnostics-self-check.md)，按步骤排查并整理反馈。
+
 [下载发行版](https://github.com/nimbusking/transmission-web-ui/releases) · [反馈问题](https://github.com/nimbusking/transmission-web-ui/issues) · [项目博客](https://nimbusk.cc)
 
 ## 目录
@@ -81,7 +83,7 @@ Transmission 3.00 使用旧版 Tracker 编辑方式；4.x 支持 `trackerList` �
 3. 按提示选择套件或容器、输入认证信息，并确认必要的服务重启。安装器完成环境检测、旧资源备份、离线资源安装和页面/RPC 验证。
 4. 保存输出的安装目录、访问地址和**备份目录**。打开提示地址，登录后检查任务列表和状态栏。
 
-请下载 **Release 附件**：它内嵌完整离线包；源码仓库内同名文件是开发入口，不是离线交付包。首次接入可能重启服务，传输会短暂暂停。无需在 NAS 安装开发运行时，也无需替换现有 Transmission 镜像。
+请下载 **Release 附件**：它内嵌完整离线包；源码仓库内同名文件是开发入口，不是离线交付包。首次接入可能重启服务，传输会短暂暂停；已受管理的纯 UI 升级及对应恢复只切换静态资源，不重启 Transmission。无需在 NAS 安装开发运行时，也无需替换现有 Transmission 镜像。
 
 **群晖登录页：** 从 `2.0.0-installer.5` 起，支持的 SynoCommunity 4.1.4-32 环境在原端口为 9091 且启用认证时，默认 `--login-page auto` 使用 DSM 系统 nginx 提供网页登录入口，原 RPC 调整至 9093，保留账号密码。已有入口的升级与恢复由同一安装器管理。Docker 不自动配置该登录代理。参数和恢复机制见[一体化安装器](docs/integrated-installer.md)。
 
@@ -271,6 +273,15 @@ TR_RPC_TARGET=http://127.0.0.1:9091 npm run dev
 | `npm run test:rpc`                       | 真实服务 RPC 验证                                     |
 | `npm run release`                        | 构建静态包、摘要和单文件离线安装器，输出 `artifacts/` |
 | `npm run lab:down`                       | 停止实验环境，保留数据卷                              |
+
+后续自行打包 NAS 离线安装器：
+
+```sh
+npm ci
+npm run package:nas -- --version 2.1.3-status.2
+```
+
+在 Linux / WSL 开发电脑运行，需要 Node.js >=22.12、GNU tar 和 POSIX sh。脚本执行单元测试、安装器回归测试、生产构建、打包与 SHA256 校验，默认输出到 `artifacts/nas-<版本>/`；可用 `--output-dir <目录>` 指定输出目录（相对仓库根目录）。目录必须为空或不存在。上传其中的 `install-transmission-web-ui.sh` 及 `.sha256` 到 NAS，按上文安装步骤执行。归档版本用于安装与回退，不修改 `package.json` 中的界面版本；每次部署请指定新版本，避免安装器拒绝同版本覆盖。
 
 新旧 UI 对照仅用于开发，需额外提供历史 Web 资源路径 `TWUI_LEGACY_WEB_ROOT` 后运行 `npm run compare:up`，见[本地对照说明](docs/local-comparison.md)。测试步骤与证据见[验证文档](docs/validation.md)。不要并发构建和测试同一 `dist/`。生成本地发行文件不会自动上传 GitHub Release。
 

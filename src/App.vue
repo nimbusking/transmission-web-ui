@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { hasPageLoginSession, readLoginSession } from './services/login-session';
+import { diagnostics } from './services/diagnostics/recorder';
 import { computed, onMounted, onUnmounted, provide, ref, watch, watchEffect } from 'vue';
 import {
   darkTheme,
@@ -27,11 +29,14 @@ const app = useAppStore(),
   systemDark = ref(false);
 const initializing = ref(true);
 const loginEntry = ref(new URLSearchParams(location.search).get('login') === '1');
-const hasConnected = ref(false);
+const hasConnected = ref(hasPageLoginSession());
 watch(
   () => app.ready,
   (ready) => {
-    if (ready) hasConnected.value = true;
+    if (ready) {
+      hasConnected.value = true;
+      loginEntry.value = false;
+    }
   },
 );
 const media = window.matchMedia('(prefers-color-scheme: dark)');
@@ -61,11 +66,15 @@ watchEffect(() => {
   rootStyle.setProperty('color-scheme', dark.value ? 'dark' : 'light');
 });
 onMounted(async () => {
-  updateTheme();
-  media.addEventListener('change', updateTheme);
   try {
-    await app.initialize(await loadConfig(), false);
+    updateTheme();
+    media.addEventListener('change', updateTheme);
+    const runtime = await loadConfig();
+    hasConnected.value = !!readLoginSession(runtime.rpcUrl);
+    if (hasConnected.value) loginEntry.value = false;
+    await app.initialize(runtime, false);
   } catch (e) {
+    diagnostics.exception('initialization', e);
     app.error = errorMessage(e);
   } finally {
     initializing.value = false;
@@ -93,11 +102,16 @@ onUnmounted(() => {
       ><NDialogProvider
         ><div :class="['application', { dark }]" :data-visual-theme="skin">
           <LoginPage
-            v-if="loginEntry || !hasConnected || app.authenticationRequired"
+            v-if="
+              (!initializing && (loginEntry || !hasConnected || app.authenticationRequired)) ||
+              (!hasConnected && initializing)
+            "
             :initializing="initializing"
             @authenticated="loginEntry = false"
           />
-          <RouterView v-else /></div></NDialogProvider
+          <div v-else :inert="initializing" :aria-busy="initializing">
+            <RouterView />
+          </div></div></NDialogProvider
     ></NMessageProvider>
   </NConfigProvider>
 </template>

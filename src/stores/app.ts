@@ -1,3 +1,6 @@
+import { readLoginSession, saveLoginSession } from '../services/login-session';
+import { capture, type Checkpoint } from '../services/diagnostics/capture';
+import { diagnostics } from '../services/diagnostics/recorder';
 import {
   LIMIT_FIELDS,
   limitPatch,
@@ -97,11 +100,40 @@ export const useAppStore = defineStore('application', () => {
     detailController: AbortController | undefined;
   let refreshTask: Promise<void> | null = null,
     timer: ReturnType<typeof setTimeout> | undefined,
+    replayDeadline = Infinity,
+    timerDue = 0,
     lastSnapshot = 0,
     lastSession = 0,
     detailSequence = 0;
   let operationController: AbortController | undefined;
   let operationToken: symbol | undefined;
+  let replayStateObserver: ((type: string, data: Record<string, unknown>) => void) | undefined;
+  function recordDiscard(epoch: number, reason = 'generation') {
+    const data = { generation: epoch, reason };
+    diagnostics.record('state.discard', data);
+    capture.event('state.discard', data);
+    replayStateObserver?.('state.discard', data);
+  }
+  function obsolete(epoch: number) {
+    if (epoch === generation.value) return false;
+    recordDiscard(epoch);
+    return true;
+  }
+  let diagnosticOperation = 0;
+  function beginDiagnosticOperation(action: string, values: Record<string, unknown> = {}) {
+    const operationId = ++diagnosticOperation;
+    diagnostics.record('operation.start', {
+      operationId,
+      action,
+      count: Array.isArray(values.ids) ? values.ids.length : undefined,
+    });
+    capture.begin(action, values, operationId);
+    return operationId;
+  }
+  function endDiagnosticOperation(operationId: number | undefined, kind?: string) {
+    if (operationId !== undefined) diagnostics.record('operation.end', { operationId, kind });
+    capture.end(operationId, kind);
+  }
   const trackerCapability = computed(() => trackerCapabilities(session.value, generation.value));
   function acquireOperation() {
     if (operationBusy.value) throw new Error('Another batch is active');
@@ -186,7 +218,7 @@ export const useAppStore = defineStore('application', () => {
   }
   function reconcileIdentities() {
     checkedTargets.value = checkedTargets.value.filter(isTargetCurrent);
-    if (selectedTarget.value && !isTargetCurrent(selectedTarget.value)) select(null);
+    if (selectedTarget.value && !isTargetCurrent(selectedTarget.value)) select(null, 'internal');
   }
   function detailTarget(): TorrentTarget {
     const target = selectedTarget.value;
@@ -196,10 +228,16 @@ export const useAppStore = defineStore('application', () => {
     return { ...target };
   }
   async function initialize(runtime: RuntimeConfig, autoConnect = true) {
+    // Diagnostic storage must not delay restoration of the application session.
+    void diagnostics.initialize(runtime.rpcUrl);
+    const savedLogin = readLoginSession(runtime.rpcUrl);
     disposed = false;
-    authenticationRequired.value = !autoConnect;
+    authenticationRequired.value = !autoConnect && !savedLogin;
     config.value = runtime;
-    rpc = new RpcClient(runtime.rpcUrl);
+    rpc = new RpcClient(runtime.rpcUrl, undefined, (type, data) => {
+      diagnostics.record(type, data);
+      capture.rpc(type, data);
+    });
     const endpoint = new URL(runtime.rpcUrl),
       instanceKey = `${endpoint.origin}${endpoint.pathname}`;
     const defaults = defaultSettings();
@@ -211,6 +249,7 @@ export const useAppStore = defineStore('application', () => {
     storageAvailable.value = repo.persistent;
     await setLanguage(new URLSearchParams(location.search).get('lang') || settings.value.ui.locale);
     repo.onChange = async () => {
+      capture.invalidate('external-change');
       settings.value = await repo.load();
       await setLanguage(settings.value.ui.locale);
       schedule();
@@ -228,19 +267,23 @@ export const useAppStore = defineStore('application', () => {
       matchJob.value = previous;
     }
     document.addEventListener('visibilitychange', visibilityChanged);
-    if (autoConnect) await connect();
+    if (savedLogin) await connect(savedLogin.username, savedLogin.password, 'internal');
+    else if (autoConnect) await connect();
   }
   function stopTimer() {
     if (timer) clearTimeout(timer);
     timer = undefined;
   }
-  function schedule() {
+  function schedule(remaining?: number) {
     stopTimer();
     if (disposed || authenticationRequired.value || !settings.value.ui.autoRefresh) return;
-    const delay = document.hidden ? 30000 : Math.max(2000, settings.value.ui.refreshIntervalMs);
+    const delay =
+      remaining ?? (document.hidden ? 30000 : Math.max(2000, settings.value.ui.refreshIntervalMs));
+    timerDue = Date.now() + delay;
+    if (timerDue > replayDeadline) return;
     timer = setTimeout(async () => {
       try {
-        await refresh();
+        await refresh(false, 'timer');
       } catch {
         /* state contains error */
       } finally {
@@ -250,7 +293,7 @@ export const useAppStore = defineStore('application', () => {
   }
   function visibilityChanged() {
     if (!disposed && settings.value.ui.autoRefresh && !document.hidden && ready.value)
-      void refresh(true).catch(() => {});
+      void refresh(true, 'visibility').catch(() => {});
     schedule();
   }
   function requestAuthentication() {
@@ -258,8 +301,10 @@ export const useAppStore = defineStore('application', () => {
     ready.value = false;
     stopTimer();
     rpc.clearAuthentication();
+    if (config.value) saveLoginSession(config.value.rpcUrl);
   }
-  async function connect(username?: string, password?: string) {
+  async function connect(username?: string, password?: string, source = 'manual') {
+    const captureOperation = source === 'manual' ? beginDiagnosticOperation('connect') : undefined;
     stopTimer();
     controller.abort();
     detailController?.abort();
@@ -282,16 +327,23 @@ export const useAppStore = defineStore('application', () => {
     detail.value = undefined;
     if (username !== undefined) rpc.authenticate(username, password ?? '');
     try {
-      const value = await rpc.session({ signal: controller.signal });
-      if (epoch !== generation.value) return;
+      const value = await rpc.session({
+        signal: controller.signal,
+        context: 'session',
+        operationId: captureOperation,
+      });
+      if (obsolete(epoch)) return;
       if (value['rpc-version'] < 16) throw new Error('Transmission 3.00 or newer is required');
       session.value = value;
+      diagnostics.server(value);
       lastSession = Date.now();
       lastSnapshot = 0;
-      await refresh(true);
+      await refresh(true, 'internal', captureOperation);
       if (epoch === generation.value) {
         ready.value = true;
         authenticationRequired.value = false;
+        if (username !== undefined && config.value)
+          saveLoginSession(config.value.rpcUrl, { username, password: password ?? '' });
       }
     } catch (e) {
       if (epoch === generation.value) {
@@ -305,6 +357,7 @@ export const useAppStore = defineStore('application', () => {
         connecting.value = false;
         schedule();
       }
+      endDiagnosticOperation(captureOperation);
     }
   }
   async function refreshSnapshot(): Promise<void> {
@@ -313,12 +366,17 @@ export const useAppStore = defineStore('application', () => {
     while (refreshTask) await refreshTask;
     await refresh(true);
   }
-  function refresh(full = false): Promise<void> {
+  function refresh(full = false, source = 'manual', parentOperation?: number): Promise<void> {
+    diagnostics.record('state.refresh', { full, generation: generation.value });
     if (disposed || (authenticationRequired.value && !connecting.value)) return Promise.resolve();
     if (refreshTask) {
       pendingFull ||= full;
       return refreshTask;
     }
+    const captureOperation =
+      source === 'manual' ? beginDiagnosticOperation('refresh', { full }) : undefined;
+    const requestOperation = captureOperation ?? parentOperation;
+    let captureFailure: string | undefined;
     const epoch = generation.value;
     // Assigned below: finally compares this promise with the currently active generation.
     let task!: Promise<void>;
@@ -327,16 +385,21 @@ export const useAppStore = defineStore('application', () => {
       refreshing.value = true;
       try {
         if (Date.now() - lastSession > 30000) {
-          const value = await rpc.session({ signal: controller.signal });
-          if (epoch !== generation.value) return;
+          const value = await rpc.session({
+            signal: controller.signal,
+            context: 'session',
+            operationId: requestOperation,
+          });
+          if (obsolete(epoch)) return;
           if (
             session.value?.['session-id'] &&
             value['session-id'] !== session.value['session-id']
           ) {
-            void connect();
+            void connect(undefined, undefined, 'internal');
             return;
           }
           session.value = value;
+          diagnostics.server(value);
           lastSession = Date.now();
         }
         const snapshot =
@@ -344,9 +407,9 @@ export const useAppStore = defineStore('application', () => {
         const response = await rpc.torrents(
           snapshot ? SUMMARY_FIELDS : DYNAMIC_FIELDS,
           snapshot ? undefined : 'recently-active',
-          { signal: controller.signal },
+          { signal: controller.signal, context: 'refresh', operationId: requestOperation },
         );
-        if (epoch !== generation.value) return;
+        if (obsolete(epoch)) return;
         if (!Array.isArray(response.torrents))
           throw new RpcError('protocol', 'Missing torrents array');
         observeIdentities(response.torrents, response.removed, snapshot);
@@ -364,9 +427,9 @@ export const useAppStore = defineStore('application', () => {
             const base = await rpc.torrents(
               BASE_FIELDS,
               missing.map((id) => byId.get(id)?.hashString || id),
-              { signal: controller.signal },
+              { signal: controller.signal, context: 'refresh', operationId: requestOperation },
             );
-            if (epoch !== generation.value) return;
+            if (obsolete(epoch)) return;
             applyDelta(
               byId,
               base.torrents.filter(
@@ -382,23 +445,30 @@ export const useAppStore = defineStore('application', () => {
             );
           } catch {
             // A missing base row retries on the existing refresh chain only.
-            if (epoch !== generation.value) return;
+            if (obsolete(epoch)) return;
           }
         }
         if (snapshot) lastSnapshot = Date.now();
         reconcileIdentities();
-        if (selectedId.value !== null && !byId.has(selectedId.value)) select(null);
-        const statistics = await rpc.call('session-stats', {}, { signal: controller.signal });
-        if (epoch !== generation.value) return;
+        if (selectedId.value !== null && !byId.has(selectedId.value)) select(null, 'internal');
+        const statistics = await rpc.call(
+          'session-stats',
+          {},
+          { signal: controller.signal, context: 'refresh', operationId: requestOperation },
+        );
+        if (obsolete(epoch)) return;
         stats.value = statistics;
-        await refreshFreeSpace(epoch);
-        if (epoch !== generation.value) return;
+        await refreshFreeSpace(epoch, requestOperation);
+        if (obsolete(epoch)) return;
         lastUpdated.value = Date.now();
         stale.value = false;
         error.value = '';
         ready.value = true;
-        if (!document.hidden && selectedId.value !== null) await loadDetail();
+        if (!document.hidden && selectedId.value !== null)
+          await loadDetail(detailSection.value, 'internal', requestOperation);
       } catch (e) {
+        captureFailure = e instanceof RpcError ? e.kind : 'unknown';
+        if (epoch !== generation.value) recordDiscard(epoch);
         if (epoch === generation.value) {
           error.value = errorMessage(e);
           authenticationFailed.value = e instanceof RpcError && e.kind === 'auth';
@@ -407,12 +477,13 @@ export const useAppStore = defineStore('application', () => {
         }
         throw e;
       } finally {
+        endDiagnosticOperation(captureOperation, captureFailure);
         if (refreshTask === task) {
           refreshing.value = false;
           refreshTask = null;
           if (pendingFull) {
             pendingFull = false;
-            queueMicrotask(() => void refresh(true).catch(() => {}));
+            queueMicrotask(() => void refresh(true, 'internal').catch(() => {}));
           }
         }
       }
@@ -420,7 +491,7 @@ export const useAppStore = defineStore('application', () => {
     refreshTask = task;
     return task;
   }
-  async function refreshFreeSpace(epoch: number) {
+  async function refreshFreeSpace(epoch: number, operationId?: number) {
     const path = session.value?.['download-dir'];
     if (typeof path !== 'string' || !path) {
       freeSpace.value = { path: '' };
@@ -436,6 +507,7 @@ export const useAppStore = defineStore('application', () => {
         {
           signal: controller.signal,
           timeoutMs: 5000,
+          operationId,
         },
       );
       if (epoch !== generation.value || path !== session.value?.['download-dir']) return;
@@ -445,7 +517,9 @@ export const useAppStore = defineStore('application', () => {
       freeSpace.value = { path, error: errorMessage(e) };
     }
   }
-  function select(id: number | null) {
+  function select(id: number | null, source = 'manual') {
+    const captureOperation =
+      source === 'manual' ? beginDiagnosticOperation('select', { id }) : undefined;
     selectedTarget.value = id === null || !byId.get(id)?.hashString ? undefined : captureTarget(id);
     selectedId.value = id;
     detail.value = undefined;
@@ -453,9 +527,17 @@ export const useAppStore = defineStore('application', () => {
     detailLoading.value = false;
     detailController?.abort();
     detailSequence++;
-    if (id !== null) void loadDetail();
+    if (id !== null) void loadDetail(detailSection.value, 'internal', captureOperation);
+    endDiagnosticOperation(captureOperation);
   }
-  async function loadDetail(section = detailSection.value) {
+  async function loadDetail(
+    section = detailSection.value,
+    source = 'manual',
+    parentOperation?: number,
+  ) {
+    if (section !== 'general') capture.invalidate('unsupported-detail');
+    const captureOperation = source === 'manual' ? beginDiagnosticOperation('detail') : undefined;
+    const requestOperation = captureOperation ?? parentOperation;
     detailSection.value = section;
     const target = selectedTarget.value;
     const id = selectedId.value,
@@ -463,7 +545,10 @@ export const useAppStore = defineStore('application', () => {
       sequence = ++detailSequence;
     detailController?.abort();
     detailController = new AbortController();
-    if (id === null || !target || !isTargetCurrent(target)) return;
+    if (id === null || !target || !isTargetCurrent(target)) {
+      endDiagnosticOperation(captureOperation);
+      return;
+    }
     detailLoading.value = true;
     detailError.value = '';
     const fields: Record<DetailSection, string[]> = {
@@ -494,6 +579,8 @@ export const useAppStore = defineStore('application', () => {
         [target.hashString],
         {
           signal: detailController.signal,
+          context: 'detail',
+          operationId: requestOperation,
         },
       );
       if (
@@ -510,6 +597,7 @@ export const useAppStore = defineStore('application', () => {
         detailError.value = errorMessage(e);
     } finally {
       if (sequence === detailSequence) detailLoading.value = false;
+      endDiagnosticOperation(captureOperation);
     }
   }
   function targets(ids: number[]): TorrentTarget[] {
@@ -531,6 +619,7 @@ export const useAppStore = defineStore('application', () => {
     args: Record<string, unknown> = {},
     workflow = false,
     token?: symbol,
+    operationId?: number,
   ) {
     validateTargets(items);
     if (operationBusy.value && token !== operationToken) throw new Error('Another batch is active');
@@ -547,19 +636,29 @@ export const useAppStore = defineStore('application', () => {
     if (!allowedMethods.has(method)) throw new Error(`Unsupported operation: ${method}`);
     if (method === 'torrent-remove' && typeof args['delete-local-data'] !== 'boolean')
       throw new Error('Delete-data must be boolean');
-    return rpc.call(method, { ...args, ids: items.map((x) => x.hashString) });
+    return rpc.call(
+      method,
+      { ...args, ids: items.map((x) => x.hashString) },
+      { context: 'command', operationId },
+    );
   }
   async function execute(
     method: string,
     items: TorrentTarget[],
     args: Record<string, unknown> = {},
   ): Promise<BatchResult> {
+    const captureOperation = beginDiagnosticOperation('execute', {
+      method,
+      ids: items.map((item) => item.id),
+    });
+    diagnostics.record('operation.start', { method, count: items.length });
     validateTargets(items);
     const lock = acquireOperation();
     try {
       const result = await runBatch(
         items,
-        (target) => command(method, [target], args, false, lock.token).then(() => {}),
+        (target) =>
+          command(method, [target], args, false, lock.token, captureOperation).then(() => {}),
         (target) => ({ id: target.id, name: byId.get(target.id)?.name ?? String(target.id) }),
         {
           signal: lock.signal,
@@ -569,10 +668,11 @@ export const useAppStore = defineStore('application', () => {
           },
         },
       );
-      await refresh(true).catch(() => {});
+      await refresh(true, 'internal', captureOperation).catch(() => {});
       return result;
     } finally {
       releaseOperation(lock.token);
+      endDiagnosticOperation(captureOperation);
     }
   }
   async function readTarget(target: TorrentTarget, fields: string[]): Promise<Torrent> {
@@ -588,6 +688,7 @@ export const useAppStore = defineStore('application', () => {
     return normalizeTorrent(item);
   }
   async function saveLimits(baselines: LimitBaseline[], intent: LimitIntent): Promise<BatchResult> {
+    capture.invalidate('unsupported-action');
     validateTargets(baselines.map((x) => x.target));
     const lock = acquireOperation();
     try {
@@ -643,6 +744,7 @@ export const useAppStore = defineStore('application', () => {
     replacement: TrackerEdit[],
     lock: ReturnType<typeof acquireOperation>,
   ) {
+    capture.invalidate('unsupported-action');
     assertOperation(lock);
     validateTargets([target]);
     const baseline = trackerSnapshot(expected);
@@ -672,6 +774,7 @@ export const useAppStore = defineStore('application', () => {
     expected: Tracker[],
     replacement: TrackerEdit[],
   ) {
+    capture.invalidate('unsupported-action');
     const lock = acquireOperation();
     try {
       return await saveTrackerPlan(target, expected, replacement, lock);
@@ -689,6 +792,7 @@ export const useAppStore = defineStore('application', () => {
     inputs: { name: string; filename?: string; metainfo?: string }[],
     options: { directory: string; paused: boolean; labels: string[]; setDefault: boolean },
   ) {
+    capture.invalidate('unsupported-action');
     if (!ready.value) throw new Error('Not connected');
     const lock = acquireOperation();
     try {
@@ -737,7 +841,7 @@ export const useAppStore = defineStore('application', () => {
           },
         },
       );
-      await refresh(true).catch(() => {});
+      await refresh(true, 'internal').catch(() => {});
       return result;
     } finally {
       releaseOperation(lock.token);
@@ -749,6 +853,7 @@ export const useAppStore = defineStore('application', () => {
   async function replaceTrackersBatch(
     plan: { target: TorrentTarget; name: string; before: Tracker[]; after: Tracker[] }[],
   ) {
+    capture.invalidate('unsupported-action');
     const lock = acquireOperation();
     try {
       return await runBatch(
@@ -768,6 +873,7 @@ export const useAppStore = defineStore('application', () => {
     }
   }
   async function saveSession(patch: Record<string, unknown>) {
+    capture.invalidate('unsupported-action');
     await rpc.call('session-set', validateSessionPatch(patch, session.value!['rpc-version']));
     session.value = await rpc.session();
     lastSession = Date.now();
@@ -781,11 +887,13 @@ export const useAppStore = defineStore('application', () => {
     });
   }
   async function updateUi(patch: Partial<UiSettings>) {
+    capture.invalidate('settings-change');
     settings.value = await repository.value!.updateUi(patch);
     if (patch.locale) await setLanguage(patch.locale);
     schedule();
   }
   async function assignLabels(hashes: string[], ids: string[]) {
+    capture.invalidate('unsupported-action');
     settings.value = await repository.value!.update((value) => {
       const valid = new Set(value.labels.map((x) => x.id));
       for (const hash of hashes) value.torrentLabels[hash] = ids.filter((id) => valid.has(id));
@@ -793,6 +901,7 @@ export const useAppStore = defineStore('application', () => {
     });
   }
   async function saveLabel(label: Label) {
+    capture.invalidate('unsupported-action');
     settings.value = await repository.value!.update((value) => {
       const index = value.labels.findIndex((item) => item.id === label.id);
       if (index >= 0) value.labels[index] = { ...label };
@@ -801,6 +910,7 @@ export const useAppStore = defineStore('application', () => {
     });
   }
   async function removeLabels(ids: string[]) {
+    capture.invalidate('unsupported-action');
     settings.value = await repository.value!.update((value) => {
       value.labels = value.labels.filter((label) => !ids.includes(label.id));
       for (const hash of Object.keys(value.torrentLabels))
@@ -812,12 +922,14 @@ export const useAppStore = defineStore('application', () => {
   }
   const removeLabel = (id: string) => removeLabels([id]);
   async function saveFolders(folders: string[] | string) {
+    capture.invalidate('unsupported-action');
     settings.value = await repository.value!.update((value) => ({
       ...value,
       folderDictionary: normalizeFolders(folders),
     }));
   }
   async function importSettings(report: MigrationReport, sections?: SettingsSection[]) {
+    capture.invalidate('unsupported-action');
     settings.value = await repository.value!.import(report, sections);
     await setLanguage(settings.value.ui.locale);
     schedule();
@@ -833,6 +945,7 @@ export const useAppStore = defineStore('application', () => {
     return repository.value!.backups();
   }
   async function saveJob(job: MatchJob) {
+    capture.invalidate('unsupported-action');
     await repository.value!.saveJob(job);
     matchJob.value = { ...job, items: job.items.map((x) => ({ ...x })) };
   }
@@ -846,7 +959,99 @@ export const useAppStore = defineStore('application', () => {
     repository.value?.close();
     document.removeEventListener('visibilitychange', visibilityChanged);
   }
+  function diagnosticState() {
+    return {
+      torrents: torrents.value,
+      selectedId: selectedId.value,
+      stale: stale.value,
+      ready: ready.value,
+      generation: generation.value,
+      authenticationRequired: authenticationRequired.value,
+      results: operationResults.value,
+      detailId: detail.value?.id ?? null,
+    };
+  }
+  async function startCapture() {
+    if (capture.active || !diagnostics.enabled)
+      throw new Error('Recording is already active or disabled');
+    if (!ready.value || operationBusy.value || matchJob.value?.running || connecting.value)
+      throw new Error('Capture requires an idle connected workspace');
+    let checkpointTimeout: ReturnType<typeof setTimeout> | undefined;
+    try {
+      await Promise.race([
+        refreshSnapshot(),
+        new Promise<never>((_, reject) => {
+          checkpointTimeout = setTimeout(() => reject(new Error('Checkpoint timeout')), 10000);
+        }),
+      ]);
+    } finally {
+      clearTimeout(checkpointTimeout);
+    }
+    if (operationBusy.value || detailLoading.value)
+      throw new Error('Wait for current operations to finish');
+    const now = Date.now();
+    capture.start(
+      {
+        operationCounter: diagnosticOperation,
+        wallTime: now,
+        session: session.value!,
+        torrents: torrents.value,
+        ui: settings.value.ui as unknown as Record<string, unknown>,
+        generation: generation.value,
+        lastSessionAge: now - lastSession,
+        lastSnapshotAge: now - lastSnapshot,
+        identities: [...identityVersions],
+        selectedId: selectedId.value,
+        detail: detail.value,
+        stale: stale.value,
+        refreshDueMs: timer ? Math.max(0, timerDue - now) : undefined,
+      },
+      diagnostics.id,
+    );
+  }
+  function restoreDiagnosticCheckpoint(
+    checkpoint: Checkpoint,
+    transport: typeof fetch,
+    observe: (type: string, data: Record<string, unknown>) => void,
+    duration = Infinity,
+  ) {
+    stopTimer();
+    controller.abort();
+    detailController?.abort();
+    controller = new AbortController();
+    refreshTask = null;
+    pendingFull = false;
+    disposed = false;
+    rpc = new RpcClient('/offline-rpc', transport, observe);
+    replayDeadline = Date.now() + duration;
+    replayStateObserver = observe;
+    diagnosticOperation = checkpoint.operationCounter ?? 0;
+    generation.value = checkpoint.generation;
+    byId.clear();
+    identityVersions.clear();
+    for (const row of checkpoint.torrents) byId.set(row.id as number, row as Torrent);
+    for (const [id, revision] of checkpoint.identities) identityVersions.set(id, revision);
+    session.value = checkpoint.session as Session;
+    settings.value = { ...defaultSettings(), ui: { ...defaultSettings().ui, ...checkpoint.ui } };
+    selectedId.value = checkpoint.selectedId;
+    selectedTarget.value =
+      checkpoint.selectedId === null ? undefined : captureTarget(checkpoint.selectedId);
+    detail.value = checkpoint.detail as Torrent | undefined;
+    detailSection.value = 'general';
+    detailSequence = 0;
+    stale.value = checkpoint.stale;
+    ready.value = true;
+    authenticationRequired.value = false;
+    error.value = '';
+    operationResults.value = [];
+    lastSession = Date.now() - checkpoint.lastSessionAge;
+    lastSnapshot = Date.now() - checkpoint.lastSnapshotAge;
+    schedule(checkpoint.refreshDueMs);
+  }
   return {
+    diagnosticState,
+    startCapture,
+    restoreDiagnosticCheckpoint,
     settings,
     session,
     stats,

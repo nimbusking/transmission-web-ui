@@ -1,0 +1,12 @@
+{"type":"rpc.start","data":{"requestId":"req-1"}}
+{"type":"rpc.attempt","data":{"requestId":"req-1"}}
+{"type":"rpc.response","data":{"requestId":"req-1"}}
+{"type":"rpc.end","data":{"requestId":"req-1"}}
+{"type":"rpc.start","data":{"requestId":"req-2"}}
+{"type":"rpc.attempt","data":{"requestId":"req-2"}}
+{"type":"rpc.response","data":{"requestId":"req-2"}}
+{"type":"rpc.end","data":{"requestId":"req-2"}}
+{"type":"rpc.start","data":{"requestId":"req-3"}}
+{"type":"rpc.attempt","data":{"requestId":"req-3"}}
+{"type":"rpc.response","data":{"requestId":"req-3"}}
+{"type":"rpc.end","data":{"requestId":"req-3"}}

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DiagnosticsPanel from './DiagnosticsPanel.vue';
 import { computed, ref } from 'vue';
 import { NButton, NInput, NSelect, NAlert, useMessage } from 'naive-ui';
 import { ArrowRight, Server } from '@lucide/vue';
@@ -47,6 +48,7 @@ async function changeLanguage(value: string) {
 </script>
 <template>
   <div class="login-page">
+    <DiagnosticsPanel />
     <header class="login-header">
       <span>Transmission Web UI</span>
       <NSelect

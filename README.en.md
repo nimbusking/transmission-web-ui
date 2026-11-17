@@ -17,6 +17,8 @@ Releases contain complete static HTML, JavaScript, and CSS. Deployment requires 
 
 [Download releases](https://github.com/nimbusking/transmission-web-ui/releases) · [Report an issue](https://github.com/nimbusking/transmission-web-ui/issues) · [Project blog](https://nimbusk.cc)
 
+Version 2.1.0 adds local browser diagnostics, manual JSON export, and scoped offline failure replay. See the [collection, storage, and replay guide](docs/diagnostics.md) (Chinese). No logging server is required. A [user troubleshooting checklist](docs/diagnostics-self-check.md) (Chinese) covers self-checks and issue reporting.
+
 ## Contents
 
 - [Features](#features)
@@ -272,6 +274,15 @@ TR_RPC_TARGET=http://127.0.0.1:9091 npm run dev
 | `npm run release`                        | Build static archives, checksums, and the single-file installer into `artifacts/` |
 | `npm run lab:down`                       | Stop lab services while retaining volumes                                         |
 
+To build a NAS offline installer locally:
+
+```sh
+npm ci
+npm run package:nas -- --version 2.1.3-status.2
+```
+
+Run on a Linux / WSL development computer with Node.js >=22.12, GNU tar and POSIX sh. The script runs unit tests, installer regression tests, the production build, packaging and SHA256 verification. Output defaults to `artifacts/nas-<version>/`; use `--output-dir <directory>` to override it (relative to the repository root). The directory must be empty or absent. Upload `install-transmission-web-ui.sh` and its `.sha256` to the NAS and follow the installation instructions above. The archive version identifies installation and rollback; it does not change the UI version in `package.json`. Choose a new version for each deployment because the installer rejects overwriting an installed version.
+
 For the development-only [old/new UI comparison environment](docs/local-comparison.md), supply historical Web assets via `TWUI_LEGACY_WEB_ROOT` before running `npm run compare:up`. See [validation documentation](docs/validation.md) for setup and evidence. Do not build and test the same `dist/` concurrently. Generating release files locally does not publish a GitHub Release.
 
 <a id="faq"></a>
@@ -305,3 +316,5 @@ Detailed references below are currently maintained in Chinese. This English READ
 - [OpenSpec design](openspec/changes/rebuild-transmission-web-ui/design.md) · [Tasks](openspec/changes/rebuild-transmission-web-ui/tasks.md)
 
 Licensed under the [MIT License](LICENSE). This release does not include the original implementation; historical source remains available in Git history.
+
+Managed SynoCommunity UI-only upgrades and their restore transactions switch static resources without restarting Transmission. Initial attachment or login-port configuration can still require a restart.

@@ -1,0 +1,20 @@
+{
+  "initial_payload_cleanup": {
+    "disabledRefreshP95Ms": 87.2,
+    "enabledRefreshP95Ms": 97.2,
+    "ratio": 1.1146788990786494,
+    "source": "Earlier tool output retained in this chat; later runs overwrote the initial raw sample file"
+  },
+  "metadata_cleanup_first_check": {
+    "disabledRefreshP95Ms": 72.2,
+    "enabledRefreshP95Ms": 71.4,
+    "ratio": 0.9889196676317625,
+    "source": "Earlier tool output retained in this chat"
+  },
+  "final_unpinned": "performance-unpinned-failed.json",
+  "final_controlled_run_1": "performance-pinned-1.json",
+  "policy": "All retained failures remain evidence; final acceptance uses the declared fixed CPU environment and the original 5% threshold.",
+  "fixed_cpu_confirmation_failed": "performance-pinned-2-failed.json",
+  "final_acceptance": "performance-final-200.json",
+  "sample_policy": "Five rounds, 40 samples per mode per round (200 each), same CPU 16-19, unchanged 5% threshold; increased sample count after observing p95 variance. All previous failures retained."
+}

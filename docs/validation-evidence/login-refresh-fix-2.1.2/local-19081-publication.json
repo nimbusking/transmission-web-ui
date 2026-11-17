@@ -1,0 +1,16 @@
+{
+  "at": "2026-11-17T01:19:00.277Z",
+  "published19081": true,
+  "url": "http://localhost:19081/transmission/web/",
+  "archive": "artifacts/nas-2.1.2/transmission-web-ui-2.1.2.tar.gz",
+  "sha256": "215b62eba3451baf468954e6b2c5743695b1038fb632c2e07718f4e4a2f56343",
+  "buildId": "2.1.2-872b77e62abb-6fff3b0aa6fadeb2dfc6",
+  "verifiedHttpFiles": 52,
+  "daemonVersion": "4.1.4 (a6d907d9ea)",
+  "taskCount": 7,
+  "taskIdentitiesUnchanged": true,
+  "legacy19080Unchanged": true,
+  "legacy19080Status": 403,
+  "containerRestart": false,
+  "modifyingRpc": 0
+}

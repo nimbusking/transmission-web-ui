@@ -81,26 +81,28 @@ try {
   });
   assert.equal((await rpc.json()).result, 'success');
   assert.equal((await fetch(`${base}/settings.json`)).status, 404);
-  docker(
-    'run',
-    '--rm',
-    '--network',
-    'host',
-    '--ipc',
-    'host',
-    '--user',
-    `${process.getuid()}:${process.getgid()}`,
-    '-e',
-    'npm_config_cache=/tmp/twui-cache',
-    '-v',
-    `${root}:${root}:z`,
-    '-w',
-    root,
-    'mcr.microsoft.com/playwright:v1.65.1-noble',
-    'npx',
-    'playwright',
-    'test',
-    '--config=playwright.login-entry.config.ts',
+  console.log(
+    docker(
+      'run',
+      '--rm',
+      '--network',
+      'host',
+      '--ipc',
+      'host',
+      '--user',
+      `${process.getuid()}:${process.getgid()}`,
+      '-e',
+      'npm_config_cache=/tmp/twui-cache',
+      '-v',
+      `${root}:${root}:z`,
+      '-w',
+      root,
+      'mcr.microsoft.com/playwright:v1.65.1-noble',
+      'npx',
+      'playwright',
+      'test',
+      '--config=playwright.login-entry.config.ts',
+    ),
   );
   console.log(
     'Login gateway verified against real Transmission 4.1.4: public HTML, protected RPC, challenge suppressed, session handshake and browser login.',

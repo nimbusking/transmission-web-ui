@@ -1,0 +1,43 @@
+{
+  "version": "2.1.0",
+  "buildId": "2.1.0-872b77e62abb-6939e681ba4b61bd32e8",
+  "date": "2026-11-17",
+  "unitTests": 145,
+  "browserFaultRuns": 243,
+  "productionUiAndLoginRuns": 12,
+  "browserEngines": [
+    "Chromium",
+    "Firefox",
+    "WebKit"
+  ],
+  "repeatsPerFaultScenarioPerEngine": 3,
+  "daemonVersions": [
+    "3.00",
+    "4.0.0",
+    "4.0.6",
+    "4.1.4"
+  ],
+  "cliCases": {
+    "production": "matched",
+    "timeout": "matched",
+    "candidate": "matched"
+  },
+  "performance": {
+    "cpuSet": "16-19",
+    "rounds": 5,
+    "samplesPerMode": 200,
+    "refreshP95Ratio": 1.008237232125213,
+    "interactionP95Ratio": 0.9897959183459462,
+    "defaultExtraBytes": 2363772,
+    "enhancedExtraBytes": 1238352,
+    "maxConsecutiveDiagnosticCpuMs": 8.925,
+    "cpuSamplingScope": "CPU sample bound with source-map attribution; does not measure OS stalls or prove absence of every possible long task"
+  },
+  "archive": "artifacts/diagnostic-builds/2.1.0-872b77e62abb-6939e681ba4b61bd32e8",
+  "limitations": [
+    "Enhanced recording needs HTTPS or localhost",
+    "Single event 512KiB, capture 10MiB/5min/10000 events; large responses are explicitly ineligible",
+    "Synthetic strings do not reproduce arbitrary original-text or pixel-level defects",
+    "CPU sampling is observed evidence, not a universal guarantee across machines"
+  ]
+}

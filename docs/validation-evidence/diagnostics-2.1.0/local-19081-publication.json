@@ -1,0 +1,16 @@
+{
+  "at": "2026-11-17T00:00:54.670Z",
+  "published19081": true,
+  "url": "http://localhost:19081/transmission/web/",
+  "archive": "artifacts/transmission-web-ui-2.1.0.tar.gz",
+  "sha256": "cb9153d9a5e8de9ac87d21ea7aa97e4d4ebfa3920aa1e50958e5ecf5e8f7836b",
+  "buildId": "2.1.0-872b77e62abb-6939e681ba4b61bd32e8",
+  "verifiedHttpFiles": 52,
+  "daemonVersion": "4.1.4 (a6d907d9ea)",
+  "taskCount": 7,
+  "taskIdentitiesUnchanged": true,
+  "legacy19080Unchanged": true,
+  "legacy19080Status": 403,
+  "containerRestart": false,
+  "modifyingRpc": 0
+}

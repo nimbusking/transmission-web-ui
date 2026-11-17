@@ -1,0 +1,12 @@
+{
+  "README.md": "87f2f60aa99cf37ce3c520a50d0541b8f300c90e9260579dfdc921a3f5923c79",
+  "browser-final.log": "85b5d9b7e024e08e3929b5a8e3624eba2b32f848dc912e138bfd98e859ef644d",
+  "check-final.log": "f4804c545a3862d697d05ff1398b4088e11e146a7d1d6671d0f6489bd7d1f76d",
+  "local-19081-publication.json": "3443435b3dd6bd84ccf08b68e59f30b58f66ab8b449f742c38d30ef457450b06",
+  "matrix-build-changed.log": "f3a062ea582a1f7e9ef2c2219cc67c79e7d8e987ff2bec9b01b587132485e3a3",
+  "matrix-final.log": "1d61041e389f49c4e578d2e2a28f9e94de9aed82a66c83fa92a287033f70d71b",
+  "migration.log": "05de4871a3b1589a8b00a023e74335c5b16767b5c4fbc36fd3ac96ede6b55721",
+  "real-early-assertion.log": "ac46be512b639eeb6bac3daa0201089fab828fb576c1218c943febb1562284ba",
+  "real-final.log": "5527eee396ce7ab36ffe31d5e58acb87e3dd9f77c24e9797bc6b97fd3055a6f6",
+  "upgrade-final.log": "9e528d65dae7e59bf344dd898e4835bbbfc06e3f8e63fab2b8519dad78f12d3f"
+}

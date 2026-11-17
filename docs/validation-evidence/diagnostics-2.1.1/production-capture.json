@@ -1,0 +1,482 @@
+{
+  "schemaVersion": 1,
+  "app": {
+    "version": "2.1.1",
+    "buildId": "2.1.1-872b77e62abb-284ed676e176cf2c92be"
+  },
+  "capture": {
+    "id": "2bd3bdad-9a9b-4ef0-9d8e-71fa112352e9",
+    "sessionId": "87d79825-de30-462c-8e83-50496511cddc",
+    "mode": "enhanced",
+    "start": "2026-11-17T00:54:05.128Z",
+    "end": "2026-11-17T00:54:05.401Z",
+    "complete": true,
+    "eligibility": "replayable",
+    "reasons": [],
+    "droppedEvents": 0,
+    "limits": {
+      "durationMs": 300000,
+      "events": 10000,
+      "bytes": 10485760
+    }
+  },
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.8154.6 Safari/537.36",
+    "language": "en-US",
+    "timezone": "UTC",
+    "online": true,
+    "width": 1280,
+    "height": 720,
+    "dpr": 1,
+    "indexedDB": true,
+    "crypto": true
+  },
+  "checkpoint": {
+    "operationCounter": 2,
+    "wallTime": 1794876845128,
+    "session": {
+      "version": "4.0.6",
+      "rpc-version": 17
+    },
+    "torrents": [
+      {
+        "id": 1,
+        "hashString": "0000000000000000000000000000000000000001",
+        "name": "task-1",
+        "downloadDir": "/redacted/path-1",
+        "trackers": [],
+        "status": 4,
+        "percentDone": 0.5,
+        "error": 0,
+        "trackerStats": []
+      }
+    ],
+    "ui": {
+      "locale": "auto",
+      "theme": "system",
+      "layoutTheme": "workbench",
+      "visualTheme": "modern",
+      "refreshIntervalMs": 5000,
+      "autoRefresh": true,
+      "pagination": true,
+      "pageSize": 200,
+      "filePageSize": 200,
+      "sidebarWidth": 220,
+      "detailHeight": 310,
+      "forceDesktop": false,
+      "columns": [
+        {
+          "key": "name",
+          "width": 300,
+          "visible": true
+        },
+        {
+          "key": "totalSize",
+          "width": 100,
+          "visible": true
+        },
+        {
+          "key": "percentDone",
+          "width": 120,
+          "visible": true
+        },
+        {
+          "key": "eta",
+          "width": 100,
+          "visible": true
+        },
+        {
+          "key": "uploadRatio",
+          "width": 80,
+          "visible": true
+        },
+        {
+          "key": "status",
+          "width": 110,
+          "visible": true
+        },
+        {
+          "key": "seederCount",
+          "width": 110,
+          "visible": true
+        },
+        {
+          "key": "leecherCount",
+          "width": 110,
+          "visible": true
+        },
+        {
+          "key": "rateDownload",
+          "width": 110,
+          "visible": true
+        },
+        {
+          "key": "rateUpload",
+          "width": 110,
+          "visible": true
+        },
+        {
+          "key": "completeSize",
+          "width": 110,
+          "visible": true
+        },
+        {
+          "key": "uploadedEver",
+          "width": 110,
+          "visible": true
+        },
+        {
+          "key": "addedDate",
+          "width": 170,
+          "visible": true
+        },
+        {
+          "key": "id",
+          "width": 60,
+          "visible": true
+        },
+        {
+          "key": "queuePosition",
+          "width": 70,
+          "visible": true
+        },
+        {
+          "key": "trackers",
+          "width": 200,
+          "visible": true
+        },
+        {
+          "key": "downloadDir",
+          "width": 220,
+          "visible": true
+        },
+        {
+          "key": "activityDate",
+          "width": 170,
+          "visible": true
+        },
+        {
+          "key": "labels",
+          "width": 170,
+          "visible": true
+        },
+        {
+          "key": "doneDate",
+          "width": 170,
+          "visible": true
+        },
+        {
+          "key": "downloadedEver",
+          "width": 110,
+          "visible": false
+        },
+        {
+          "key": "isPrivate",
+          "width": 80,
+          "visible": false
+        },
+        {
+          "key": "errorString",
+          "width": 220,
+          "visible": false
+        }
+      ]
+    },
+    "generation": 1,
+    "lastSessionAge": 283,
+    "lastSnapshotAge": 23,
+    "identities": [],
+    "selectedId": null,
+    "stale": false,
+    "refreshDueMs": 4725
+  },
+  "events": [
+    {
+      "seq": 1,
+      "at": "2026-11-17T00:54:05.237Z",
+      "monoMs": 108.90000000596046,
+      "type": "operation.start",
+      "level": "info",
+      "data": {
+        "action": "execute",
+        "operationId": 3,
+        "method": "torrent-stop",
+        "ids": [
+          1
+        ]
+      }
+    },
+    {
+      "seq": 2,
+      "at": "2026-11-17T00:54:05.237Z",
+      "monoMs": 109.30000001192093,
+      "type": "rpc.start",
+      "level": "info",
+      "data": {
+        "requestId": "req-6",
+        "method": "torrent-stop",
+        "arguments": {
+          "ids": [
+            "0000000000000000000000000000000000000001"
+          ]
+        },
+        "context": "command",
+        "operationId": 3,
+        "timeoutMs": 20000
+      }
+    },
+    {
+      "seq": 3,
+      "at": "2026-11-17T00:54:05.246Z",
+      "monoMs": 117.90000000596046,
+      "type": "rpc.attempt",
+      "level": "info",
+      "data": {
+        "requestId": "req-6",
+        "attempt": 1,
+        "status": 200,
+        "challenge": false
+      }
+    },
+    {
+      "seq": 4,
+      "at": "2026-11-17T00:54:05.247Z",
+      "monoMs": 119.5,
+      "type": "rpc.response",
+      "level": "info",
+      "data": {
+        "requestId": "req-6",
+        "attempt": 1,
+        "envelope": {
+          "result": "success",
+          "tag": "$request",
+          "arguments": {}
+        },
+        "invalidJson": false
+      }
+    },
+    {
+      "seq": 5,
+      "at": "2026-11-17T00:54:05.247Z",
+      "monoMs": 119.59999999403954,
+      "type": "rpc.end",
+      "level": "info",
+      "data": {
+        "requestId": "req-6"
+      }
+    },
+    {
+      "seq": 6,
+      "at": "2026-11-17T00:54:05.249Z",
+      "monoMs": 120.69999998807907,
+      "type": "rpc.start",
+      "level": "info",
+      "data": {
+        "requestId": "req-7",
+        "method": "torrent-get",
+        "arguments": {
+          "fields": [
+            "id",
+            "hashString",
+            "name",
+            "downloadDir",
+            "totalSize",
+            "isPrivate",
+            "trackers",
+            "addedDate",
+            "metadataPercentComplete",
+            "haveValid",
+            "haveUnchecked",
+            "status",
+            "percentDone",
+            "sizeWhenDone",
+            "rateDownload",
+            "rateUpload",
+            "uploadRatio",
+            "uploadedEver",
+            "downloadedEver",
+            "error",
+            "errorString",
+            "queuePosition",
+            "eta",
+            "activityDate",
+            "doneDate",
+            "recheckProgress",
+            "leftUntilDone",
+            "trackerStats",
+            "peersSendingToUs",
+            "peersGettingFromUs"
+          ]
+        },
+        "context": "refresh",
+        "operationId": 3,
+        "timeoutMs": 20000
+      }
+    },
+    {
+      "seq": 7,
+      "at": "2026-11-17T00:54:05.254Z",
+      "monoMs": 125.90000000596046,
+      "type": "rpc.attempt",
+      "level": "info",
+      "data": {
+        "requestId": "req-7",
+        "attempt": 1,
+        "status": 200,
+        "challenge": false
+      }
+    },
+    {
+      "seq": 8,
+      "at": "2026-11-17T00:54:05.254Z",
+      "monoMs": 126,
+      "type": "rpc.response",
+      "level": "info",
+      "data": {
+        "requestId": "req-7",
+        "attempt": 1,
+        "envelope": {
+          "result": "success",
+          "tag": "$request",
+          "arguments": {
+            "torrents": [
+              {
+                "id": 1,
+                "hashString": "0000000000000000000000000000000000000001",
+                "name": "task-1",
+                "downloadDir": "/redacted/path-1",
+                "trackers": [],
+                "status": 0,
+                "percentDone": 0.5,
+                "error": 0,
+                "trackerStats": []
+              }
+            ]
+          }
+        },
+        "invalidJson": false
+      }
+    },
+    {
+      "seq": 9,
+      "at": "2026-11-17T00:54:05.254Z",
+      "monoMs": 126,
+      "type": "rpc.end",
+      "level": "info",
+      "data": {
+        "requestId": "req-7"
+      }
+    },
+    {
+      "seq": 10,
+      "at": "2026-11-17T00:54:05.254Z",
+      "monoMs": 126.09999999403954,
+      "type": "rpc.start",
+      "level": "info",
+      "data": {
+        "requestId": "req-8",
+        "method": "session-stats",
+        "arguments": {},
+        "context": "refresh",
+        "operationId": 3,
+        "timeoutMs": 20000
+      }
+    },
+    {
+      "seq": 11,
+      "at": "2026-11-17T00:54:05.268Z",
+      "monoMs": 139.69999998807907,
+      "type": "rpc.attempt",
+      "level": "info",
+      "data": {
+        "requestId": "req-8",
+        "attempt": 1,
+        "status": 200,
+        "challenge": false
+      }
+    },
+    {
+      "seq": 12,
+      "at": "2026-11-17T00:54:05.268Z",
+      "monoMs": 139.69999998807907,
+      "type": "rpc.response",
+      "level": "info",
+      "data": {
+        "requestId": "req-8",
+        "attempt": 1,
+        "envelope": {
+          "result": "success",
+          "tag": "$request",
+          "arguments": {}
+        },
+        "invalidJson": false
+      }
+    },
+    {
+      "seq": 13,
+      "at": "2026-11-17T00:54:05.268Z",
+      "monoMs": 139.69999998807907,
+      "type": "rpc.end",
+      "level": "info",
+      "data": {
+        "requestId": "req-8"
+      }
+    },
+    {
+      "seq": 14,
+      "at": "2026-11-17T00:54:05.270Z",
+      "monoMs": 142.19999998807907,
+      "type": "operation.end",
+      "level": "info",
+      "data": {
+        "operationId": 3,
+        "outcome": "resolved"
+      }
+    },
+    {
+      "seq": 15,
+      "at": "2026-11-17T00:54:05.401Z",
+      "monoMs": 273.19999998807907,
+      "type": "capture.stop",
+      "level": "info",
+      "data": {}
+    }
+  ],
+  "observed": {
+    "torrents": [
+      {
+        "id": 1,
+        "hashString": "0000000000000000000000000000000000000001",
+        "status": 0,
+        "error": 0,
+        "percentDone": 0.5
+      }
+    ],
+    "selectedId": null,
+    "stale": false,
+    "generation": 1,
+    "ready": true,
+    "authenticationRequired": false,
+    "results": [
+      {
+        "id": 1,
+        "status": "success"
+      }
+    ],
+    "detailId": null
+  },
+  "privacy": {
+    "version": 1,
+    "transforms": [
+      "synthetic-identities",
+      "synthetic-paths",
+      "synthetic-trackers",
+      "template-text"
+    ],
+    "losses": []
+  },
+  "integrity": {
+    "algorithm": "SHA-256",
+    "digest": "3e246fc17671092961d000201f9aed6cf70f909a039a9ee8e3aa0c3684721be7"
+  }
+}

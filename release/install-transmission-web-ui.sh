@@ -794,7 +794,7 @@ rollback() {
     restore_links || return 1
     if [ -f "$tx/registration" ]; then cp -p "$tx/registration" "$prefix/.synocommunity-xdg" || return 1
     else rm -f "$prefix/.synocommunity-xdg" || return 1; fi
-    restart_package || return 1
+    if [ "$(get package-hot-update)" != 1 ]; then restart_package || return 1; fi
   fi
   # Verify the old entry and read-only RPC, rather than reporting a successful copy as recovery.
   verify_endpoint "$(get old-entry-sha)" "$tx/old-web" || return 1
@@ -1038,7 +1038,11 @@ if [ "$action" = restore ]; then
   code=$(http "$endpoint" "$work/current-page" || :)
   [ "$code" != 401 ] || credentials
   if [ "$code" != 401 ] && ! check_rpc; then [ "$code" != 401 ] || credentials; fi
-  confirm "将恢复备份 $tx。会恢复原Web及登录入口接入并启动原服务；不回滚下载任务或其他daemon设置。"
+  if [ "$(get package-hot-update)" = 1 ]; then
+    confirm "将恢复备份 $tx 的静态UI资源；Transmission保持运行。"
+  else
+    confirm "将恢复备份 $tx。会恢复原Web及登录入口接入并启动原服务；不回滚下载任务或其他daemon设置。"
+  fi
   rollback || fail "恢复尚未完成，备份仍在 $tx；没有删除数据卷。"
   finished=1; exit 0
 fi
@@ -1139,6 +1143,15 @@ record transaction "$stamp"; record old-entry-sha "$old_entry_sha"; record archi
 record original-web "$original_web"
 record current "$(readlink "$prefix/current" 2>/dev/null || :)"
 record previous "$(readlink "$prefix/previous" 2>/dev/null || :)"
+# A stable managed XDG path can serve switched static files without restarting.
+package_hot_update=0
+if [ "$mode" = package ] && [ -L "$old_link" ] && [ "$(readlink "$old_link")" = "$prefix/current" ] && [ -f "$prefix/.synocommunity-xdg" ] && [ "$login_state" != new ]; then
+  [ "$(sed -n '1p' "$prefix/.synocommunity-xdg")" = twui-synocommunity-xdg-v1 ] &&
+  [ "$(sed -n '2p' "$prefix/.synocommunity-xdg")" = "$old_link" ] &&
+  [ "$(sed -n '3p' "$prefix/.synocommunity-xdg")" = "$prefix/current" ] || fail 'XDG注册记录不一致，停止升级。'
+  package_hot_update=1
+fi
+record package-hot-update "$package_hot_update"
 record status preparing
 login_snapshot
 log '正在备份完整旧Web资源和接入信息（不是只备份首页）……'
@@ -1196,7 +1209,12 @@ find "$tx/old-web" -exec sh -c 'for file do if printf "%s" "$file" | LC_ALL=C gr
 cp "$work/backup.sha256" "$tx/backup.sha256"
 record status prepared
 log "备份已验证：$tx"
-confirm "准备安装$selected。会短暂停止/启动当前Transmission服务以接入新界面。登录入口状态：$login_state（new时由nginx接管9091，RPC改为9093；existing时同步更新登录资源）。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。"
+if [ "$package_hot_update" = 1 ] || { [ "$mode" = docker ] && [ "$reuse" = 1 ]; }; then
+  service_notice='本次只更新静态UI资源，不停止或重启Transmission。'
+else
+  service_notice='本次需接入Web路径或修改服务配置，会停止/启动Transmission。'
+fi
+confirm "准备安装$selected。$service_notice登录入口状态：$login_state（new时由nginx接管9091，RPC改为9093；existing时同步更新登录资源）。下载配置和数据卷保持；失败将自动恢复，原容器/资源不会删除。"
 # Recheck the instance identity after the user confirmation, before changing anything.
 if [ "$mode" = docker ]; then [ "$(docker_id "$name")" = "$original_id" ] || fail '确认期间容器已变化，停止。'; fi
 printf '%s\n' "$stamp" > "$backup_root/pending"
@@ -1216,6 +1234,10 @@ if [ "$mode" = docker ] && [ "$reuse" = 0 ]; then
   new_id=$(docker_id "$name") || fail '无法确认新容器身份。'
   [ "$(docker inspect --format '{{index .Config.Labels "io.transmission-web-ui.transaction"}}' "$new_id")" = "$stamp" ] || fail '新容器身份不匹配。'
   docker start "$new_id" >/dev/null || fail '新容器无法启动。'
+elif [ "$mode" = package ] && [ "$package_hot_update" = 1 ]; then
+  # Keep the daemon's Web root and XDG registration intact; only current changes.
+  [ -L "$old_link" ] && [ "$(readlink "$old_link")" = "$prefix/current" ] || fail 'XDG接入已变化，停止升级。'
+  log '静态UI资源已切换，Transmission保持运行。'
 elif [ "$mode" = package ]; then
   chown sc-transmission "$prefix"
   if [ -e "$old_link" ] || [ -L "$old_link" ]; then mv "$old_link" "$old_link.twui-original-$stamp"; fi

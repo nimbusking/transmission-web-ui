@@ -1,0 +1,5 @@
+{
+  "result": "ineligible",
+  "reason": "page.evaluate: Error: build-mismatch\n    at bP (http://127.0.0.1:42523/assets/app-BxxowP7p.js:57:57030)\n    at Object.prepare (http://127.0.0.1:42523/assets/replay-CmoriVxi.js:2:4707)\n    at eval (eval at evaluate (:370:30), <anonymous>:1:51)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+  "blockedRequests": 0
+}

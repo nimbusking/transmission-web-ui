@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 
 test('minimal login retries credentials, supports narrow/dark layouts and enters the workspace', async ({
@@ -102,4 +103,115 @@ test('default entry waits for explicit sign-in even without server authenticatio
   await page.getByLabel('用户名', { exact: true }).fill('demo');
   await page.getByRole('button', { name: '进入工作台', exact: true }).click();
   await expect(page.locator('.workspace')).toBeVisible();
+});
+
+test('tab login survives reload, rejects expired credentials and does not persist failed login', async ({
+  page,
+  browser,
+}) => {
+  let validPassword = 'correct';
+  let delayAuthentication = false;
+  await page.addInitScript(() => {
+    (window as any).__loginSeenDuringRestore = false;
+    new MutationObserver(() => {
+      if (document.querySelector('.login-page, .session-loading'))
+        (window as any).__loginSeenDuringRestore = true;
+    }).observe(document, { childList: true, subtree: true });
+  });
+  const installRpc = async (target: typeof page) => {
+    await target.route('**/rpc', async (route) => {
+      if (
+        route.request().headers().authorization !==
+        `Basic ${Buffer.from(`demo:${validPassword}`).toString('base64')}`
+      ) {
+        await route.fulfill({ status: 401, body: '' });
+        return;
+      }
+      const body = route.request().postDataJSON();
+      if (delayAuthentication && body.method === 'session-get')
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+      await route.fulfill({
+        json: {
+          result: 'success',
+          tag: body.tag,
+          arguments:
+            body.method === 'session-get'
+              ? { version: '4.1.4', 'rpc-version': 19 }
+              : body.method === 'torrent-get'
+                ? { torrents: [] }
+                : {},
+        },
+      });
+    });
+  };
+  await installRpc(page);
+  await page.goto('/?lang=zh-CN');
+  await page.getByLabel('用户名', { exact: true }).fill('demo');
+  await page.getByLabel('密码', { exact: true }).fill('correct');
+  await page.getByRole('button', { name: '进入工作台', exact: true }).click();
+  await expect(page.locator('.workspace')).toBeVisible();
+  // Simulate a session saved by 2.1.1/2.1.2 before page-to-endpoint markers existed.
+  await page.evaluate(() => {
+    for (const key of Object.keys(sessionStorage))
+      if (key.startsWith('twui:login-page:')) sessionStorage.removeItem(key);
+  });
+  delayAuthentication = true;
+  const restoredResponse = page.waitForResponse(
+    (response) =>
+      response.url().endsWith('/rpc') &&
+      response.request().postDataJSON()?.method === 'session-get',
+  );
+  let restoredFinished = false;
+  void restoredResponse.then(() => {
+    restoredFinished = true;
+  });
+  await page.reload();
+  await expect(page.locator('.workspace')).toBeVisible();
+  expect(restoredFinished).toBe(false);
+  expect(await page.evaluate(() => (window as any).__loginSeenDuringRestore)).toBe(false);
+  await expect(page.locator('.login-page')).toHaveCount(0);
+  await restoredResponse;
+  await expect(page.locator('.workspace').locator('..')).toHaveAttribute('aria-busy', 'false');
+  await expect(page.locator('.workspace')).toBeVisible();
+  expect(await page.evaluate(() => (window as any).__loginSeenDuringRestore)).toBe(false);
+  delayAuthentication = false;
+  await expect(page.locator('.login-page')).toHaveCount(0);
+  // A fresh browsing session must not inherit the login.
+  const fresh = await browser.newContext();
+  const other = await fresh.newPage();
+  await installRpc(other);
+  await other.goto(new URL('/?lang=zh-CN', page.url()).href);
+  await expect(other.locator('.login-page')).toBeVisible();
+  await fresh.close();
+  expect(
+    await page.evaluate(() =>
+      Object.keys(localStorage).some((k) => k.startsWith('twui:login-session:')),
+    ),
+  ).toBe(false);
+  validPassword = 'changed';
+  await page.reload();
+  await expect(page.locator('.login-page')).toBeVisible();
+  expect(
+    await page.evaluate(() =>
+      Object.keys(sessionStorage).filter((k) => k.startsWith('twui:login-session:')),
+    ),
+  ).toEqual([]);
+  await page.getByLabel('用户名', { exact: true }).fill('demo');
+  await page.getByLabel('密码', { exact: true }).fill('wrong');
+  await page.getByRole('button', { name: '进入工作台', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('登录失败');
+  await page.locator('.diagnostics-panel summary').click();
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: '导出当前日志 / Export', exact: true }).click();
+  const download = await downloadPromise;
+  const exported = await readFile((await download.path())!, 'utf8');
+  expect(exported).not.toContain('demo:correct');
+  expect(exported).not.toContain(Buffer.from('demo:correct').toString('base64'));
+  expect(exported).not.toContain('"password"');
+
+  expect(
+    await page.evaluate(() =>
+      Object.keys(sessionStorage).filter((k) => k.startsWith('twui:login-session:')),
+    ),
+  ).toEqual([]);
 });

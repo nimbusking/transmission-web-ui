@@ -14,6 +14,8 @@ export class RpcError extends Error {
 export interface CallOptions {
   signal?: AbortSignal;
   timeoutMs?: number;
+  context?: string;
+  operationId?: number;
 }
 export class RpcClient {
   private sessionId = '';
@@ -22,6 +24,7 @@ export class RpcClient {
   constructor(
     public url: string,
     private transport: typeof fetch = (...args) => fetch(...args),
+    private observe: (type: string, data: Record<string, unknown>) => void = () => {},
   ) {}
   authenticate(username: string, password: string) {
     const bytes = new TextEncoder().encode(`${username}:${password}`);
@@ -46,6 +49,24 @@ export class RpcClient {
       controller.abort();
     }, options.timeoutMs ?? 20000);
     const tag = ++this.tag;
+    const requestId = `req-${tag}`;
+    const started = performance.now();
+    const notify = (type: string, data: Record<string, unknown>) => {
+      try {
+        this.observe(type, data);
+      } catch {
+        /* Observer failures cannot alter RPC outcomes. */
+      }
+    };
+    notify('rpc.start', {
+      requestId,
+      method,
+      arguments: args,
+      tag,
+      context: options.context,
+      operationId: options.operationId,
+      timeoutMs: options.timeoutMs ?? 20000,
+    });
     try {
       for (let attempt = 0; attempt < 3; attempt++) {
         const headers: Record<string, string> = {
@@ -62,6 +83,12 @@ export class RpcClient {
           headers,
           body: JSON.stringify({ method, arguments: args, tag }),
           signal: controller.signal,
+        });
+        notify('rpc.attempt', {
+          requestId,
+          attempt: attempt + 1,
+          status: response.status,
+          challenge: !!response.headers.get('X-Transmission-Session-Id'),
         });
         if (response.status === 409) {
           const sessionId = response.headers.get('X-Transmission-Session-Id');
@@ -86,8 +113,10 @@ export class RpcClient {
         try {
           data = await response.json();
         } catch {
+          notify('rpc.response', { requestId, attempt: attempt + 1, invalidJson: true });
           throw new RpcError('protocol', 'Invalid RPC JSON response');
         }
+        notify('rpc.response', { requestId, attempt: attempt + 1, envelope: data });
         if (
           !data ||
           typeof data !== 'object' ||
@@ -100,6 +129,17 @@ export class RpcClient {
       }
       throw new RpcError('protocol', 'Session negotiation exhausted');
     } catch (error) {
+      notify('rpc.error', {
+        requestId,
+        kind:
+          error instanceof RpcError
+            ? error.kind
+            : controller.signal.aborted
+              ? timedOut
+                ? 'timeout'
+                : 'cancelled'
+              : 'network',
+      });
       if (error instanceof RpcError) throw error;
       if (controller.signal.aborted)
         throw new RpcError(
@@ -110,6 +150,7 @@ export class RpcClient {
         );
       throw new RpcError('network', error instanceof Error ? error.message : String(error));
     } finally {
+      notify('rpc.end', { requestId, durationMs: performance.now() - started });
       clearTimeout(timeout);
       options.signal?.removeEventListener('abort', abort);
     }

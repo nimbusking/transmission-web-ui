@@ -1,5 +1,5 @@
 import { heldBytes, safeCount, wantedValue, priorityValue, progressFraction } from './status';
-import { hasWarning, inFolder, torrentServers, trackerServer } from './navigation';
+import { hasError, hasWarning, inFolder, torrentServers, trackerServer } from './navigation';
 import { createNameMatcher } from './name-search';
 import type { Torrent, ColumnSetting, Settings } from './types';
 
@@ -257,7 +257,7 @@ export function statusMatches(t: Torrent, filter: string): boolean {
     case 'checking':
       return t.status === 1 || t.status === 2;
     case 'error':
-      return Boolean(t.error);
+      return hasError(t);
     case 'warning':
       return hasWarning(t);
     case 'private':

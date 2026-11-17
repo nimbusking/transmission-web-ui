@@ -1,0 +1,32 @@
+# Isolated diagnostics fixtures; no user configuration or download volumes.
+services:
+  tr3:
+    build:
+      context: ..
+      dockerfile: lab/Dockerfile
+      args: { SOURCE_COMMIT: bb6b5a062ee594dfd4b7a12a6b6e860c43849bfd }
+    image: twui-lab/transmission:3.00
+    environment: { OPENSSL_CONF: /openssl-3-legacy.cnf }
+    volumes: ["./openssl-3-legacy.cnf:/openssl-3-legacy.cnf:ro"]
+    ports: ["127.0.0.1:19191:9091"]
+  tr40:
+    build:
+      context: ..
+      dockerfile: lab/Dockerfile
+      args: { SOURCE_COMMIT: 280ace12f8a2b99fdf144011cd4f6fed8be876fe }
+    image: twui-lab/transmission:4.0.0
+    ports: ["127.0.0.1:19192:9091"]
+  tr46:
+    build:
+      context: ..
+      dockerfile: lab/Dockerfile
+      args: { SOURCE_COMMIT: 38c164933e9f77c110b48fe745861c3b98e3d83e }
+    image: twui-lab/transmission:4.0.6
+    ports: ["127.0.0.1:19193:9091"]
+  tr414:
+    build:
+      context: ..
+      dockerfile: lab/Dockerfile
+      args: { SOURCE_COMMIT: a6d907d9ea2313143af714d7830feb6c1b60b84c }
+    image: twui-lab/transmission:4.1.4
+    ports: ["127.0.0.1:19195:9091"]

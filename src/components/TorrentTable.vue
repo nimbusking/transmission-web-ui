@@ -10,7 +10,7 @@ import {
   TriangleAlert,
   Tag,
 } from '@lucide/vue';
-import { hasWarning } from '../domain/navigation';
+import { hasError, hasWarning } from '../domain/navigation';
 import { tableBytes, tableDate, tableServers, peerCount, progressValue } from '../domain/table';
 import { NDataTable, NCheckbox, NTag, type DataTableColumns } from 'naive-ui';
 import { useI18n } from 'vue-i18n';
@@ -80,20 +80,17 @@ function resize(event: PointerEvent, key: string, initial: number) {
 function value(row: Torrent, key: string) {
   if (key === 'name') {
     const warning = hasWarning(row),
-      error = !!row.error && row.error !== 1;
-    const icon = error
-      ? CircleX
-      : warning
-        ? TriangleAlert
-        : row.status === 0
-          ? Pause
-          : row.status === 2
-            ? DatabaseSearch
-            : row.status === 4
-              ? Download
-              : row.status === 6
-                ? Upload
-                : Clock;
+      error = hasError(row);
+    const icon =
+      row.status === 0
+        ? Pause
+        : row.status === 2
+          ? DatabaseSearch
+          : row.status === 4
+            ? Download
+            : row.status === 6
+              ? Upload
+              : Clock;
     const status = t(STATUS_NAMES[row.status ?? -1] || 'unknown');
     const hint = [
       row.name,
@@ -107,10 +104,22 @@ function value(row: Torrent, key: string) {
     return h('span', { class: 'torrent-name-cell', title: hint }, [
       h(icon, {
         size: 14,
-        class: error ? 'text-error' : warning ? 'text-warning' : 'muted',
+        class: 'muted',
+        'data-torrent-status': STATUS_NAMES[row.status ?? -1] || 'unknown',
         'aria-hidden': true,
       }),
       h('span', { class: 'torrent-name' }, row.name),
+      ...(error || warning
+        ? [
+            h(error ? CircleX : TriangleAlert, {
+              size: 14,
+              class: error ? 'text-error' : 'text-warning',
+              role: 'img',
+              'aria-label': t(error ? 'error' : 'warning'),
+              'data-torrent-issue': error ? 'error' : 'warning',
+            }),
+          ]
+        : []),
     ]);
   }
   if (key === 'percentDone') {
@@ -144,13 +153,18 @@ function value(row: Torrent, key: string) {
           'aria-hidden': true,
           style: {
             width: `${percentage ?? 0}%`,
-            backgroundColor: row.error
-              ? '#d97757'
-              : progress.checking
-                ? '#b5945b'
-                : row.status === 6
-                  ? '#168c7e'
-                  : '#6085ce',
+            backgroundColor:
+              row.status === 0
+                ? '#6085ce'
+                : hasError(row)
+                  ? '#d97757'
+                  : hasWarning(row)
+                    ? '#b5945b'
+                    : progress.checking
+                      ? '#b5945b'
+                      : row.status === 6
+                        ? '#168c7e'
+                        : '#6085ce',
           },
         }),
         h(

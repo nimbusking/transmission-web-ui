@@ -1,0 +1,21 @@
+{
+  "build": "artifacts/stage-2.0.0/web",
+  "browser": "webkit",
+  "loginSucceeded": true,
+  "loginPageAfterReload": false,
+  "requestsBeforeReload": 3,
+  "requestsAfterReload": [
+    {
+      "method": "session-get",
+      "authenticated": false
+    },
+    {
+      "method": "torrent-get",
+      "authenticated": false
+    },
+    {
+      "method": "session-stats",
+      "authenticated": false
+    }
+  ]
+}

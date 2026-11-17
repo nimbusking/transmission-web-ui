@@ -55,12 +55,16 @@ export function inFolder(raw: string | undefined, folder: string): boolean {
   const path = normalizedPath(raw);
   return path === folder || path.startsWith(folder === '/' ? '/' : folder + '/');
 }
+export function hasError(t: Torrent): boolean {
+  return t.error === 2 || t.error === 3;
+}
 export function hasWarning(t: Torrent): boolean {
   return (
-    t.error === 1 ||
-    !!t.trackerStats?.some(
-      (x) => (x.lastAnnounceTime ?? 0) > 0 && x.lastAnnounceSucceeded === false,
-    )
+    !hasError(t) &&
+    (t.error === 1 ||
+      !!t.trackerStats?.some(
+        (x) => (x.lastAnnounceTime ?? 0) > 0 && x.lastAnnounceSucceeded === false,
+      ))
   );
 }
 function add(node: NavNode, t: Torrent) {

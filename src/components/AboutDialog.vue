@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DiagnosticsPanel from './DiagnosticsPanel.vue';
 import { computed } from 'vue';
 import { NButton, NModal } from 'naive-ui';
 import { GitFork, BookOpen, History, Globe } from '@lucide/vue';
@@ -30,6 +31,7 @@ const links = [
     @update:show="(show) => !show && emit('close')"
   >
     <div class="about-content">
+      <DiagnosticsPanel />
       <div class="about-logo"><BrandMark /></div>
       <h2>Transmission Web UI</h2>
       <span class="about-ui-version">v{{ version }}</span>

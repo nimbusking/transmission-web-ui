@@ -1,0 +1,20 @@
+{
+  "version": "2.1.2",
+  "buildId": "2.1.2-872b77e62abb-6fff3b0aa6fadeb2dfc6",
+  "date": "2026-11-17",
+  "unit": 147,
+  "loginAndExport": 12,
+  "realNginxBrowser": 6,
+  "diagnosticProduction": 3,
+  "diagnosticMatrix": 243,
+  "negative211": "three browsers detect login form during restoration",
+  "installer": [
+    "fresh",
+    "upgrade 2.1.0 to 2.1.2",
+    "rollback",
+    "injected activation failure",
+    "legacy migration"
+  ],
+  "NASAccess": false,
+  "performance": "Not rerun for initialization display-only change; 2.1.1 measurements retained separately"
+}

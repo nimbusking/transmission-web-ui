@@ -91,7 +91,7 @@ export const en = {
   rowNumber: 'Row number',
   editLabelsFor: 'Edit labels for {name}',
   checkingProgress: 'Verification {value}%',
-  trackerWarningHint: 'Tracker warning; counts may overlap across trackers',
+  trackerWarningHint: 'Tracker warning or last announce failed',
 
   navigation: 'Navigation',
   dataDirectories: 'Data directories',
@@ -541,7 +541,7 @@ export const zh: Record<keyof typeof en, string> = {
   rowNumber: '行号',
   editLabelsFor: '编辑{name}的用户标签',
   checkingProgress: '校验进度 {value}%',
-  trackerWarningHint: 'Tracker 警告；不同 Tracker 的人数统计可能重复',
+  trackerWarningHint: 'Tracker 警告或最近一次通告失败',
 
   navigation: '导航',
   dataDirectories: '数据目录',

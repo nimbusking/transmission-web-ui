@@ -1,0 +1,8 @@
+{
+  "build": "artifacts/stage-2.1.0/web",
+  "browser": "firefox",
+  "loginSucceeded": true,
+  "loginPageAfterReload": true,
+  "requestsBeforeReload": 3,
+  "requestsAfterReload": []
+}
