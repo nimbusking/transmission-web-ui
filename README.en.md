@@ -22,6 +22,7 @@ Version 2.1.0 adds local browser diagnostics, manual JSON export, and scoped off
 ## Contents
 
 - [Features](#features)
+- [Interface preview](#screenshots)
 - [Supported versions and environments](#compatibility)
 - [Installation and upgrades](#installation)
 - [User manual](#usage)
@@ -46,6 +47,48 @@ Version 2.1.0 adds local browser diagnostics, manual JSON export, and scoped off
 | Appearance and languages | Workbench / Console / Studio / Focus layouts; Modern / Metro / Material / Cupertino skins; light/dark modes; Chinese, English, and legacy locale fallback |
 | Connection status        | Automatic/manual refresh, stale-state indicators, global transfer speeds, and free space on the default download filesystem                               |
 | Deployment               | Offline static packages, Synology integration, Docker support, backups, version switching, and restore                                                    |
+
+<a id="screenshots"></a>
+
+## Interface preview
+
+These screenshots were captured from the local demo on port `19081` (UI 2.1.3, Transmission 4.1.4), using the Simplified Chinese interface and demo torrents at a 1440 × 960 desktop viewport. Images are stored in [`docs/screenshots/`](docs/screenshots/). Actual torrents, paths, and available settings depend on the connected server.
+
+### Login page
+
+Enter your Transmission RPC credentials to connect to the current server. The top-right selector changes the interface language, and the bottom-left button switches between light and dark modes. Depending on your deployment, a browser Basic authentication dialog may appear first; see [Open and log in](#usage).
+
+![Login page: credentials, language selection, and color mode](docs/screenshots/login.png)
+
+### Home and torrent details
+
+The Workbench layout brings status filters, the action toolbar, torrent list, and detail pane together. Search torrent names, inspect progress and status, and switch between overview, files, Trackers, and Peers below the list. The bottom status bar shows global transfer speeds, free space, and connection information.
+
+![Home: torrent list, sidebar filters, and torrent details](docs/screenshots/home.png)
+
+### Settings
+
+Settings are grouped into basic, network, bandwidth, schedule, directory dictionary, extra settings, and user labels, with configuration import and export available too. Server changes require **Save server parameters**, while UI preferences save immediately.
+
+![Settings: basic options and configuration import/export](docs/screenshots/settings.png)
+
+### Layout selection
+
+Choose from Workbench, Console, Studio, and Focus. Layouts control how navigation, the toolbar, and the torrent area are arranged. Switching layouts preserves your current column settings, checkbox selections, and filters.
+
+![Layout selection: previews of all four workspace layouts](docs/screenshots/layouts.png)
+
+### Visual themes
+
+Modern, Metro, Material, and Cupertino offer distinct controls, borders, corner shapes, and visual depth. Combine any skin with any layout, and set light/dark mode independently or let it follow your system.
+
+![Theme selection: Modern, Metro, Material, and Cupertino](docs/screenshots/themes.png)
+
+### Dark mode
+
+Use the sun/moon button in the bottom-left corner to switch color modes. This screenshot shows Workbench with the Modern skin in dark mode, preserving the same list, filters, and detail structure.
+
+![Dark mode: Workbench layout with the Modern skin](docs/screenshots/dark-mode.png)
 
 <a id="compatibility"></a>
 

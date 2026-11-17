@@ -22,6 +22,7 @@
 ## 目录
 
 - [功能概览](#features)
+- [界面预览](#screenshots)
 - [支持版本与环境](#compatibility)
 - [安装与升级手册](#installation)
 - [使用手册](#usage)
@@ -46,6 +47,48 @@
 | 外观与语言   | Workbench / Console / Studio / Focus 四种布局；Modern / Metro / Material / Cupertino 四种皮肤；明暗模式、中英文及历史语言包回退 |
 | 连接与状态   | 自动/手动刷新、连接过期提示、全局上下行速度和默认下载目录所在文件系统可用空间                                                   |
 | 部署管理     | 静态离线包、群晖一体化安装、Docker 接入、备份、版本切换与恢复                                                                   |
+
+<a id="screenshots"></a>
+
+## 界面预览
+
+以下截图来自本地 `19081` 演示环境（UI 2.1.3，Transmission 4.1.4），使用简体中文界面与演示任务，桌面视口为 1440 × 960。图片保存在 [`docs/screenshots/`](docs/screenshots/)，实际任务、路径与可用设置以所连接的服务为准。
+
+### 登录页
+
+在页面内输入 Transmission RPC 账号密码，连接当前服务器；右上角可选择界面语言，左下角可切换明暗模式。部署方式决定是否会先出现浏览器 Basic 认证框，详见[打开与登录](#usage)。
+
+![登录页：账号密码输入、语言选择与明暗切换](docs/screenshots/login.png)
+
+### 主页与任务详情
+
+经典工作台将状态筛选、操作工具栏、任务列表与详情面板集中在同一页面。可搜索任务名称、查看进度与状态，并在下方切换概览、文件、Tracker 和 Peer；底部状态栏展示全局传输速度、可用空间与连接信息。
+
+![主页：任务列表、侧栏筛选与任务详情](docs/screenshots/home.png)
+
+### 设置页
+
+设置按基本设置、网络传输、带宽限制、时段限制、目录字典、额外设置和用户标签分组，并提供配置导入与导出。服务端参数修改后需点击“保存服务端参数”，界面偏好则即时保存。
+
+![设置页：基本设置及配置导入导出入口](docs/screenshots/settings.png)
+
+### 布局选择
+
+提供 Workbench（经典工作台）、Console（紧凑控制台）、Studio（侧栏工作室）和 Focus（专注列表）四种布局。布局决定导航、工具栏与任务区的组织方式，切换时保留当前列设置、勾选与筛选。
+
+![布局选择：四种工作区布局预览](docs/screenshots/layouts.png)
+
+### 主题样式
+
+Modern、Metro、Material 和 Cupertino 四种皮肤分别提供不同的控件、边框、圆角与层次风格。皮肤可与布局自由组合，明暗模式独立设置，也可选择跟随系统。
+
+![主题选择：Modern、Metro、Material 与 Cupertino](docs/screenshots/themes.png)
+
+### 深色模式
+
+使用左下角太阳／月亮按钮切换明暗模式。下图展示经典工作台与 Modern 皮肤的深色效果，保留相同的列表、筛选和详情结构。
+
+![深色模式：经典工作台与 Modern 皮肤](docs/screenshots/dark-mode.png)
 
 <a id="compatibility"></a>
 
