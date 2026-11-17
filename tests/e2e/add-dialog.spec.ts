@@ -1,5 +1,59 @@
 import { expect, test } from '@playwright/test';
 
+for (const duplicateResponse of ['torrent-duplicate', 'duplicate torrent']) {
+  test(`adding six transfers silently skips an existing seed (${duplicateResponse})`, async ({
+    page,
+  }) => {
+    const rows = [{ id: 1, hashString: '1'.repeat(40), name: 'Existing seed', status: 6 }];
+    let additions = 0;
+    await page.route('**/rpc', async (route) => {
+      const body = route.request().postDataJSON();
+      let args = {};
+      if (body.method === 'session-get') args = { version: '4.0.6', 'rpc-version': 17 };
+      if (body.method === 'torrent-get') args = { torrents: rows };
+      if (body.method === 'torrent-add') {
+        additions++;
+        const hash = body.arguments.filename.split(':').at(-1);
+        const existing = rows.find((row) => row.hashString === hash);
+        if (existing) {
+          if (duplicateResponse === 'duplicate torrent') {
+            await route.fulfill({ json: { result: duplicateResponse, tag: body.tag } });
+            return;
+          }
+          args = { 'torrent-duplicate': existing };
+        } else {
+          const row = { id: rows.length + 1, hashString: hash, name: hash, status: 0 };
+          rows.push(row);
+          args = { 'torrent-added': row };
+        }
+      }
+      await route.fulfill({ json: { result: 'success', arguments: args, tag: body.tag } });
+    });
+    await page.goto('/?lang=en');
+    await page.getByLabel('Username', { exact: true }).fill('demo');
+    await page.getByRole('button', { name: 'Enter workspace', exact: true }).click();
+    await page
+      .locator('.toolbar')
+      .getByRole('button', { name: 'Add transfer', exact: true })
+      .click();
+    await page
+      .getByPlaceholder('One link per line')
+      .fill(
+        [1, 2, 3, 4, 5, 6].map((id) => `magnet:?xt=urn:btih:${String(id).repeat(40)}`).join('\n'),
+      );
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Add transfer', exact: true })
+      .click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect(page.locator('[data-torrent-id]')).toHaveCount(6);
+    await expect(page.getByText('Already exists', { exact: false })).toHaveCount(0);
+    expect(additions).toBe(6);
+    expect(rows.filter((row) => row.status === 0)).toHaveLength(5);
+    expect(rows[0].status).toBe(6);
+  });
+}
+
 test('add dialog uses a custom picker and selectable server directories', async ({ page }) => {
   const additions: Record<string, unknown>[] = [];
   await page.route('**/rpc', async (route) => {

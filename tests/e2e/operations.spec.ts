@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { fixture } from '../fixtures/torrent.mjs';
-test('mixed URL/file queue settles errors, reports duplicates and handles drag/drop', async ({
+test('mixed URL/file queue settles errors, silently ignores duplicates and handles drag/drop', async ({
   page,
 }) => {
   const data = fixture('Browser added transfer'),
@@ -40,10 +40,14 @@ test('mixed URL/file queue settles errors, reports duplicates and handles drag/d
     await route.fulfill({ json: { result: 'success', arguments: args, tag: body.tag } });
   });
   await page.goto('/?lang=en');
+  await page.getByLabel('Username', { exact: true }).fill('demo');
+  await page.getByRole('button', { name: 'Enter workspace', exact: true }).click();
   await page.locator('.toolbar').getByRole('button', { name: 'Add transfer', exact: true }).click();
   await page
     .getByPlaceholder('One link per line')
-    .fill(`magnet:?xt=urn:btih:${'b'.repeat(40)}\nhttps://example.invalid/fixture.torrent\n`);
+    .fill(
+      `magnet:?xt=urn:btih:${'b'.repeat(40)}\nhttps://example.invalid/fixture.torrent\nmagnet:?xt=urn:btih:${'b'.repeat(40)}`,
+    );
   await page.locator('input[type=file]').setInputFiles([
     {
       name: 'invalid.torrent',
@@ -58,8 +62,9 @@ test('mixed URL/file queue settles errors, reports duplicates and handles drag/d
   ]);
   await page.getByRole('dialog').getByRole('button', { name: 'Add transfer', exact: true }).click();
   await expect(page.locator('.result-row')).toContainText(['invalid metainfo']);
+  await expect(page.locator('.result-row')).toHaveCount(1);
   await expect(page.locator('[data-torrent-id]')).toHaveCount(3);
-  expect(writes).toHaveLength(4);
+  expect(writes).toHaveLength(5);
   expect(writes.every((write) => write.arguments.paused === true)).toBe(true);
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
   await page.evaluate(({ metainfo }) => {
@@ -75,7 +80,8 @@ test('mixed URL/file queue settles errors, reports duplicates and handles drag/d
       );
   }, data);
   await page.getByRole('dialog').getByRole('button', { name: 'Add transfer', exact: true }).click();
-  await expect(page.locator('.result-row')).toContainText(['Already exists']);
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(page.getByText('Already exists', { exact: false })).toHaveCount(0);
   expect(rows).toHaveLength(3);
 });
 test('task identity changes during confirmation reject deletion', async ({ page }) => {

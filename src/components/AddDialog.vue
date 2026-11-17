@@ -74,7 +74,10 @@ async function submit() {
       setDefault: setDefault.value,
     });
     if (failures.length) error.value = failures.join('\n');
-    if (!failures.length && result.items.every((x) => x.status === 'success')) {
+    if (
+      !failures.length &&
+      result.items.every((x) => x.status === 'success' || x.status === 'duplicate')
+    ) {
       message.success(t('success'));
       emit('close');
     }
@@ -177,7 +180,9 @@ async function submit() {
       ><NCheckbox v-model:checked="setDefault">{{ t('setDefault') }}</NCheckbox
       ><NAlert v-if="error" type="error">{{ error }}</NAlert>
       <div
-        v-for="result in app.operationResults.filter((x) => x.status !== 'success')"
+        v-for="result in app.operationResults.filter(
+          (x) => x.status !== 'success' && x.status !== 'duplicate',
+        )"
         :key="result.id"
         class="result-row"
       >

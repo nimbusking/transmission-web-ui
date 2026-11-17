@@ -210,7 +210,7 @@ Open the installer-provided URL or the original `/transmission/web/` path and co
 
 ### 2. Add torrents
 
-Choose Add in the toolbar, select `.torrent` files or enter URL/magnet links, choose the server download directory and whether to start immediately, then review each result. Paths belong to the **NAS/Transmission server**, not the computer running your browser. For containers, use container-internal paths. Duplicate torrents receive separate results.
+Choose Add in the toolbar, select `.torrent` files or enter URL/magnet links, choose the server download directory and whether to start immediately, then review each result. Paths belong to the **NAS/Transmission server**, not the computer running your browser. For containers, use container-internal paths. Duplicate torrents are silently ignored; the remaining torrents continue to be added normally.
 
 ### 3. Search, filter, and operate on torrents
 
