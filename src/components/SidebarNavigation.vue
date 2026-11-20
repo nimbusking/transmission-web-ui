@@ -4,8 +4,11 @@ import { useI18n } from 'vue-i18n';
 import {
   ChevronRight,
   ChevronDown,
+  List,
   ListTree,
   Download,
+  ArrowDown,
+  Clock3,
   Upload,
   Pause,
   DatabaseSearch,
@@ -17,7 +20,13 @@ import {
   ChartColumn,
   Tags,
   Tag,
-  FileText,
+  Layers,
+  Gauge,
+  ArrowUpFromLine,
+  ArrowDownToLine,
+  ListPlus,
+  Repeat2,
+  Timer,
 } from '@lucide/vue';
 import { useAppStore } from '../stores/app';
 import { formatBytes, statusMatches } from '../domain/torrents';
@@ -49,6 +58,11 @@ onUnmounted(() => observer?.disconnect());
 const scroll = ref(0),
   height = ref(600),
   focused = ref('status:all');
+type SidebarNode = Omit<NavNode, 'children'> & {
+  icon?: typeof Folder;
+  children?: SidebarNode[];
+  downloadCounts?: { key: string; count: number; icon: typeof Folder; label: string }[];
+};
 const icons: Record<string, typeof Folder> = {
   all: ListTree,
   downloading: Download,
@@ -63,29 +77,44 @@ const icons: Record<string, typeof Folder> = {
   statistics: ChartColumn,
   labels: Tags,
   label: Tag,
-  metric: FileText,
 };
+const statMetrics = [
+  ['uploadedBytes', ArrowUpFromLine],
+  ['downloadedBytes', ArrowDownToLine],
+  ['filesAdded', ListPlus],
+  ['sessionCount', Repeat2],
+  ['secondsActive', Timer],
+] as const;
 const groups = computed(() => navigationGroups(app.torrents));
-const roots = computed<NavNode[]>(() => {
+const roots = computed<SidebarNode[]>(() => {
   const status = ['downloading', 'paused', 'seeding', 'checking', 'active', 'error', 'warning'];
   const total = torrentSizeTotal(app.torrents);
+  let running = 0,
+    queued = 0;
+  for (const torrent of app.torrents) {
+    if (!statusMatches(torrent, 'downloading')) continue;
+    if (torrent.status === 3) queued++;
+    else running++;
+  }
+  const downloadCounts = (
+    [
+      ['downloadTotalCount', running + queued, List],
+      ['downloadRunningCount', running, ArrowDown],
+      ['downloadQueuedCount', queued, Clock3],
+    ] as const
+  ).map(([key, count, icon]) => ({ key, count, icon, label: t(key, { count }) }));
   const stats = (scope: 'cumulative-stats' | 'current-stats') => ({
     key: 'stats:' + scope,
     name: t(scope === 'current-stats' ? 'currentSession' : 'cumulative'),
     kind: 'folder',
-    children: [
-      'uploadedBytes',
-      'downloadedBytes',
-      'filesAdded',
-      'sessionCount',
-      'secondsActive',
-    ].map((field) => {
-      const value =
-        app.stats[scope]?.[field as keyof NonNullable<(typeof app.stats)[typeof scope]>];
+    icon: scope === 'current-stats' ? Gauge : Layers,
+    children: statMetrics.map(([field, icon]) => {
+      const value = app.stats[scope]?.[field];
       return {
         key: `stats:${scope}:${field}`,
         name: t('stat' + field),
         kind: 'metric',
+        icon,
         value:
           typeof value === 'number' && Number.isFinite(value) && value >= 0
             ? field.endsWith('Bytes')
@@ -110,7 +139,9 @@ const roots = computed<NavNode[]>(() => {
         name: t(value),
         kind: value,
         value,
-        count: app.torrents.filter((x) => statusMatches(x, value)).length,
+        ...(value === 'downloading'
+          ? { downloadCounts }
+          : { count: app.torrents.filter((x) => statusMatches(x, value)).length }),
       })),
     },
     {
@@ -158,8 +189,8 @@ const roots = computed<NavNode[]>(() => {
 const expanded = (n: NavNode, _depth: number) =>
   app.settings.ui.navigationExpanded?.[n.key] ?? n.key === 'status:all';
 const flat = computed(() => {
-  const out: { node: NavNode; depth: number }[] = [];
-  const walk = (nodes: NavNode[], depth: number) =>
+  const out: { node: SidebarNode; depth: number }[] = [];
+  const walk = (nodes: SidebarNode[], depth: number) =>
     nodes.forEach((node) => {
       out.push({ node, depth });
       if (node.children?.length && expanded(node, depth)) walk(node.children, depth + 1);
@@ -279,13 +310,29 @@ async function keydown(e: KeyboardEvent, n: NavNode, depth: number) {
         <component
           :is="node.kind === 'metric' ? 'span' : 'button'"
           class="tree-select"
+          :class="{ 'tree-select-download': node.downloadCounts }"
           tabindex="-1"
           @click="choose(node, depth)"
         >
-          <component :is="icons[node.kind] || Folder" :size="16" aria-hidden="true" /><span
-            class="tree-name"
-            >{{ node.name === '@unknown' ? t('unknownFolder') : node.name }}</span
-          ><span v-if="node.count !== undefined" class="tree-number">[{{ node.count }}]</span>
+          <component
+            :is="node.icon ?? icons[node.kind] ?? Folder"
+            :size="16"
+            aria-hidden="true"
+          /><span class="tree-name">{{
+            node.name === '@unknown' ? t('unknownFolder') : node.name
+          }}</span
+          ><span v-if="node.downloadCounts" class="tree-number tree-download-counts">
+            <span
+              v-for="item in node.downloadCounts"
+              :key="item.key"
+              role="img"
+              :aria-label="item.label"
+              :title="item.label"
+            >
+              <component :is="item.icon" :size="12" aria-hidden="true" />{{ item.count }}
+            </span>
+          </span>
+          <span v-else-if="node.count !== undefined" class="tree-number">[{{ node.count }}]</span>
         </component>
         <span
           v-if="'size' in node || node.kind === 'metric'"
@@ -299,6 +346,7 @@ async function keydown(e: KeyboardEvent, n: NavNode, depth: number) {
 </template>
 <style scoped>
 .navigation-tree {
+  container-type: inline-size;
   flex: 1;
   min-height: 100px;
   overflow: auto;
@@ -372,6 +420,33 @@ async function keydown(e: KeyboardEvent, n: NavNode, depth: number) {
 }
 .tree-number {
   margin-left: auto;
+}
+.tree-download-counts {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 7px;
+  padding-inline-end: 6px;
+}
+.tree-download-counts > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+@container (max-width: 168px) {
+  .tree-select-download {
+    gap: 4px;
+  }
+  .tree-select-download > svg {
+    display: none;
+  }
+  .tree-download-counts {
+    gap: 4px;
+    padding-inline-end: 3px;
+  }
+  .tree-download-counts > span {
+    gap: 2px;
+  }
 }
 .tree-size {
   padding-right: 6px;

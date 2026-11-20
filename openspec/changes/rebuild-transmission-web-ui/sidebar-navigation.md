@@ -49,7 +49,7 @@
 父目录筛选本目录及所有子目录，使用路径段边界，/data/a不匹配/data/abc。叶/父节点均累计唯一任务数和totalSize；大小标识为任务总大小，不声称磁盘占用或已完成大小。缺失路径保留未就绪组，不误归根目录。数值字段未就绪时不把未知大小伪装成确定的0。
 
 ### Status and statistics
-状态分类保持现有下载/做种/校验含队列状态的口径，活动仍指非零上传或下载速率。错误按任务error为2/3。警告包括daemon明确的Tracker warning，以及存在实际通告记录且lastAnnounceSucceeded为false的Tracker；没有发生过通告、字段缺失或仅等待/暂停不算警告。不解析自然语言错误字符串判断成败。任一Tracker失败可进入警告，一个任务只计一次；错误优先，有错误的任务不再重复计入警告；暂停与故障是独立维度，暂停不清除服务端错误。成功的新响应清除对应警告。
+侧栏按已暂停、错误、警告、校验、下载、做种的优先级选取首个匹配的分类，列表与计数共用规则。已暂停按daemon的停止状态判断，任务行保留故障图标及原因。错误按任务error为2/3。警告包括daemon明确的Tracker warning，以及存在实际通告记录且lastAnnounceSucceeded为false的Tracker。成功的新响应清除对应警告。下载、做种和校验包含对应的排队状态。活跃任务可与主分类重叠，只统计正在下载或做种且有正上传或下载速率的任务。全部任务也包含状态未知且无故障的任务。
 
 统计分别读取cumulative-stats/current-stats的uploadedBytes、downloadedBytes、filesAdded、sessionCount、secondsActive。filesAdded称已添加任务，当前会话明确指daemon会话。字节沿用应用单位，时长展示天/时/分/秒；0与未知区分，非法/负值显示不可用，不从现存任务求累计量。
 

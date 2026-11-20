@@ -1,4 +1,11 @@
-import { heldBytes, safeCount, wantedValue, priorityValue, progressFraction } from './status';
+import {
+  heldBytes,
+  nonnegativeNumber,
+  safeCount,
+  wantedValue,
+  priorityValue,
+  progressFraction,
+} from './status';
 import { hasError, hasWarning, inFolder, torrentServers, trackerServer } from './navigation';
 import { createNameMatcher } from './name-search';
 import type { Torrent, ColumnSetting, Settings } from './types';
@@ -242,24 +249,40 @@ export function applyDelta(
   }
   return missing;
 }
+function primaryStatus(t: Torrent) {
+  if (t.status === 0) return 'paused';
+  if (hasError(t)) return 'error';
+  if (hasWarning(t)) return 'warning';
+  switch (t.status) {
+    case 1:
+    case 2:
+      return 'checking';
+    case 3:
+    case 4:
+      return 'downloading';
+    case 5:
+    case 6:
+      return 'seeding';
+    default:
+      return undefined;
+  }
+}
 export function statusMatches(t: Torrent, filter: string): boolean {
   switch (filter) {
     case 'all':
       return true;
     case 'active':
-      return (t.rateDownload || 0) > 0 || (t.rateUpload || 0) > 0;
+      return (
+        (t.status === 4 || t.status === 6) &&
+        ((nonnegativeNumber(t.rateDownload) ?? 0) > 0 || (nonnegativeNumber(t.rateUpload) ?? 0) > 0)
+      );
     case 'downloading':
-      return t.status === 3 || t.status === 4;
     case 'seeding':
-      return t.status === 5 || t.status === 6;
     case 'paused':
-      return t.status === 0;
     case 'checking':
-      return t.status === 1 || t.status === 2;
     case 'error':
-      return hasError(t);
     case 'warning':
-      return hasWarning(t);
+      return primaryStatus(t) === filter;
     case 'private':
       return Boolean(t.isPrivate);
     default:
